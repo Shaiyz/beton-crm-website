@@ -1,0 +1,12 @@
+.navbar__items {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.navbar__left {
+  font-size: 18px;
+  font-weight: 100;
+}
+
