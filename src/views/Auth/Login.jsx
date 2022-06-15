@@ -44,7 +44,10 @@ const useStyle = makeStyles((theme) => ({
 
 const Login = ({ history }) => {
   const dispatch = useDispatch();
-  const { authenticated, loading } = useSelector((state) => state.auth);
+  const { authenticated, loading } = useSelector(
+    (state) => state.auth
+  );
+  const { alerts } = useSelector((state) => state.alert);
 
   const classes = useStyle();
   const [formData, setFormData] = useState(loginFormConfig);
@@ -74,7 +77,7 @@ const Login = ({ history }) => {
     };
     dispatch(login(body));
   };
-
+// console.log(alerts)
   return (
     <>
       <Helmet>
@@ -88,8 +91,8 @@ const Login = ({ history }) => {
             </Typography>
             <br />
             <hr />
-            {/* {loading && <CircularProgress />} */}
-            {/* {loginErrors && <Alert variant="error">{loginErrors}</Alert>} */}
+            {loading && <CircularProgress />}
+            {alerts && <Alert variant="error">{alerts.msg}</Alert>}
             <form onSubmit={formSubmitHandler} className={classes.form}>
               {Object.keys(formData).map((el) => (
                 <Formfield

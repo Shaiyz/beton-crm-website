@@ -8,13 +8,14 @@ import "../User/TeamLead/Admin.css";
 import { HomeWork } from "@material-ui/icons/";
 import { Link } from "react-router-dom";
 import Table from "../../components/TableUsers/Table";
+import { getAllLeads } from "../../features/leads/leads.action";
+import { useDispatch } from "react-redux";
 
 const Leads = ({ leads, history, location }) => {
-  //   let dispatch = useDispatch();
+  let dispatch = useDispatch();
   const [value, setValue] = React.useState(0);
-
   useEffect(() => {
-    // dispatch(getAllAdminUsers());
+    dispatch(getAllLeads());
   }, []);
 
   useEffect(() => {
