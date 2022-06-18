@@ -15,7 +15,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { makeStyles } from "@material-ui/core/styles";
 import "./Navbar.css";
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../features/auth/auth.action";
 import TransitionModal from "../../components/TransitionModal/TransitionModal";
 
@@ -74,7 +74,7 @@ const Navbar = (props) => {
   const dispatch = useDispatch();
   const logoutUser = (event) => {
     dispatch(logout(userId));
-    props.history.push('/')
+    props.history.push("/");
   };
   return (
     <AppBar position="fixed" className={classes.appBar}>
@@ -109,10 +109,16 @@ const Navbar = (props) => {
             >
               {/* <MenuItem>{userInfo && userInfo.email}</MenuItem> */}
               <MenuItem>
-                <Link to="changepassword" style={{ textDecoration: "none" }}>
+                <Link to="/profile" style={{ textDecoration: "none" }}>
+                  Profile
+                </Link>
+              </MenuItem>
+              <MenuItem>
+                <Link to="/changepassword" style={{ textDecoration: "none" }}>
                   Change Password
                 </Link>
               </MenuItem>
+
               <MenuItem onClick={() => setopenModal(true)}>Logout</MenuItem>
             </Menu>
           </div>

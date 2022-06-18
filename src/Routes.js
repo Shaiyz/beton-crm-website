@@ -1,5 +1,5 @@
 import { Route, Switch, BrowserRouter } from "react-router-dom";
-import React from "react";
+import React, { useEffect } from "react";
 import { routes } from "./routing/SimpleRoute";
 import Sidebar from "./components/Sidebar/Sidebar";
 import TeamLeadForm from "./views/User/TeamLead/TeamLeadForm";
@@ -10,11 +10,18 @@ import Report from "./views/Report/Report";
 import Leads from "./views/Leads/Leads";
 import Clients from "./views/Clients/Clients";
 import { Todos } from "./views/Leads";
+import { getAllUsers } from "./features/users/user.action";
+import { useDispatch } from "react-redux";
+import { Profile } from "./views/User/Profile";
 
 function Routes() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const { authenticated } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   //   const authenticated = true;
+  useEffect(() => {
+    dispatch(getAllUsers());
+  }, []);
 
   const protectedRoutes = () => {
     return (
@@ -40,16 +47,13 @@ function Routes() {
                 path="/digitalmarketer"
                 component={DigitalMarketer}
               />
-
               <Route exact path="/teamlead" component={TeamLead} />
-
               <Route exact path="/salesrep" component={SalesRep} />
-
               <Route exact path="/teamlead/edit/:id" component={TeamLeadForm} />
-
               {/* <Route exact path="/user/add" component={UserForm} />
               <Route exact path="/user/edit/:id" component={UserForm} /> */}
-
+              <Route exact path="/user/:id" component={Profile} />
+              <Route exact path="/profile" component={Profile} />
               {/* 
               <Route exact path="/lead/add" component={LeadForm} />
               <Route exact path="/lead/edit/:id" component={LeadForm} />

@@ -1,54 +1,58 @@
 import React, { useEffect, useState } from "react";
 import Table from "../../../components/TableUsers/Table";
-import {
-  getUsersByStatus,
-  getUsersByRole,
-  updateUser,
-} from "../../../features/users/user.action";
 import { Grid, Tooltip, Chip } from "@material-ui/core";
-import { useDispatch, useSelector } from "react-redux";
-import TransitionModal from "../../../components/TransitionModal/TransitionModal";
-import "./User.css";
+import { useSelector } from "react-redux";
+import "../User.css";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import IconButton from "@material-ui/core/IconButton";
 import { AiFillEye } from "react-icons/ai";
 import { makeStyles } from "@material-ui/core/styles";
 
 const SalesRep = () => {
-  let dispatch = useDispatch();
   let location = useLocation();
   let history = useHistory();
   const styles = useStyles();
   const { users, loading } = useSelector((state) => state.users);
   const [value, setValue] = useState(0);
+  const [salesRep, setSalesRep] = useState(null);
 
   useEffect(() => {
     if (!users) {
       if (location?.hash == "#active") {
-        dispatch(getUsersByStatus("salesRep", true));
+        setSalesRep(
+          users.filter(
+            (user) => user.role == "salesRep" && user.isActive === true
+          )
+        );
         setValue(1);
       } else if (location?.hash == "#inactive") {
-        dispatch(getUsersByStatus("salaesRep", false));
+        setSalesRep(
+          users.filter(
+            (user) => user.role == "salesRep" && user.isActive === false
+          )
+        );
         setValue(2);
       } else if (location?.hash == "#all" || location?.hash == "") {
-        dispatch(getUsersByRole("salesRep"));
+        setSalesRep(users.filter((user) => user.role == "salesRep"));
         setValue(0);
       }
     }
   }, []);
 
   const getAll = () => {
-    // dispatch(getUsersByRole("salesRep"));
+    setSalesRep(users.filter((user) => user.role == "salesRep"));
     history.push(`/salesRep#all`);
   };
 
   const getAllActiveUsers = () => {
-    // dispatch(getUsersByStatus("salesRep", true));
+    setSalesRep(
+      users.filter((user) => user.role == "salesRep" && user.isActive === true)
+    );
     history.push(`/salesRep#active`);
   };
 
   const getAllInactiveUsers = () => {
-    // dispatch(getUsersByStatus("salesRep", false));
+    setSalesRep();
     history.push(`/salesRep#inactive`);
   };
 
@@ -72,7 +76,7 @@ const SalesRep = () => {
       <Grid item xs={12}>
         <Tooltip title="View Details">
           <IconButton style={{ padding: 2 }}>
-            <Link to={`/report/${params.action}`}>
+            <Link to={`/user/${params.action}`}>
               <AiFillEye
                 size={25}
                 style={{
@@ -122,12 +126,11 @@ const SalesRep = () => {
   ];
 
   let rows = [];
-  if (users && users.length > 0) {
+  if (salesRep && salesRep.length > 0) {
     let s = 1;
-    users.forEach((user) => {
+    salesRep.forEach((user) => {
       rows.push({
         id: s++,
-        image: user?.profile_image,
         fullName: user.first_name + " " + user.last_name,
         mobileNumber: user?.phone,
         status: user.isActive ? "Active" : "Inactive",

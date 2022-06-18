@@ -1,10 +1,12 @@
-import api, { backend } from "../../api/index";
+import { backend } from "../../api/index";
 import {
   getLoadingLists,
   getLeadListsSuccess,
   getLeadListsFailure,
+  addLeadSuccess,
 } from "./leads.reducer";
 import { setAlertMessage } from "../alert/alert.action";
+import { getLoading } from "../auth/auth.reducers";
 
 // get All lead
 export const getAllLeads = () => async (dispatch, getState) => {
@@ -112,17 +114,17 @@ export const getAllLeads = () => async (dispatch, getState) => {
 //     });
 // };
 
-// export const addLead = (body) => async (dispatch, getState) => {
-//   dispatch(getLoading());
-//   try {
-//     const res = await api.post(`/vehicle/add`, body);
-//     dispatch(addLeadSuccess(res.data.data));
-//     dispatch(setAlertMessage(res.data.message, "success"));
-//     dispatch(getAllLeads());
-//   } catch (err) {
-//     if (err.response) {
-//       dispatch(setAlertMessage(err.response.data.message, "error"));
-//       dispatch(getLeadListsFailure(err));
-//     }
-//   }
-// };
+export const addLead = (body) => async (dispatch, getState) => {
+  dispatch(getLoading());
+  try {
+    const res = await backend.post(`/vehicle/add`, body);
+    dispatch(addLeadSuccess(res.data.data));
+    dispatch(setAlertMessage(res.data.message, "success"));
+    dispatch(getAllLeads());
+  } catch (err) {
+    if (err.response) {
+      dispatch(setAlertMessage(err.response.data.message, "error"));
+      dispatch(getLeadListsFailure(err));
+    }
+  }
+};

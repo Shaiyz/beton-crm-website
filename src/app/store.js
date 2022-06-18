@@ -11,7 +11,7 @@ const reducers = combineReducers({
   users: userReducer,
   auth: authReducer,
   alert: alertReducer,
-  admin: adminReducer,
+  // admin: adminReducer,
 
   // notifications: notificationReducer,
 });

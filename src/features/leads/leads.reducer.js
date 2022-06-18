@@ -71,5 +71,9 @@ const leadSlice = createSlice({
 const leadsReducer = leadSlice.reducer;
 
 export default leadsReducer;
-export const { getLoadingLists, getLeadListsSuccess, getLeadListsFailure } =
-  leadSlice.actions;
+export const {
+  getLoadingLists,
+  getLeadListsSuccess,
+  getLeadListsFailure,
+  addLeadSuccess,
+} = leadSlice.actions;

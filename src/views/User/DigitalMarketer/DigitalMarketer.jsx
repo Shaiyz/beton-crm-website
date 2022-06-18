@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Table from "../../../components/TableUsers/Table";
-import {
-  getUsersByStatus,
-  getUsersByRole,
-  updateUser,
-} from "../../../features/users/user.action";
-import { Grid, TextField, Button, Tooltip, Chip } from "@material-ui/core";
-import { useDispatch, useSelector } from "react-redux";
-import TransitionModal from "../../../components/TransitionModal/TransitionModal";
+import { Grid, Tooltip, Chip } from "@material-ui/core";
+import { useSelector } from "react-redux";
+// import TransitionModal from "../../../components/TransitionModal/TransitionModal";
 import "./User.css";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import IconButton from "@material-ui/core/IconButton";
@@ -15,40 +10,49 @@ import { AiFillEye } from "react-icons/ai";
 import { makeStyles } from "@material-ui/core/styles";
 
 const DigitalMarketer = () => {
-  let dispatch = useDispatch();
   let location = useLocation();
   let history = useHistory();
   const styles = useStyles();
   const { users, loading } = useSelector((state) => state.users);
   const [value, setValue] = useState(0);
+  const [digitalMarketer, setDigitalMarketer] = useState(null);
+
+  const getUsersByStatus = (status) =>
+    setDigitalMarketer(
+      users.filter(
+        (user) => user.role == "digitalMarketer" && user.isActive === status
+      )
+    );
 
   useEffect(() => {
     if (!users) {
       if (location?.hash == "#active") {
-        dispatch(getUsersByStatus("digitalMarketer", true));
+        getUsersByStatus(true);
         setValue(1);
       } else if (location?.hash == "#inactive") {
-        dispatch(getUsersByStatus("digitalMarketer", false));
+        getUsersByStatus(false);
         setValue(2);
       } else if (location?.hash == "#all" || location?.hash == "") {
-        dispatch(getUsersByRole("digitalMarketer"));
+        setDigitalMarketer(
+          users.filter((user) => user.role == "digitalMarketer")
+        );
         setValue(0);
       }
     }
   }, []);
 
   const getAll = () => {
-    // dispatch(getUsersByRole("digitalMarketer"));
+    setDigitalMarketer(users.filter((user) => user.role == "digitalMarketer"));
     history.push(`/digitalmarketer`);
   };
 
   const getAllActiveCustomers = () => {
-    // dispatch(getUsersByStatus("digitalMarketer", true));
+    getUsersByStatus(true);
     history.push(`/digitalmarketer#active`);
   };
 
   const getAllInactiveCustomers = () => {
-    // dispatch(getUsersByStatus("digitalMarketer", false));
+    getUsersByStatus(false);
     history.push(`/digitalmarketer#inactive`);
   };
 
@@ -113,18 +117,17 @@ const DigitalMarketer = () => {
       field: "updatedAt",
       title: "Date Updated",
     },
-
-    // {
-    //   field: "action",
-    //   title: "Action",
-    //   render: renderActionButton,
-    // },
+    {
+      field: "action",
+      title: "Action",
+      render: renderActionButton,
+    },
   ];
 
   let rows = [];
-  if (users && users.length > 0) {
+  if (digitalMarketer && digitalMarketer.length > 0) {
     let s = 1;
-    users.forEach((user) => {
+    digitalMarketer.forEach((user) => {
       rows.push({
         id: s++,
         image: user?.profile_image,
