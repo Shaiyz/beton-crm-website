@@ -77,7 +77,7 @@ const SalesRep = () => {
                 size={25}
                 style={{
                   padding: 2,
-                  border: "1px solid #1F1D61",
+                  border: "1px solid #8F1D61",
                   borderRadius: 8,
                   backgroundColor: "white",
                   color: "#1F1D61",

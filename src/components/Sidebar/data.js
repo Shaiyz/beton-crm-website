@@ -72,6 +72,21 @@ const dataList = {
       url: "reports",
       icon: faAddressBook,
     },
+    {
+      title: "Project",
+      url: "projects",
+      icon: faHouseUser,
+      list: [
+        {
+          title: "All Projects",
+          url: "projects",
+        },
+        {
+          title: "My Projects",
+          url: "projects",
+        },
+      ],
+    },
   ],
   salesRepData: [
     {
@@ -171,6 +186,7 @@ const dataList = {
       ],
     },
   ],
+
 
   saveList: (list, userId) => {
     if (!localStorage.getItem(userId)) {
