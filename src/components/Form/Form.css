@@ -97,7 +97,7 @@
  input, select {
   padding: 10px 20px;
   border: none;
-  border-bottom: 3px solid transparent;
+  border-bottom: 3px solid #00000014;
   background-color: #eee;
   outline-width: 0;
   font-size: 1rem;
@@ -117,9 +117,39 @@
   border: none;
   border-radius: 5px;
 }
+.form_submit_btn {
+  padding: 10px 20px;
+  cursor: pointer;
+  color: black;
+  background-color: white;
+  width: 10%;
+  font-size: 1rem;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+.form_reset_btn {
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: white;
+  color: black;
+  width: 10%;
+  font-size: 1rem;
+  border: 1px solid red;
+  border-radius: 5px;
+}
 
 .form__btn:hover {
   opacity: 0.8;
+}
+.form_submit_btn:hover {
+  background-color: rgb(31, 18, 111);
+  color: white;
+}
+
+.form_reset_btn:hover {
+  background-color: rgb(173, 45, 45);
+  color: white;
+
 }
 
 .form__btn-primary {

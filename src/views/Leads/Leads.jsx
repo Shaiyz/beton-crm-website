@@ -61,7 +61,7 @@ const Leads = ({ history, location }) => {
     return (
       <div style={{ display: "flex", alignItems: "center" }}>
         <Tooltip title="Edit Lead">
-          <Link to={`/lead/edit/${params.edit}`} style={{ marginTop: "5px" }}>
+          <Link to={`/leads/edit/${params.edit}`} style={{ marginTop: "5px" }}>
             <EditIcon
               className="action-buttons"
               color="secondary"
