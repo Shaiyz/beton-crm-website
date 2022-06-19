@@ -73,7 +73,6 @@ function Routes() {
               <Route exact path="/lead/add" component={LeadForm} />
               <Route exact path="/lead/edit/:id" component={LeadForm} /> */}
 
-<<<<<<< HEAD
               <Route
                 exact
                 path="/digitalMarketer/add"
@@ -85,37 +84,23 @@ function Routes() {
                 component={DigitalMarketerEdit}
               />
 
-=======
-              {/* Sales Rep */}
->>>>>>> main
               <Route exact path="/salesrep" component={SalesRep} />
               <Route exact path="/salesRep/add" component={SalesRepAdd} />
               <Route exact path="/salesRep/edit/:id" component={SalesRepEdit} />
 
               {/* Team Lead */}
               <Route exact path="/teamlead" component={TeamLead} />
-<<<<<<< HEAD
               <Route exact path="/teamLead/edit/:id" component={TeamLeadForm} />
               <Route exact path="/teamLead/add" component={TeamLeadAdd} />
 
-=======
-              <Route exact path="/teamlead/edit/:id" component={TeamLeadEdit} />
-              <Route exact path="/teamlead/add" component={TeamLeadAdd} />
-  
-              {/* Clients */}
->>>>>>> main
               <Route exact path="/clients" component={Clients} />
               <Route exact path="/clients/add" component={ClientsAdd} />
               <Route exact path="/client/edit/:id" component={ClientEdit} />
 
               {/* Reports */}
               <Route exact path="/reports" component={Report} />
-<<<<<<< HEAD
-
-=======
               
               {/* Leads */}
->>>>>>> main
               <Route exact path="/leads" component={Leads} />
               <Route exact path="/leads/add" component={LeadsAdd} />
               <Route exact path="/leads/edit/:id" component={LeadsEdit} />
