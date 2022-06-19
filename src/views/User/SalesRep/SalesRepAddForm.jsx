@@ -21,36 +21,30 @@ const SalesRepAdd = ({ }) => {
 
     const [successMessage, setSuccessMessage] = useState(null)
     const [data, setData] = useState({
-        username: "",
         fname: "",
         lname: "",
         email: "",
-        dob: "",
+        age: "",
         password: "",
-        c_password: "",
-        status: 1,
+        isActive: 1,
         detail: "",
         role_id: "",
         mobile_no: "",
-        image: "",
-        identity: ""
+        gender: ""
     })
     function resetForm() {
         setData({
-            username: "",
             fname: "",
             lname: "",
             email: "",
-            dob: "",
+            age: "",
             password: "",
-            c_password: "",
-            status: "",
+            isActive: "",
             detail: "",
             role_id: "",
             mobile_no: "",
-            image: "",
-            identity: ""
-        })
+            gender: ""
+            })
     }
 
     useEffect(() => {
@@ -65,7 +59,7 @@ const SalesRepAdd = ({ }) => {
 
         try {
 
-            setSuccessMessage("New Sales Representatives Added")
+            setSuccessMessage("New Sale Rep Added")
             resetForm()
         } catch (error) {
             setSuccessMessage(null)
@@ -100,7 +94,7 @@ const SalesRepAdd = ({ }) => {
         }
     }
     return (<>
-            <Card style={{
+        <Card style={{
                   marginLeft: '20px',
                   marginRight: '20px',
                   }}>
@@ -116,7 +110,7 @@ const SalesRepAdd = ({ }) => {
                 //   marginLeft: '40px',
                 //   marginRight: '50px',
             }}>
-             <CardTitle tag='h4'>Add Sales Representatives Employees</CardTitle>
+                <CardTitle tag='h4'>Add Sale Rep Employees</CardTitle>
             </CardHeader>
 
             {successMessage && <UncontrolledAlert color='success'>
@@ -124,9 +118,12 @@ const SalesRepAdd = ({ }) => {
                     {successMessage}
                 </div>
             </UncontrolledAlert>}
-            <CardBody>
+            <CardBody style={{
+                //   marginLeft: '40px',
+                //   marginRight: '40px',
+                  }}>
                 <Form onSubmit={(event) => submit(event)} >
-                <Row   style={{
+                    <Row   style={{
                         border: '1px solid #2e272538',
                         padding: '1px 20px 20px 20px'}}>
                         <Col sm='3' >
@@ -175,11 +172,40 @@ const SalesRepAdd = ({ }) => {
                                 />
                             </FormGroup>
                         </Col>
+
                         <Col sm='12'>
                             <FormGroup>
-                                <Label for='passwordVertical'>Re-Password</Label>
-                                <Input type='password' name='c_password' id='c_password' value={data.c_password} required onChange={(e) => handleUserData(e)} placeholder='re-enter password'
+                                <Label for='ageVertical'>Enter Your Age</Label>
+                                <Input type='number' name='age' id='age' value={data.age} required onChange={(e) => handleUserData(e)} placeholder='Enter age'
                                 />
+                            </FormGroup>
+                        </Col>
+
+
+                        <Col sm='12'>
+                            <FormGroup>
+                            <Label for='roleVertical'>Select Gender</Label>
+                                <select value={data.gender} required onChange={(e) => handleUserData(e)}>
+                                <option>--- Please Select Option ---</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                </select>
+                                {/* <Input type='number' name='gender' id='gender' value={data.gender} required onChange={(e) => handleUserData(e)} placeholder='Enter Gender'
+                                /> */}
+                            </FormGroup>
+                        </Col>
+
+                        <Col sm='12'>
+                            <FormGroup>
+                                <Label for='roleVertical'>Select Any Role</Label>
+                                <select value={data.role_id} required onChange={(e) => handleUserData(e)}>
+                                <option>--- Please Select Option ---</option>
+                                <option value="teamLead">Team Lead</option>
+                                <option value="salesRep">Sales Rep</option>
+                                <option value="digitalMarketer">Digital Marketer</option>
+                                </select>
+                                {/* <Input type='number' name='role_id' id='role_id' value={data.role_id} required onChange={(e) => handleUserData(e)} placeholder='Enter Role'
+                                /> */}
                             </FormGroup>
                         </Col>
 
@@ -199,7 +225,6 @@ const SalesRepAdd = ({ }) => {
 
                             </FormGroup>
                         </Col>
-
 
                         <Col sm='12'>
                             <FormGroup className='d-flex mb-0' style={{marginTop: '10px'}}>

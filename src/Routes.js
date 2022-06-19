@@ -19,6 +19,11 @@ import LeadsEdit from "./views/Leads/LeadsEditForm";
 import Clients from "./views/Clients/Clients";
 import ClientsAdd from "./views/Clients/ClientsAddForm";
 import ClientEdit from "./views/Clients/ClientsEditForm";
+// import Projects from "./views/Projects/Projects";
+import ProjectsAdd from "./views/Projects/ProjectAddForm";
+import ProjectsEdit from "./views/Projects/ProjectEditForm";
+import UnitAdd from "./views/Projects/Unit/UnitAddForm";
+import UnitEdit from "./views/Projects/Unit/UnitEditForm";
 import { Todos } from "./views/Leads";
 
 function Routes() {
@@ -45,6 +50,7 @@ function Routes() {
             )}
 
             <Switch>
+              {/* Digital Marketer */}
               <Route
                 exact
                 path="/digitalmarketer"
@@ -53,26 +59,37 @@ function Routes() {
               <Route exact path="/digitalmarketer/add" component={DigitalMarketerAdd} />
               <Route exact path="/digitalmarketer/edit/:id" component={DigitalMarketerEdit} />
 
-
+              {/* Sales Rep */}
               <Route exact path="/salesrep" component={SalesRep} />
               <Route exact path="/salesrep/add" component={SalesRepAdd} />
               <Route exact path="/salesrep/edit/:id" component={SalesRepEdit} />
 
+              {/* Team Lead */}
               <Route exact path="/teamlead" component={TeamLead} />
-              <Route exact path="/teamlead/edit/:id" component={TeamLeadForm} />
+              <Route exact path="/teamlead/edit/:id" component={TeamLeadEdit} />
               <Route exact path="/teamlead/add" component={TeamLeadAdd} />
   
+              {/* Clients */}
               <Route exact path="/clients" component={Clients} />
               <Route exact path="/clients/add" component={ClientsAdd} />
               <Route exact path="/client/edit/:id" component={ClientEdit} />
 
+              {/* Reports */}
               <Route exact path="/reports" component={Report} />
-
-
+              
+              {/* Leads */}
               <Route exact path="/leads" component={Leads} />
               <Route exact path="/leads/add" component={LeadsAdd} />
               <Route exact path="/leads/edit/:id" component={LeadsEdit} />
 
+              {/* Projects & Units */}
+              {/* <Route exact path="/projects" component={Proejcts} /> */}
+              <Route exact path="/projects/add" component={ProjectsAdd} />
+              <Route exact path="/projects/edit/:id" component={ProjectsEdit} />
+              <Route exact path="/unit/add" component={UnitAdd} />
+              <Route exact path="/unit/edit/:id" component={UnitEdit} />
+
+              {/* Todos */}
               <Route exact path="/todos" component={Todos} />
   
               {/* <Route exact path="/user/add" component={UserForm} />
