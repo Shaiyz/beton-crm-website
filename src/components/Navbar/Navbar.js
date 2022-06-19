@@ -10,7 +10,7 @@ import {
   Grid,
 } from "@material-ui/core";
 // import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import MenuIcon from "@material-ui/icons/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { makeStyles } from "@material-ui/core/styles";
@@ -64,6 +64,7 @@ const Navbar = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openModal, setopenModal] = React.useState(false);
   const { userInfo, userRole, userId } = useSelector((state) => state.auth);
+  const history = useHistory();
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -74,7 +75,7 @@ const Navbar = (props) => {
   const dispatch = useDispatch();
   const logoutUser = (event) => {
     dispatch(logout(userId));
-    props.history.push("/");
+    history.push("/");
   };
   return (
     <AppBar position="fixed" className={classes.appBar}>
