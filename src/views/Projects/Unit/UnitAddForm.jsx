@@ -21,35 +21,17 @@ const UnitAdd = ({ }) => {
 
     const [successMessage, setSuccessMessage] = useState(null)
     const [data, setData] = useState({
-        username: "",
-        fname: "",
-        lname: "",
-        email: "",
-        dob: "",
-        password: "",
-        c_password: "",
-        status: 1,
-        detail: "",
-        role_id: "",
-        mobile_no: "",
-        image: "",
-        identity: ""
+        quantity: "",
+        type: "",
+        size: "",
+        price: ""
     })
     function resetForm() {
         setData({
-            username: "",
-            fname: "",
-            lname: "",
-            email: "",
-            dob: "",
-            password: "",
-            c_password: "",
-            status: "",
-            detail: "",
-            role_id: "",
-            mobile_no: "",
-            image: "",
-            identity: ""
+            quantity: "",
+            type: "",
+            size: "",
+            price: ""
         })
     }
 
@@ -65,7 +47,7 @@ const UnitAdd = ({ }) => {
 
         try {
 
-            setSuccessMessage("New Team Lead Added")
+            setSuccessMessage("New Unit Added")
             resetForm()
         } catch (error) {
             setSuccessMessage(null)
@@ -136,30 +118,38 @@ const UnitAdd = ({ }) => {
                         <Col sm='12'>
                             <FormGroup>
                                 <Label for='nameVertical'>quantity</Label>
-                                <Input type='text' name='quantity' id='quantity' value={data.quantity} required onChange={(e) => handleUserData(e)} placeholder='first name'
+                                <Input type='text' name='quantity' id='quantity' value={data.quantity} required onChange={(e) => handleUserData(e)} placeholder='Quantity'
                                 />
                             </FormGroup>
                         </Col>
 
-                         <Col sm='12'>
+                        <Col sm='12'>
                             <FormGroup>
-                                <Label for='nameVertical'>type</Label>
-                                <Input type='text' name='type' id='type' value={data.type} required onChange={(e) => handleUserData(e)} placeholder='last name'
-                                />
+                                <Label for='typeVertical'>Type</Label>
+                                <select value={data.type} required onChange={(e) => handleUserData(e)}>
+                                <option>--- Please Select Option ---</option>
+                                <option value="office">Office</option>
+                                <option value="appartment">Appartment</option>
+                                <option value="plot">Plot</option>
+                                <option value="suite">Suite</option>
+                                <option value="penthouse">Penthouse</option>
+                                </select>
+                                {/* <Input type='text' name='type' id='type' value={data.type} required onChange={(e) => handleUserData(e)} placeholder='Type'
+                                /> */}
                             </FormGroup>
                         </Col>
                         <Col sm='12'>
                             <FormGroup>
-                                <Label for='nameVertical'>size</Label>
-                                <Input type='text' name='size' id='size' value={data.size} required onChange={(e) => handleUserData(e)} placeholder='first name'
+                                <Label for='sizeVertical'>Size</Label>
+                                <Input type='text' name='size' id='size' value={data.size} required onChange={(e) => handleUserData(e)} placeholder='Size'
                                 />
                             </FormGroup>
                         </Col>
 
                          <Col sm='12'>
                             <FormGroup>
-                                <Label for='nameVertical'>price</Label>
-                                <Input type='text' name='price' id='price' value={data.price} required onChange={(e) => handleUserData(e)} placeholder='last name'
+                                <Label for='priceVertical'>Price</Label>
+                                <Input type='text' name='price' id='price' value={data.price} required onChange={(e) => handleUserData(e)} placeholder='Price'
                                 />
                             </FormGroup>
                         </Col>

@@ -21,35 +21,13 @@ const ProjectEdit = ({ }) => {
 
     const [successMessage, setSuccessMessage] = useState(null)
     const [data, setData] = useState({
-        username: "",
-        fname: "",
-        lname: "",
-        email: "",
-        dob: "",
-        password: "",
-        c_password: "",
-        status: 1,
-        detail: "",
-        role_id: "",
-        mobile_no: "",
-        image: "",
-        identity: ""
+        pname: "",
+        location: "",
     })
     function resetForm() {
         setData({
-            username: "",
-            fname: "",
-            lname: "",
-            email: "",
-            dob: "",
-            password: "",
-            c_password: "",
-            status: "",
-            detail: "",
-            role_id: "",
-            mobile_no: "",
-            image: "",
-            identity: ""
+            pname: "",
+            location: "",
         })
     }
 
@@ -65,7 +43,7 @@ const ProjectEdit = ({ }) => {
 
         try {
 
-            setSuccessMessage("Update Team Lead Successfully")
+            setSuccessMessage("Update Project Info Successfully")
             resetForm()
         } catch (error) {
             setSuccessMessage(null)
@@ -131,16 +109,16 @@ const ProjectEdit = ({ }) => {
                         padding: '1px 20px 20px 20px'}}>                    
                         <Col sm='12'>
                             <FormGroup>
-                                <Label for='nameVertical'>Project Name</Label>
-                                <Input type='text' name='fname' id='fname' value={data.fname} required onChange={(e) => handleUserData(e)} placeholder='first name'
+                                <Label for='pNameVertical'>Project Name</Label>
+                                <Input type='text' name='pname' id='pname' value={data.pname} required onChange={(e) => handleUserData(e)} placeholder='Proejct Name'
                                 />
                             </FormGroup>
                         </Col>
 
                          <Col sm='12'>
                             <FormGroup>
-                                <Label for='nameVertical'>Location</Label>
-                                <Input type='text' name='lname' id='lname' value={data.lname} required onChange={(e) => handleUserData(e)} placeholder='last name'
+                                <Label for='locationVertical'>Location</Label>
+                                <Input type='text' name='location' id='location' value={data.location} required onChange={(e) => handleUserData(e)} placeholder='Location'
                                 />
                             </FormGroup>
                         </Col>
