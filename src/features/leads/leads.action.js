@@ -12,7 +12,7 @@ import { getLoading } from "../auth/auth.reducers";
 export const getAllLeads = () => async (dispatch, getState) => {
   dispatch(getLoadingLists());
   try {
-    const res = await backend.get(`/leads`);
+    const res = await backend.get(`/lead`);
     dispatch(getLeadListsSuccess(res.data.data));
   } catch (err) {
     if (err.response) {

@@ -76,7 +76,7 @@ export const getUser = (id) => async (dispatch) => {
 export const updateUser = (body, id) => async (dispatch) => {
   dispatch(getLoadingLists());
   await backend
-    .put(`/user/updateUser/${id}`, body)
+    .put(`/user/${id}`, body)
     .then((response) => {
       dispatch(updateUserSuccess(response.data.data));
       dispatch(setAlertMessage(response.data.message, "success"));

@@ -1,9 +1,9 @@
-import { Route, useEffect, Switch, BrowserRouter } from "react-router-dom";
+import { Route, Switch, BrowserRouter } from "react-router-dom";
 import { routes } from "./routing/SimpleRoute";
 import { useSelector } from "react-redux";
 import Sidebar from "./components/Sidebar/Sidebar";
 import { DigitalMarketer, SalesRep, TeamLead } from "./views/User";
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "./components/Navbar/Navbar";
 import TeamLeadForm from "./views/User/TeamLead/TeamLeadForm";
 import TeamLeadAdd from "./views/User/TeamLead/TeamLeadAddForm";
@@ -69,22 +69,22 @@ function Routes() {
 
               <Route
                 exact
-                path="/digitalmarketer/add"
+                path="/digitalMarketer/add"
                 component={DigitalMarketerAdd}
               />
               <Route
                 exact
-                path="/digitalmarketer/edit/:id"
+                path="/digitalMarketer/edit/:id"
                 component={DigitalMarketerEdit}
               />
 
               <Route exact path="/salesrep" component={SalesRep} />
-              <Route exact path="/salesrep/add" component={SalesRepAdd} />
-              <Route exact path="/salesrep/edit/:id" component={SalesRepEdit} />
+              <Route exact path="/salesRep/add" component={SalesRepAdd} />
+              <Route exact path="/salesRep/edit/:id" component={SalesRepEdit} />
 
               <Route exact path="/teamlead" component={TeamLead} />
-              <Route exact path="/teamlead/edit/:id" component={TeamLeadForm} />
-              <Route exact path="/teamlead/add" component={TeamLeadAdd} />
+              <Route exact path="/teamLead/edit/:id" component={TeamLeadForm} />
+              <Route exact path="/teamLead/add" component={TeamLeadAdd} />
 
               <Route exact path="/clients" component={Clients} />
               <Route exact path="/clients/add" component={ClientsAdd} />

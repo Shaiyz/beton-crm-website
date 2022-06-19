@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from "react";
 import Table from "../../../components/TableUsers/Table";
-import { Grid, Tooltip, Chip } from "@material-ui/core";
+import { Grid, Tooltip, Chip, Switch } from "@material-ui/core";
 import { useSelector } from "react-redux";
 // import TransitionModal from "../../../components/TransitionModal/TransitionModal";
+import { updateUser } from "../../../features/users/user.action";
 import "./User.css";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import IconButton from "@material-ui/core/IconButton";
 import { AiFillEye } from "react-icons/ai";
 import { makeStyles } from "@material-ui/core/styles";
+import { useDispatch } from "react-redux";
+import { Assignment, AssignmentIndOutlined, Report } from "@material-ui/icons";
 
 const DigitalMarketer = () => {
   let location = useLocation();
   let history = useHistory();
+  const dispatch = useDispatch();
   const styles = useStyles();
   const { users, loading } = useSelector((state) => state.users);
   const [value, setValue] = useState(0);
@@ -25,7 +29,7 @@ const DigitalMarketer = () => {
     );
 
   useEffect(() => {
-    if (!users) {
+    if (users) {
       if (location?.hash == "#active") {
         getUsersByStatus(true);
         setValue(1);
@@ -39,7 +43,7 @@ const DigitalMarketer = () => {
         setValue(0);
       }
     }
-  }, []);
+  }, [users]);
 
   const getAll = () => {
     setDigitalMarketer(users.filter((user) => user.role == "digitalMarketer"));
@@ -71,25 +75,56 @@ const DigitalMarketer = () => {
     );
   };
 
+  const handleChange = (e, id) => {
+    dispatch(updateUser({ isActive: e.target.checked }, id));
+  };
+
   const renderActionButton = (params) => {
     return (
-      <Grid item xs={12}>
-        <Tooltip title="View Details">
-          <IconButton style={{ padding: 2 }}>
-            <Link to={`/user/${params.action}`}>
-              <AiFillEye
-                size={25}
-                style={{
-                  padding: 2,
-                  border: "1px solid #1F1D61",
-                  borderRadius: 8,
-                  backgroundColor: "white",
-                  color: "#1F1D61",
-                }}
-              />
-            </Link>
-          </IconButton>
-        </Tooltip>
+      <Grid container xs={12} spacing={1}>
+        <Grid item>
+          <Tooltip title="View Details">
+            <IconButton style={{ padding: 2 }}>
+              <Link to={`/user/${params.action._id}`}>
+                <AiFillEye
+                  size={25}
+                  style={{
+                    padding: 2,
+                    border: "1px solid #8F1D61",
+                    borderRadius: 8,
+                    backgroundColor: "white",
+                    color: "#1F1D61",
+                  }}
+                />
+              </Link>
+            </IconButton>
+          </Tooltip>
+        </Grid>
+        <Grid item>
+          <Tooltip title="View Report">
+            <IconButton style={{ padding: 2 }}>
+              <Link to={`/report/${params.action._id}`}>
+                <AssignmentIndOutlined
+                  size={25}
+                  style={{
+                    padding: 2,
+                    border: "1px solid #8F1D61",
+                    borderRadius: 8,
+                    backgroundColor: "white",
+                    color: "#1F1D61",
+                  }}
+                />
+              </Link>
+            </IconButton>
+          </Tooltip>
+        </Grid>
+        <Grid item>
+          <Switch
+            checked={params.action.isActive}
+            onChange={(e) => handleChange(e, params.action._id)}
+            inputProps={{ "aria-label": "controlled" }}
+          />
+        </Grid>
       </Grid>
     );
   };
@@ -134,7 +169,7 @@ const DigitalMarketer = () => {
         fullName: user.first_name + " " + user.last_name,
         mobileNumber: user?.phone,
         status: user.isActive ? "Active" : "Inactive",
-        // action: user._id,
+        action: user,
         createdAt: user.createdAt
           ? new Date(user.createdAt).toLocaleDateString()
           : "-",
@@ -149,7 +184,7 @@ const DigitalMarketer = () => {
       <Table
         header={"Digital Marketer"}
         blockUser={() => {}}
-        path="digitalmarketer"
+        path="digitalMarketer"
         label1="Active"
         label2="Inactive"
         loading={loading}

@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 import { useState } from "react";
 
 const Leads = ({ history, location }) => {
-  const { leads, loading } = useSelector((state) => state.lead);
+  const { leads, loading } = useSelector((state) => state.leads);
   const [leadsList, setLeads] = useState(null);
   let dispatch = useDispatch();
   const [value, setValue] = React.useState(0);
@@ -23,7 +23,7 @@ const Leads = ({ history, location }) => {
 
   const filtered = (task) =>
     leads.filter(function (x) {
-      return x.task.indexOf(task) > -1;
+      return x.task.indexOf(task.name) > -1;
     });
   useEffect(() => {
     if (location?.hash == "#closelost") {
@@ -53,9 +53,8 @@ const Leads = ({ history, location }) => {
     history.push(`/leads#closedwon`);
   };
 
-  const longText = `Aliquam eget finibus ante, non facilisis lectus.Sed vitae dignissim est,vel aliquam tellus.
-        Praesent non nunc mollis, fermentum neque at, semper arcu.
-        Nullam eget est sed sem iaculis gravida eget vitae justo.`;
+  const longText =
+    " Task name, Sales \n" + " Sub Task , token \n" + `Task message, test \n`;
 
   const renderActionButton = (params) => {
     return (
@@ -76,22 +75,7 @@ const Leads = ({ history, location }) => {
             />
           </Link>
         </Tooltip>
-        {/* <Tooltip title="Delete">
-          <Button onClick={() => deleteUser(params.action)}>
-            <DeleteIcon
-              className="action-buttons"
-              color="secondary"
-              fontSize="medium"
-              style={{
-                padding: 2,
-                border: "1px solid #F50057",
-                borderRadius: 8,
-                backgroundColor: "white",
-                color: "#F50057",
-              }}
-            />
-          </Button>
-        </Tooltip> */}
+
         <Tooltip title={longText}>
           <HomeWork
             className="action-buttons"
@@ -145,7 +129,7 @@ const Leads = ({ history, location }) => {
     leadsList.forEach((lead) => {
       rows.push({
         id: s++,
-        fullName: lead.client.first_name + " " + lead.client.last_name,
+        fullName: lead.client.name,
         email: lead.client.email,
         createdAt: lead.createdAt
           ? new Date(lead.createdAt).toLocaleDateString()
