@@ -14,7 +14,7 @@ import {
     FormGroup,
     Input
 } from 'reactstrap'
-
+import { backend } from '../../api/index'
 
 const ClientAdd = ({ }) => {
     //body
@@ -22,21 +22,21 @@ const ClientAdd = ({ }) => {
     const [successMessage, setSuccessMessage] = useState(null)
     const [data, setData] = useState({
 
-        name: "",
-        email: "",
-        phone: "",
-        phone2: "",
-        cnicFornt: "",
-        cnicBack: ""
+        name: '',
+        email: '',
+        phone: '',
+        phone2: '',
+        cnicFornt: '',
+        cnicBack: ''
     })
     function resetForm() {
         setData({
-            name: "",
-            email: "",
-            phone: "",
-            phone2: "",
-            cnicFornt: "",
-            cnicBack: ""
+            name: '',
+            email: '',
+            phone: '',
+            phone2: '',
+            cnicFornt: '',
+            cnicBack: ''
         })
     }
 
@@ -46,12 +46,11 @@ const ClientAdd = ({ }) => {
 
     const submit = async (event) => {
 
-        // /role/{role}/user/{user}
-
         event.preventDefault()
 
         try {
-
+            const response = await axios.post('http://127.0.0.1:5000/client/', data)
+            console.log(response)
             setSuccessMessage("New Client Added")
             resetForm()
         } catch (error) {
@@ -61,6 +60,7 @@ const ClientAdd = ({ }) => {
 
     }
 
+
     function handleUserData(e) {
         const newdata = { ...data }
         console.log(newdata)
@@ -69,37 +69,52 @@ const ClientAdd = ({ }) => {
         console.log(newdata)
     }
 
-    function handleImage(e) {
+    async function handleImage(e) {
         const newdata = { ...data }
         newdata[e.target.id] = e.target.files[0]
         setData(newdata)
         console.log(newdata)
 
         if (e.target.files[0]) {
-            const reader = new FileReader()
-            reader.addEventListener("load", () => {
-                const newdata = { ...data }
-                newdata['image'] = reader.result
-                setData(newdata)
-                console.log(newdata.image)
-            })
-            reader.readAsDataURL(e.target.files[0])
+
+            let image = new FormData()
+            image = image.append('images', e.target.files)
+            try {
+                const data = await backend.post('/fileupload', { images: image })
+                console.log("Image Check", data)
+            }
+            catch (error) {
+                console.log("client error ", error)
+            }
+
+            // const reader = new FileReader()
+            // reader.addEventListener("load", () => {
+            //     const newdata = { ...data }
+            //     newdata['cnicFornt'] = reader.result
+            //     setData(newdata)
+            //     newdata['cnicBack'] = reader.result
+            //     setData(newdata)
+
+            //     console.log(newdata.cnicFornt)
+            //     console.log(newdata.cnicBack)
+            // })
+            // reader.readAsDataURL(e.target.files[0])
         }
     }
     return (<>
-                <Card style={{
-                  marginLeft: '20px',
-                  marginRight: '20px',
-                  }}>
+        <Card style={{
+            marginLeft: '20px',
+            marginRight: '20px',
+        }}>
             <CardHeader style={{
-                  backgroundColor: "#1F1D61",
-                  borderRadius: '10px',
-                  padding: '20px',
-                  color: "white",
-                  marginTop: '40px',
-                  marginBottom: '20px',
-                  fontWeight: '100px',
-                  fontSize: '16px',
+                backgroundColor: "#1F1D61",
+                borderRadius: '10px',
+                padding: '20px',
+                color: "white",
+                marginTop: '40px',
+                marginBottom: '20px',
+                fontWeight: '100px',
+                fontSize: '16px',
                 //   marginLeft: '40px',
                 //   marginRight: '50px',
             }}>
@@ -113,12 +128,13 @@ const ClientAdd = ({ }) => {
             </UncontrolledAlert>}
             <CardBody>
                 <Form onSubmit={(event) => submit(event)} >
-                <Row   style={{
+                    <Row style={{
                         border: '1px solid #2e272538',
-                        padding: '1px 20px 20px 20px'}}>                    
+                        padding: '1px 20px 20px 20px'
+                    }}>
                         <Col sm='12'>
                             <FormGroup>
-                                <Label for='nameVertical'>Enter Client Name</Label>
+                                <Label for='name'>Enter Client Name</Label>
                                 <Input type='text' name='name' id='name' value={data.name} required onChange={(e) => handleUserData(e)} placeholder='Enter Client Name'
                                 />
                             </FormGroup>
@@ -126,7 +142,7 @@ const ClientAdd = ({ }) => {
 
                         <Col sm='12'>
                             <FormGroup>
-                                <Label for='emailVertical'>Enter Your Email</Label>
+                                <Label for='email'>Enter Your Email</Label>
                                 <Input type='email' name='email' id='email' value={data.email} required onChange={(e) => handleUserData(e)} placeholder='Enter Your Email'
                                 />
                             </FormGroup>
@@ -134,15 +150,15 @@ const ClientAdd = ({ }) => {
 
                         <Col sm='12'>
                             <FormGroup>
-                                <Label for='phoneVertical'>Phone Number 1</Label>
+                                <Label for='phone'>Phone Number 1</Label>
                                 <Input type='number' name='phone' id='phone' value={data.phone} onChange={(e) => handleUserData(e)} placeholder='Enter Phone Number 1'
                                 />
                             </FormGroup>
                         </Col>
-                        
+
                         <Col sm='12'>
                             <FormGroup>
-                                <Label for='phone2Vertical'>Phone Number 2</Label>
+                                <Label for='phone2'>Phone Number 2</Label>
                                 <Input type='number' name='phone2' id='phone2' value={data.phone2} onChange={(e) => handleUserData(e)} placeholder='Enter Phone Number 2'
                                 />
                             </FormGroup>
@@ -151,11 +167,11 @@ const ClientAdd = ({ }) => {
                         <Col sm='3' >
                             <FormGroup>
                                 <div><img className='custom-img-dimension' src={data.image} /></div>
-                                <Label for='cnicFrontVertical'>CNIC Front</Label>
+                                <Label for='cnicFornt'>CNIC Front</Label>
                                 <Input
                                     type="file"
-                                    name='image'
-                                    id='cnicFront'
+                                    name='cnicFornt'
+                                    id='cnicFornt'
                                     onChange={(e) => handleImage(e)}
                                     required
                                 >
@@ -166,21 +182,21 @@ const ClientAdd = ({ }) => {
                         <Col sm='3' >
                             <FormGroup>
                                 <div><img className='custom-img-dimension' src={data.image} /></div>
-                                <Label for='cnicBackVertical'>CNIC Back</Label>
+                                <Label for='cnicBack'>CNIC Back</Label>
                                 <Input
                                     type="file"
-                                    name='image'
+                                    name='cnicBack'
                                     id='cnicBack'
                                     onChange={(e) => handleImage(e)}
                                     required
                                 >
-                                </Input>                                
+                                </Input>
                             </FormGroup>
                         </Col>
 
                         <Col sm='12'>
-                            <FormGroup className='d-flex mb-0' style={{marginTop: '10px'}}>
-                                <Button className='form_submit_btn' type='submit' style={{marginInline: '10px'}}>
+                            <FormGroup className='d-flex mb-0' style={{ marginTop: '10px' }}>
+                                <Button className='form_submit_btn' type='submit' style={{ marginInline: '10px' }}>
                                     Submit
                                 </Button>
                                 <Button className='form_reset_btn' onClick={resetForm}>

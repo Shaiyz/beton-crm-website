@@ -122,7 +122,7 @@ const ClientEdit = ({ }) => {
                         <Col sm='12'>
                             <FormGroup>
                                 <Label for='clientIdVertical'>Client ID</Label>
-                                <Input type='text' name='clientId' id='clientId' value={data.clientId} required onChange={(e) => handleUserData(e)} placeholder='Client Id'
+                                <Input type='text' name='clientId' id='clientId' value={data.clientId} required onChange={(e) => handleUserData(e)} placeholder='Client Id' readOnly
                                 />
                             </FormGroup>
                         </Col>
