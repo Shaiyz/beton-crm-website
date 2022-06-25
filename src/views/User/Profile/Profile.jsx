@@ -162,7 +162,6 @@ const ViewUser = () => {
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
-  console.log(userdetails);
   return loading ? (
     <CircularProgress className="loader" style={{ marginTop: 50 }} />
   ) : (

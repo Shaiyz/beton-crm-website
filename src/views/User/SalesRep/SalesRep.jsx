@@ -85,7 +85,7 @@ const SalesRep = () => {
   const renderActionButton = (params) => {
     return (
       <Grid container xs={12} spacing={1}>
-        <Grid item>
+        <Grid item lg={4}>
           <Tooltip title="View Details">
             <IconButton style={{ padding: 2 }}>
               <Link to={`/user/${params.action._id}`}>
@@ -103,7 +103,7 @@ const SalesRep = () => {
             </IconButton>
           </Tooltip>
         </Grid>
-        <Grid item>
+        <Grid item lg={4}>
           <Tooltip title="View Report">
             <IconButton style={{ padding: 2 }}>
               <Link to={`/report/${params.action._id}`}>
@@ -121,7 +121,7 @@ const SalesRep = () => {
             </IconButton>
           </Tooltip>
         </Grid>
-        <Grid item>
+        <Grid item lg={4}>
           <Switch
             checked={params.action.isActive}
             onChange={(e) => handleChange(e, params.action._id)}
@@ -160,6 +160,7 @@ const SalesRep = () => {
       field: "action",
       title: "Action",
       render: renderActionButton,
+      width: "200px",
     },
   ];
 

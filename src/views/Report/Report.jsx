@@ -11,6 +11,8 @@ import React, { useState } from "react";
 import { monthNames } from "./months";
 import "./Report.css";
 import { AiOutlineSearch } from "react-icons/ai";
+import { AiOutlinePrinter } from "react-icons/ai";
+import { printDiv } from "../../utils";
 
 const Report = () => {
   const styles = useStyles();
@@ -35,6 +37,9 @@ const Report = () => {
     let body = { startDate: startDate, endDate: endDate };
     // dispatch(getAllEarnings(body));
   };
+
+  const printReport = () => {};
+
   return (
     <Grid item xs={12} lg={14}>
       <div className="viewuser__head">
@@ -44,7 +49,7 @@ const Report = () => {
               Monthly summary - {monthNames[month]}
             </h2>
           </Grid>
-          <Grid item xs={4} sm={4}>
+          <Grid item xs={6} sm={6} lg={4}>
             <label style={{ marginTop: 15, marginRight: 10 }}>Start date</label>
             <input
               type="date"
@@ -54,10 +59,8 @@ const Report = () => {
               onChange={(e) => setStartDate(e.target.value)}
             />
           </Grid>
-          <Grid item xs={4} sm={4}>
-            <label style={{ marginTop: 15, marginRight: 10, marginLeft: 10 }}>
-              End date
-            </label>
+          <Grid item xs={7} sm={7} lg={4}>
+            <label style={{ marginTop: 15, marginRight: 10 }}>End date</label>
             <input
               type="date"
               placeholder="End Date"
@@ -66,7 +69,7 @@ const Report = () => {
               onChange={(e) => setEndDate(e.target.value)}
             />
           </Grid>
-          <Grid item xs={4} sm={4}>
+          <Grid item xs={12} sm={12} lg={4}>
             <Button
               onClick={(e) => customSearch(e)}
               className={styles.btn}
@@ -76,11 +79,21 @@ const Report = () => {
               Search
             </Button>
           </Grid>
+          <Grid item xs={12} sm={12} lg={4} justifyContent="end">
+            <Button
+              onClick={() => printDiv("print-div")}
+              className={styles.btn}
+              variant="contained"
+              startIcon={<AiOutlinePrinter />}
+            >
+              Print
+            </Button>
+          </Grid>
         </Grid>
       </div>
       <div className={styles.root}>
-        <Grid container lg={12}>
-          <Grid item lg={4}>
+        <Grid container lg={12} id="print-div">
+          <Grid item lg={4} xs={12} sm={12}>
             <Accordion expanded={true}>
               <div
                 style={{
@@ -127,7 +140,7 @@ const Report = () => {
               </AccordionDetails>
             </Accordion>
           </Grid>
-          <Grid item lg={4}>
+          <Grid item lg={4} xs={12} sm={12}>
             <Accordion expanded={true}>
               <div
                 style={{
@@ -168,8 +181,8 @@ const Report = () => {
               </AccordionDetails>
             </Accordion>
           </Grid>
-          <Grid item lg={4}>
-            <Accordion expanded={true}>
+          <Grid item lg={4} xs={12} sm={12}>
+            <Accordion expanded={true} >
               <div
                 style={{
                   display: "flex",

@@ -62,27 +62,6 @@ const TeamLead = ({}) => {
     );
   };
 
-  // const renderActionButton = (params) => {
-  //   return (
-  //     <Tooltip title="Delete">
-  //       <Button onClick={() => deleteUser(params.action)}>
-  //         <DeleteIcon
-  //           className="action-buttons"
-  //           color="secondary"
-  //           fontSize="medium"
-  //           style={{
-  //             padding: 2,
-  //             border: "1px solid #F50057",
-  //             borderRadius: 8,
-  //             backgroundColor: "white",
-  //             color: "#F50057",
-  //           }}
-  //         />
-  //       </Button>
-  //     </Tooltip>
-  //   );
-  // };
-
   const columns = [
     { field: "id", title: "S#", width: 200, sortable: false },
     {
@@ -97,13 +76,7 @@ const TeamLead = ({}) => {
       sortable: false,
       width: 630,
     },
-    // {
-    //   field: "action",
-    //   title: "Delete",
-    //   sortable: false,
-    //   render: renderActionButton,
-    //   width: 200,
-    // },
+
     {
       field: "edit",
       title: "Edit Info",

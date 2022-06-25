@@ -4,13 +4,14 @@ import {
   getClientsListsFailure,
   getClientsListsSuccess,
   getClientSuccess,
-} from "./user.reducers";
+  updateClientSuccess,
+} from "./client.reducer";
 import { setAlertMessage } from "../alert/alert.action";
 
 export const getAllClients = () => async (dispatch) => {
   dispatch(getLoadingLists());
   try {
-    const res = await backend.get(`/user`);
+    const res = await backend.get(`/client`);
     dispatch(getClientsListsSuccess(res.data.data));
   } catch (err) {
     if (err) {
@@ -22,7 +23,7 @@ export const getAllClients = () => async (dispatch) => {
 export const getClient = (id) => async (dispatch) => {
   dispatch(getLoadingLists());
   try {
-    const res = await backend.get(`/user?_id=${id}`);
+    const res = await backend.get(`/client?_id=${id}`);
     dispatch(getClientSuccess(res.data.data));
   } catch (err) {
     if (err) {
@@ -34,7 +35,7 @@ export const getClient = (id) => async (dispatch) => {
 export const updateClient = (body, id) => async (dispatch) => {
   dispatch(getLoadingLists());
   await backend
-    .put(`/user/updateClient/${id}`, body)
+    .put(`/client/updateClient/${id}`, body)
     .then((response) => {
       dispatch(updateClientSuccess(response.data.data));
       dispatch(setAlertMessage(response.data.message, "success"));

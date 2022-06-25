@@ -4,18 +4,15 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { Tooltip } from "@material-ui/core";
 import "../../User/TeamLead/Admin.css";
-import { Link } from "react-router-dom";
 import Table from "../../../components/TableUsers/Table";
 import { Modal } from "./Modals";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const Todos = ({ todos, history, location }) => {
-  //   let dispatch = useDispatch();
   const [value, setValue] = React.useState(0);
   const [editDialog, setEditDialog] = React.useState(false);
-
-  useEffect(() => {
-    // dispatch(getAllAdminUsers());
-  }, []);
+  const { tasks, error, loading } = useSelector((state) => state.tasks);
 
   useEffect(() => {
     if (location?.hash == "#overdue") {
@@ -45,7 +42,6 @@ const Todos = ({ todos, history, location }) => {
     history.push(`/todos#closedwon`);
   };
 
-  const loading = false;
   const deleteUser = (id) => {
     // dispatch(deleteAdminUser(id));
   };
@@ -54,11 +50,7 @@ const Todos = ({ todos, history, location }) => {
     return (
       <div style={{ display: "flex", alignItems: "center" }}>
         <Tooltip title="Edit Task">
-          <Button
-            onClick={() => {
-              setEditDialog(true);
-            }}
-          >
+          <Link to={`/todo/edit/${params.action}`} style={{ marginTop: "5px" }}>
             <EditIcon
               className="action-buttons"
               color="secondary"
@@ -71,7 +63,7 @@ const Todos = ({ todos, history, location }) => {
                 color: "#F50057",
               }}
             />
-          </Button>
+          </Link>
         </Tooltip>
         <Tooltip title="Delete">
           <Button onClick={() => deleteUser(params.action)}>
@@ -142,7 +134,7 @@ const Todos = ({ todos, history, location }) => {
         id: s++,
         name: task.clientName,
         email: task.email,
-        phone: task.phone,
+        phone: "0" + task.phone,
         createdAt: task.createdAt
           ? new Date(task.createdAt).toLocaleDateString()
           : "-",
@@ -157,9 +149,9 @@ const Todos = ({ todos, history, location }) => {
   return (
     <div className="feature">
       <Table
-        header={"Tasks"}
+        header={"Todos"}
         blockUser={() => {}}
-        path="tasks"
+        path="todo"
         label1="Overdue"
         label2="UpComing"
         loading={loading}

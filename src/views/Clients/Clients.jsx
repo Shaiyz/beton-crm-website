@@ -1,22 +1,18 @@
 import React, { useEffect } from "react";
 import SearchTable from "../../components/SearchTable/SearchTable";
-import Button from "@material-ui/core/Button";
-import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { Tooltip } from "@material-ui/core";
 import { Link } from "react-router-dom";
+import { getAllClients } from "../../features/client/client.action";
+import { useDispatch, useSelector } from "react-redux";
 
-const Clients = ({ clients }) => {
-  //   let dispatch = useDispatch();
+const Clients = () => {
+  const { clients, loading } = useSelector((state) => state.clients);
+  let dispatch = useDispatch();
 
   useEffect(() => {
-    // dispatch(getAllAdminUsers());
+    dispatch(getAllClients());
   }, []);
-
-  const loading = false;
-  const deleteUser = (id) => {
-    // dispatch(deleteAdminUser(id));
-  };
 
   const renderActionButton = (params) => {
     return (
@@ -36,22 +32,6 @@ const Clients = ({ clients }) => {
               }}
             />
           </Link>
-        </Tooltip>
-        <Tooltip title="Delete">
-          <Button onClick={() => deleteUser(params.action)}>
-            <DeleteIcon
-              className="action-buttons"
-              color="secondary"
-              fontSize="medium"
-              style={{
-                padding: 2,
-                border: "1px solid #F50057",
-                borderRadius: 8,
-                backgroundColor: "white",
-                color: "#F50057",
-              }}
-            />
-          </Button>
         </Tooltip>
       </div>
     );
@@ -81,6 +61,12 @@ const Clients = ({ clients }) => {
       sortable: false,
       width: 630,
     },
+    {
+      field: "addedBy",
+      title: "Added by",
+      sortable: false,
+      width: 630,
+    },
 
     {
       field: "action",
@@ -98,8 +84,9 @@ const Clients = ({ clients }) => {
       rows.push({
         id: s++,
         clientId: client.clientId,
-        fullName: client.first_name + " " + client.last_name,
+        fullName: client.name,
         email: client.email,
+        addedBy: client.createdBy.first_name + " " + client.createdBy.last_name,
         createdAt: client.createdAt
           ? new Date(client.createdAt).toLocaleDateString()
           : "-",
@@ -107,7 +94,7 @@ const Clients = ({ clients }) => {
           ? new Date(client.updatedAt).toLocaleDateString()
           : "-",
         action: client._id,
-        phone: client.phone,
+        phone: "0" + client.phone,
       });
     });
   }
@@ -125,22 +112,4 @@ const Clients = ({ clients }) => {
   );
 };
 
-Clients.defaultProps = {
-  clients: [
-    {
-      first_name: "Shaiyz",
-      last_name: "Khan",
-      email: "shaiyz@gmail.com",
-      phone: "332553600",
-      clientId: "SK-100001",
-    },
-    {
-      first_name: "Saad",
-      last_name: "Khawar",
-      email: "saad@gmail.com",
-      phone: "332522600",
-      clientId: "SK-100002",
-    },
-  ],
-};
 export default Clients;

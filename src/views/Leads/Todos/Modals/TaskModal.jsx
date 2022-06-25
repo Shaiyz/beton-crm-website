@@ -7,11 +7,13 @@ import {
   makeStyles,
   TextareaAutosize,
 } from "@material-ui/core";
+import DateFnsUtils from "@date-io/date-fns";
+import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import Select from "react-select";
-
+import { useSelector } from "react-redux";
 import React from "react";
 import Modal from "react-awesome-modal";
-import { menu } from "./menu";
+import { getNames } from "../../../../utils";
 const useStyles = makeStyles((theme) => ({
   modalContainer: {
     width: "90%",
@@ -59,14 +61,31 @@ const useStyles = makeStyles((theme) => ({
 
 const TaskModal = (props) => {
   const classes = useStyles();
-
-  const [task, setTask] = React.useState("call");
+  const { tasks, error, loading } = useSelector((state) => state.tasks);
+  const [subMenu, setSubMenu] = React.useState(null);
+  const [task, setTask] = React.useState("");
   const [subTask, setSubTask] = React.useState("");
+  const [selectedDate, setSelectedDate] = React.useState(new Date());
   const handleChange = (e) => {
     setTask(e.value);
+    setSubMenu(
+      tasks
+        ?.filter((i) => i._id === e.value)[0]
+        .subTasks.map((subTask) => {
+          return { label: getNames(subTask.name), value: subTask._id };
+        })
+    );
   };
+
+  let menu = tasks.map((i) => {
+    return { label: getNames(i.name), value: i._id };
+  });
+
   const handleChangeSubTask = (e) => {
     setSubTask(e.value);
+  };
+  const handleDateChange = (value) => {
+    setSelectedDate(value);
   };
   return (
     <div className={classes.modalContainer}>
@@ -81,34 +100,25 @@ const TaskModal = (props) => {
         onClickAway={props.closeModal}
       >
         <Container>
-          <Grid container lg={12}>
+          <Grid container spacing={3} lg={12}>
             <Grid item lg={12} xs={12}>
               <Box mb={2} mt={2}>
                 <InputLabel className={classes.fieldLabel}>Task</InputLabel>
                 <Select
                   label="Task"
                   onChange={handleChange}
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
                   options={menu}
                 ></Select>
               </Box>
             </Grid>
             <Grid item lg={12} xs={12}>
-              <Box mb={2}>
+              <Box mb={2} mt={2}>
                 <InputLabel className={classes.fieldLabel}>Sub Task</InputLabel>
                 <Select
-                  value={
-                    menu
-                      ? menu
-                          .filter((i) => i.value === task)[0]
-                          .submenu.filter((x) => x.value === subTask)
-                      : []
-                  }
-                  options={menu.filter((i) => i.value === task)[0].submenu}
+                  options={subMenu}
                   label="Sub Task"
                   onChange={handleChangeSubTask}
-                ></Select>
+                />
               </Box>
             </Grid>
             <Box mb={2}>
@@ -116,13 +126,25 @@ const TaskModal = (props) => {
                 aria-label="minimum height"
                 minRows={5}
                 placeholder="Minimum 3 rows"
-                style={{ width: 200 }}
+                style={{ maxWidth: "300px", maxHeight: "100px" }}
               />
             </Box>
+            <Grid item lg={12} xs={12}>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <DateTimePicker
+                  label="Deadline Picker"
+                  inputVariant="outlined"
+                  value={selectedDate}
+                  onChange={handleDateChange}
+                />
+              </MuiPickersUtilsProvider>
+            </Grid>
+
             <Button
               variant="contained"
               color="secondary"
               type="submit"
+              style={{ position: "absolute", top: 300, width: "350px" }}
               fullWidth
             >
               Submit
