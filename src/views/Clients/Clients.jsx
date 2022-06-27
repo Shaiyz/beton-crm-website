@@ -86,7 +86,8 @@ const Clients = () => {
         clientId: client.clientId,
         fullName: client.name,
         email: client.email,
-        addedBy: client.createdBy.first_name + " " + client.createdBy.last_name,
+        addedBy:
+          client.createdBy?.first_name + " " + client.createdBy?.last_name,
         createdAt: client.createdAt
           ? new Date(client.createdAt).toLocaleDateString()
           : "-",
