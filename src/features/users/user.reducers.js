@@ -5,7 +5,6 @@ const initialState = {
   users: [],
   errors: false,
   user: [],
-  activeUsers: [],
 };
 const userSlice = createSlice({
   name: "userService",
@@ -27,12 +26,19 @@ const userSlice = createSlice({
       state.loading = false;
       state.user = payload;
     },
-
     getUsersListsFailure: (state) => {
       state.loading = false;
       state.hasErrors = true;
     },
     updateUserSuccess: (state) => {
+      state.loading = false;
+      state.hasErrors = true;
+    },
+    addUserSuccess: (state) => {
+      state.loading = false;
+      state.hasErrors = true;
+    },
+    addClientSuccess: (state) => {
       state.loading = false;
       state.hasErrors = true;
     },
@@ -48,4 +54,6 @@ export const {
   getUsersListsSuccess,
   getUserSuccess,
   updateUserSuccess,
+  addUserSuccess,
+  addClientSuccess,
 } = userSlice.actions;
