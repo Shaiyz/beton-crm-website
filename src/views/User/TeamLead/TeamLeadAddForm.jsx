@@ -1,5 +1,8 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { backend } from '../../../api/index'
+
 import {
     Card,
     CardHeader,
@@ -14,12 +17,16 @@ import {
     FormGroup,
     Input
 } from 'reactstrap'
+import Alert from "../../../components/Alert/Alert";
+import { addUser } from '../../../features/users/user.action';
 
 
 const TeamLeadAdd = ({ }) => {
     //body
 
-    const [successMessage, setSuccessMessage] = useState(null)
+    // const [successMessage, setSuccessMessage] = useState(null)
+    // const {alerts} =useSelector(state =>state.alert)
+    const dispatch = useDispatch()
     const [data, setData] = useState({
         first_name: '',
         last_name: '',
@@ -49,22 +56,12 @@ const TeamLeadAdd = ({ }) => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-    }, [successMessage])
+    }, [])
 
     const submit = async (event) => {
 
         event.preventDefault()
-
-        try {
-            const response = await axios.post('http://127.0.0.1:5000/user/create', data)
-            console.log(response)
-            setSuccessMessage("New Team Lead Added")
-            resetForm()
-        } catch (error) {
-            setSuccessMessage(null)
-            console.log(error)
-        }
-
+        dispatch(addUser(data))
     }
 
     function handleUserData(e) {
@@ -76,22 +73,19 @@ const TeamLeadAdd = ({ }) => {
         console.log(newdata)
     }
 
-    function handleImage(e) {
-        const newdata = { ...data }
-        newdata[e.target.id] = e.target.files[0]
-        setData(newdata)
-        console.log(newdata)
-
-        if (e.target.files[0]) {
-            const reader = new FileReader()
-            reader.addEventListener("load", () => {
-                const newdata = { ...data }
-                newdata['profilePicture'] = reader.result
-                setData(newdata)
-                console.log(newdata.profilePicture)
-            })
-            reader.readAsDataURL(e.target.files[0])
+    async function uploadFile(file) {
+        try {
+            const formData = new FormData();
+            formData.append("profilePicture", file);
+            const { data } = await backend("/fileupload", formData);
+            return data.locationArray[0].fileLocation;
+        } catch (error) {
+            console.log(
+                error.response
+            );
+            return null
         }
+
     }
     return (<>
         <Card style={{
@@ -107,21 +101,14 @@ const TeamLeadAdd = ({ }) => {
                 marginBottom: '20px',
                 fontWeight: '100px',
                 fontSize: '16px',
-                //   marginLeft: '40px',
-                //   marginRight: '50px',
             }}>
                 <CardTitle tag='h4'>Add Team Lead Employees</CardTitle>
             </CardHeader>
 
-            {successMessage && <UncontrolledAlert color='success'>
-                <div className='alert-body'>
-                    {successMessage}
-                </div>
-            </UncontrolledAlert>}
-            <CardBody style={{
-                //   marginLeft: '40px',
-                //   marginRight: '40px',
-            }}>
+            <div className="alert-container">
+                <Alert />
+            </div>
+            <CardBody>
                 <Form onSubmit={(event) => submit(event)} >
                     <Row style={{
                         border: '1px solid #2e272538',
@@ -135,7 +122,7 @@ const TeamLeadAdd = ({ }) => {
                                     type="file"
                                     name='profilePicture'
                                     id='profilePicture'
-                                    onChange={(e) => handleImage(e)}
+                                    onChange={(e) => uploadFile(e)}
                                     required
                                 >
                                 </Input>

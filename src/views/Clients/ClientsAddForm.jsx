@@ -1,5 +1,7 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+
 import {
     Card,
     CardHeader,
@@ -15,11 +17,13 @@ import {
     Input
 } from 'reactstrap'
 import { backend } from '../../api/index'
+import Alert from "../../components/Alert/Alert";
+import { addUser } from '../../features/users/user.action';
 
 const ClientAdd = ({ }) => {
     //body
-
-    const [successMessage, setSuccessMessage] = useState(null)
+    //    const [successMessage, setSuccessMessage] = useState(null)
+    const dispatch = useDispatch()
     const [data, setData] = useState({
 
         name: '',
@@ -42,21 +46,12 @@ const ClientAdd = ({ }) => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-    }, [successMessage])
+    }, [])
 
     const submit = async (event) => {
 
         event.preventDefault()
-
-        try {
-            const response = await axios.post('http://127.0.0.1:5000/client/', data)
-            console.log(response)
-            setSuccessMessage("New Client Added")
-            resetForm()
-        } catch (error) {
-            setSuccessMessage(null)
-            console.log(error)
-        }
+        dispatch(addUser(data))
 
     }
 
@@ -69,36 +64,30 @@ const ClientAdd = ({ }) => {
         console.log(newdata)
     }
 
-    async function handleImage(e) {
-        const newdata = { ...data }
-        newdata[e.target.id] = e.target.files[0]
-        setData(newdata)
-        console.log(newdata)
-
-        if (e.target.files[0]) {
-
-            let image = new FormData()
-            image = image.append('images', e.target.files)
-            try {
-                const data = await backend.post('/fileupload', { images: image })
-                console.log("Image Check", data)
-            }
-            catch (error) {
-                console.log("client error ", error)
-            }
-
-            // const reader = new FileReader()
-            // reader.addEventListener("load", () => {
-            //     const newdata = { ...data }
-            //     newdata['cnicFornt'] = reader.result
-            //     setData(newdata)
-            //     newdata['cnicBack'] = reader.result
-            //     setData(newdata)
-
-            //     console.log(newdata.cnicFornt)
-            //     console.log(newdata.cnicBack)
-            // })
-            // reader.readAsDataURL(e.target.files[0])
+    async function uploadFrontendFile(file) {
+        try {
+            const formData = new FormData();
+            formData.append("cnicFornt", file);
+            const { data } = await backend("/fileupload", formData);
+            return data.locationArray[0].fileLocation;
+        } catch (error) {
+            console.log(
+                error.response
+            );
+            return null
+        }
+    }
+    async function uploadBackEndFile(file) {
+        try {
+            const formData = new FormData();
+            formData.append("cnicBack", file);
+            const { data } = await backend("/fileupload", formData);
+            return data.locationArray[0].fileLocation;
+        } catch (error) {
+            console.log(
+                error.response
+            );
+            return null
         }
     }
     return (<>
@@ -115,17 +104,14 @@ const ClientAdd = ({ }) => {
                 marginBottom: '20px',
                 fontWeight: '100px',
                 fontSize: '16px',
-                //   marginLeft: '40px',
-                //   marginRight: '50px',
             }}>
                 <CardTitle tag='h4'>Add New Client</CardTitle>
             </CardHeader>
+            
+            <div className="alert-container">
+                <Alert />
+            </div>
 
-            {successMessage && <UncontrolledAlert color='success'>
-                <div className='alert-body'>
-                    {successMessage}
-                </div>
-            </UncontrolledAlert>}
             <CardBody>
                 <Form onSubmit={(event) => submit(event)} >
                     <Row style={{
@@ -172,7 +158,7 @@ const ClientAdd = ({ }) => {
                                     type="file"
                                     name='cnicFornt'
                                     id='cnicFornt'
-                                    onChange={(e) => handleImage(e)}
+                                    onChange={(e) => uploadFrontendFile(e)}
                                     required
                                 >
                                 </Input>
@@ -187,7 +173,7 @@ const ClientAdd = ({ }) => {
                                     type="file"
                                     name='cnicBack'
                                     id='cnicBack'
-                                    onChange={(e) => handleImage(e)}
+                                    onChange={(e) => uploadBackEndFile(e)}
                                     required
                                 >
                                 </Input>

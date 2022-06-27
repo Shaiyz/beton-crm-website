@@ -6,6 +6,7 @@ import {
   getUserSuccess,
   updateUserSuccess,
   getActiveUsers,
+  addUserSuccess
 } from "./user.reducers";
 import { setAlertMessage } from "../alert/alert.action";
 
@@ -78,6 +79,40 @@ export const updateUser = (body, id) => async (dispatch) => {
     .then((response) => {
       dispatch(updateUserSuccess(response.data.data));
       dispatch(setAlertMessage(response.data.message, "success"));
+      dispatch(getAllUsers());
+    })
+    .catch((err) => {
+      if (err.response) {
+        dispatch(setAlertMessage(err.response.data.message, "error"));
+        dispatch(getUsersListsFailure(err));
+      }
+    });
+};
+
+export const addUser = (body, id) => async (dispatch) => {
+  dispatch(getLoadingLists());
+  await backend
+    .post(`/user/create`, body)
+    .then((response) => {
+      dispatch(addUserSuccess(response.data.data));
+      dispatch(setAlertMessage(response.data.data.message, "success"));
+      dispatch(getAllUsers());
+    })
+    .catch((err) => {
+      if (err.response) {
+        dispatch(setAlertMessage(err.response.data.message, "error"));
+        dispatch(getUsersListsFailure(err));
+      }
+    });
+};
+
+export const addClient = (body, id) => async (dispatch) => {
+  dispatch(getLoadingLists());
+  await backend
+    .post(`/user/create`, body)
+    .then((response) => {
+      dispatch(addUserSuccess(response.data.data));
+      dispatch(setAlertMessage(response.data.data.message, "success"));
       dispatch(getAllUsers());
     })
     .catch((err) => {
