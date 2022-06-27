@@ -14,6 +14,7 @@ export const getAllTodoTasks = () => async (dispatch, getState) => {
   dispatch(getLoadingLists());
   try {
     const { userInfo } = getState().auth;
+
     const res = await backend.get(`/leadTask/${userInfo._id}`);
     dispatch(getTodosListsSuccess(res.data.data));
   } catch (err) {
@@ -27,7 +28,7 @@ export const getAllTodoTasks = () => async (dispatch, getState) => {
 export const addTodoTask = (body, leadId) => async (dispatch, getState) => {
   dispatch(getLoadingLists());
   try {
-    const res = await backend.post(`/leadTask/:leadId`, body);
+    const res = await backend.post(`/leadTask/62a6053617837ff5b81d6a58`, body);
     dispatch(addTodoSuccess(res.data.data));
     dispatch(setAlertMessage(res.response.data.message, "success"));
   } catch (err) {

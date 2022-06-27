@@ -18,10 +18,12 @@ const TableUsers = ({
   getAll,
   getAllInactive,
   getAllActive,
+  Tab3Func,
   value,
   setValue,
   label1,
   label2,
+  label3,
 }) => {
   const styles = useStyles();
 
@@ -72,7 +74,9 @@ const TableUsers = ({
                   <Tab
                     className={styles.tab}
                     value={0}
-                    label={header=="Tasks"?`Current ${header}`:`All ${header}`}
+                    label={
+                      header == "Tasks" ? `Current ${header}` : `All ${header}`
+                    }
                     onClick={() => getAll()}
                   />
                   <Tab
@@ -87,6 +91,14 @@ const TableUsers = ({
                     label={label2}
                     onClick={() => getAllInactive()}
                   />
+                  {label3 && (
+                    <Tab
+                      className={styles.tab}
+                      value={3}
+                      label={label3}
+                      onClick={() => Tab3Func()}
+                    />
+                  )}
                 </Tabs>
               }
               icons={icons}

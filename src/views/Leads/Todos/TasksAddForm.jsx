@@ -15,49 +15,35 @@ import {
 } from "reactstrap";
 import { useSelector } from "react-redux";
 import { getNames } from "../../../utils";
-import { Accordion, TextareaAutosize } from "@material-ui/core";
 import DateFnsUtils from "@date-io/date-fns";
 import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import { getAllTodoTasks } from "../../../features/todos/todos.action";
+import { addTodoTask } from "../../../features/todos/todos.action";
 import { useDispatch } from "react-redux";
 
-const LeadsAdd = ({}) => {
-  //body
-
+const TodoTaskAddForm = () => {
   const [successMessage, setSuccessMessage] = useState(null);
-  const [data, setData] = useState({
-    fname: "",
-    lname: "",
-    email: "",
-    assign_to: "",
-    client_name: "",
-    intrested: "",
-  });
+  const [data, setData] = useState({ comment: "" });
   function resetForm() {
-    setData({
-      fname: "",
-      lname: "",
-      email: "",
-      assign_to: "",
-      client_name: "",
-      intrested: "",
-    });
+    setData({ comment: "" });
   }
   const dispatch = useDispatch();
   const { tasks, error, loading } = useSelector((state) => state.tasks);
+  const { userId } = useSelector((state) => state.auth);
   const [subMenu, setSubMenu] = React.useState(null);
   const [task, setTask] = React.useState("");
   const [subTask, setSubTask] = React.useState("");
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const handleChange = (e) => {
     setTask(e.target.value);
-    setSubMenu(
-      tasks
+    if (e.target.value != "") {
+      const subtasks = tasks
         ?.filter((i) => i._id === e.target.value)[0]
         .subTasks.map((subTask) => {
           return { label: getNames(subTask.name), value: subTask._id };
-        })
-    );
+        });
+      setSubMenu(subtasks);
+      setSubTask(subtasks[0].value);
+    }
   };
 
   let menu = tasks?.map((i) => {
@@ -65,7 +51,7 @@ const LeadsAdd = ({}) => {
   });
 
   const handleChangeSubTask = (e) => {
-    setSubTask(e.value);
+    setSubTask(e.target.value);
   };
   const handleDateChange = (value) => {
     setSelectedDate(value);
@@ -77,21 +63,28 @@ const LeadsAdd = ({}) => {
 
   const submit = async (event) => {
     event.preventDefault();
-
+    const { ...rest } = data;
+    debugger;
     try {
-      setSuccessMessage("New Lead Added");
+      dispatch(
+        addTodoTask({
+          Deadline: selectedDate,
+          subtask: subTask,
+          task: task,
+          createdBy: userId,
+          ...rest,
+        })
+      );
       resetForm();
     } catch (error) {
       setSuccessMessage(null);
-      console.log(error);
     }
   };
 
-  function handleUserData(e) {
+  function handleTaskData(e) {
     const newdata = { ...data };
-    newdata[e.target.id] = e.target.value;
+    newdata[e.target.name] = e.target.value;
     setData(newdata);
-    dispatch(getAllTodoTasks());
   }
 
   return (
@@ -147,7 +140,7 @@ const LeadsAdd = ({}) => {
                 <FormGroup>
                   <Label for="clientNameVertical">Sub Task</Label>
                   <select required onChange={handleChangeSubTask}>
-                    <option>--- Please Select Option ---</option>
+                    {/* <option>--- Please Select Option ---</option> */}
                     {subMenu?.map((i, ind) => (
                       <option key={ind} value={i.value}>
                         {i.label}
@@ -174,12 +167,11 @@ const LeadsAdd = ({}) => {
                   <Label for="intrestedVertical">Comment</Label>
                   <Input
                     type="textarea"
-                    name="clientId"
-                    id="clientId"
+                    name="comment"
                     rows={5}
-                    // value={data.clientId}
                     required
-                    onChange={(e) => handleUserData(e)}
+                    id="comment"
+                    onChange={(e) => handleTaskData(e)}
                     placeholder="Client Id"
                   />
                 </FormGroup>
@@ -208,4 +200,4 @@ const LeadsAdd = ({}) => {
     </>
   );
 };
-export default LeadsAdd;
+export default TodoTaskAddForm;

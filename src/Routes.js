@@ -7,7 +7,6 @@ import React, { useEffect } from "react";
 import Navbar from "./components/Navbar/Navbar";
 import TeamLeadForm from "./views/User/TeamLead/TeamLeadForm";
 import TeamLeadAdd from "./views/User/TeamLead/TeamLeadAddForm";
-import TeamLeadEdit from "./views/User/TeamLead/TeamLeadEditForm";
 import DigitalMarketerAdd from "./views/User/DigitalMarketer/DigitalMarketerAddForm";
 import DigitalMarketerEdit from "./views/User/DigitalMarketer/DigitalMarketerEditForm";
 import SalesRepAdd from "./views/User/SalesRep/SalesRepAddForm";
