@@ -5,12 +5,8 @@ import {
   getUsersListsSuccess,
   getUserSuccess,
   updateUserSuccess,
-<<<<<<< HEAD
-  // getActiveUsers,
-=======
   getActiveUsers,
   addUserSuccess
->>>>>>> origin/NotificationResolve
 } from "./user.reducers";
 import { setAlertMessage } from "../alert/alert.action";
 
