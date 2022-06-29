@@ -1,7 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-
 import {
     Card,
     CardHeader,
@@ -18,14 +17,14 @@ import {
 } from 'reactstrap'
 import { backend } from '../../api/index'
 import Alert from "../../components/Alert/Alert";
-import { addUser } from '../../features/users/user.action';
 
 const ClientAdd = ({ }) => {
     //body
     //    const [successMessage, setSuccessMessage] = useState(null)
+    const { userInfo } = useSelector((state) => state.auth);
+
     const dispatch = useDispatch()
     const [data, setData] = useState({
-
         name: '',
         email: '',
         phone: '',
@@ -49,14 +48,14 @@ const ClientAdd = ({ }) => {
     }, [])
 
     const submit = async (event) => {
-
         event.preventDefault()
-        dispatch(addUser(data))
-
+        const clientData = { addedBy: userInfo._id, ...data }
+        dispatch(addUser(clientData))
     }
 
 
     function handleUserData(e) {
+        console.log(e.target.value)
         const newdata = { ...data }
         console.log(newdata)
         newdata[e.target.id] = e.target.value
@@ -64,29 +63,20 @@ const ClientAdd = ({ }) => {
         console.log(newdata)
     }
 
-    async function uploadFrontendFile(file) {
+    async function uploadFile(file, id) {
         try {
-            const formData = new FormData();
-            formData.append("cnicFornt", file);
-            const { data } = await backend("/fileupload", formData);
-            return data.locationArray[0].fileLocation;
+            const media = new FormData();
+            media.append("images", file);
+            const { data } = await backend("/fileupload", media, {
+                headers: {
+                    "content-type": `multipart/form-data`,
+                },
+            });
+            const newdata = { ...data }
+            newdata[id] = data.images[0];
+            setData(newdata)
         } catch (error) {
-            console.log(
-                error.response
-            );
-            return null
-        }
-    }
-    async function uploadBackEndFile(file) {
-        try {
-            const formData = new FormData();
-            formData.append("cnicBack", file);
-            const { data } = await backend("/fileupload", formData);
-            return data.locationArray[0].fileLocation;
-        } catch (error) {
-            console.log(
-                error.response
-            );
+            console.log(error.response);
             return null
         }
     }
@@ -107,7 +97,7 @@ const ClientAdd = ({ }) => {
             }}>
                 <CardTitle tag='h4'>Add New Client</CardTitle>
             </CardHeader>
-            
+
             <div className="alert-container">
                 <Alert />
             </div>
@@ -158,7 +148,7 @@ const ClientAdd = ({ }) => {
                                     type="file"
                                     name='cnicFornt'
                                     id='cnicFornt'
-                                    onChange={(e) => uploadFrontendFile(e)}
+                                    onChange={(e) => uploadFile(e.target.files[0], 'cnicFornt')}
                                     required
                                 >
                                 </Input>
@@ -173,7 +163,7 @@ const ClientAdd = ({ }) => {
                                     type="file"
                                     name='cnicBack'
                                     id='cnicBack'
-                                    onChange={(e) => uploadBackEndFile(e)}
+                                    onChange={(e) => uploadFile(e.target.files[0], 'cnicBack')}
                                     required
                                 >
                                 </Input>

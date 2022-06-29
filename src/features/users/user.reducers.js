@@ -42,6 +42,34 @@ const userSlice = createSlice({
       state.loading = false;
       state.hasErrors = true;
     },
+    getClientsListsSuccess: (state, { payload }) => {
+      state.loading = false;
+      state.user = payload;
+    },
+    getClientsListsFailure: (state) => {
+      state.loading = false;
+      state.hasErrors = true;
+    },
+    changePasswordSuccess: (state, { payload }) => {
+      state.loading = false;
+      state.user = payload;
+    },
+    getchangePasswordFailure: (state) => {
+      state.loading = false;
+      state.hasErrors = true;
+    },
+    addLeadSuccess: (state, { payload }) => {
+      state.loading = false;
+      state.user = payload;
+    },
+    getLeadListsSuccess: (state, { payload }) => {
+      state.loading = false;
+      state.user = payload;
+    },
+    getLeadListsFailure: (state) => {
+      state.loading = false;
+      state.hasErrors = true;
+    },
   },
 });
 
@@ -56,4 +84,11 @@ export const {
   updateUserSuccess,
   addUserSuccess,
   addClientSuccess,
+  getClientsListsSuccess,
+  getClientsListsFailure,
+  changePasswordSuccess,
+  getchangePasswordFailure,
+  addLeadSuccess,
+  getLeadListsSuccess,
+  getLeadListsFailure,
 } = userSlice.actions;

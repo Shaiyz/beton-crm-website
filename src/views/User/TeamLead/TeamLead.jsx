@@ -23,7 +23,7 @@ const TeamLead = ({}) => {
   const renderEditButton = (params) => {
     return (
       <Tooltip title="Edit Lead">
-        <Link to={`/admin/edit/${params.edit}`}>
+        <Link to={`/teamLead/edit/${params.edit}`}>
           <EditIcon
             className="action-buttons"
             color="secondary"

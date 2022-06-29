@@ -65,6 +65,10 @@ const leadSlice = createSlice({
       state.saved = true;
       state.addLoader = false;
     },
+    updateLeadSuccess: (state) => {
+      state.loading = false;
+      state.hasErrors = true;
+    },
   },
 });
 
@@ -76,4 +80,5 @@ export const {
   getLeadListsSuccess,
   getLeadListsFailure,
   addLeadSuccess,
+  updateLeadSuccess,
 } = leadSlice.actions;

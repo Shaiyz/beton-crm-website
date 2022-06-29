@@ -1,34 +1,35 @@
 import React, { useEffect, useState } from "react";
 import Form from "../../../components/Form/Form";
 import {
-  addAdminUser,
-  editAdminUser,
-} from "../../../features/admin/admin.action";
+  getUser, updateUser
+} from "../../../features/users/user.action";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { setAlertMessage } from "../../../features/alert/alert.action";
 import { useParams } from "react-router-dom";
-const LeadForm = ({}) => {
+const LeadForm = ({ }) => {
   let dispatch = useDispatch();
   const { id } = useParams();
-  const { saved, admins, loading } = useSelector((state) => state.admin);
+  const { user, loading } = useSelector((state) => state.users);
   const [inputValue, setInputValue] = useState({ email: "", password: "" });
 
   useEffect(() => {
     if (id) {
-      const adminToEdit = admins.filter((admin) => admin._id === id);
-      setInputValue({
-        ...inputValue,
-        email: adminToEdit[0].email,
-        first_name: adminToEdit[0].first_name,
-        last_name: adminToEdit[0].last_name,
-      });
+      dispatch(getUser(id))
+      console.log(user)
+      // const adminToEdit = admins.filter((admin) => admin._id === id);
+      // setInputValue({
+      //   ...inputValue,
+      //   email: adminToEdit[0].email,
+      //   first_name: adminToEdit[0].first_name,
+      //   last_name: adminToEdit[0].last_name,
+      // });
     }
   }, []);
 
-  if (saved == true) {
-    return <Redirect to="/teamlead" />;
-  }
+  // if (saved == true) {
+  // return <Redirect to="/teamlead" />;
+  // }
   let regEmail =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -50,26 +51,26 @@ const LeadForm = ({}) => {
       return;
     }
 
-    if (id) {
-      dispatch(
-        editAdminUser(
-          {
-            email: inputValue.email,
-            first_name: inputValue.first_name,
-            last_name: inputValue.last_name,
-          },
-          id
-        )
-      );
-    } else {
-      dispatch(
-        addAdminUser({
-          email: inputValue.email,
-          first_name: inputValue.first_name,
-          last_name: inputValue.last_name,
-        })
-      );
-    }
+    // if (id) {
+    //   dispatch(
+    //     editAdminUser(
+    //       {
+    //         email: inputValue.email,
+    //         first_name: inputValue.first_name,
+    //         last_name: inputValue.last_name,
+    //       },
+    //       id
+    //     )
+    //   );
+    // } else {
+    //   dispatch(
+    //     addAdminUser({
+    //       email: inputValue.email,
+    //       first_name: inputValue.first_name,
+    //       last_name: inputValue.last_name,
+    //     })
+    //   );
+    // }
   };
   const inputFields = [
     {
