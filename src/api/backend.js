@@ -5,6 +5,7 @@ const backend = axios.create({
     process.env.NODE_ENV === "production"
       ? process.env.REACT_APP_BACKEND
       : "http://localhost:5000",
+  // "http://44.203.240.206:5000/",
 });
 
 backend.interceptors.request.use(

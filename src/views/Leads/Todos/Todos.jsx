@@ -4,61 +4,67 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { Tooltip } from "@material-ui/core";
 import "../../User/TeamLead/Admin.css";
-import { Link } from "react-router-dom";
 import Table from "../../../components/TableUsers/Table";
 import { Modal } from "./Modals";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { getAllTodoTasks } from "../../../features/todos/todos.action";
+import { useDispatch } from "react-redux";
 
-const Todos = ({ todos, history, location }) => {
-  //   let dispatch = useDispatch();
+const Todos = ({ history, location }) => {
   const [value, setValue] = React.useState(0);
   const [editDialog, setEditDialog] = React.useState(false);
-
-  useEffect(() => {
-    // dispatch(getAllAdminUsers());
-  }, []);
-
+  const { todos, error, loading } = useSelector((state) => state.todos);
+  const [todosList, setTodosList] = useSelector((state) => state.todosList);
+  const dispatch = useDispatch();
   useEffect(() => {
     if (location?.hash == "#overdue") {
-      // dispatch(getUsersByStatus("todos", true));
+      //  //dispatch(getUsersByStatus("todos", true));
       setValue(1);
     } else if (location?.hash == "#current") {
-      // dispatch(getUsersByStatus("salaesRep", false));
+      //  // dispatch(getUsersByStatus("salaesRep", false));
+      getCurrent();
       setValue(2);
     } else if (location?.hash == "#upcoming") {
-      // dispatch(getUsersByRole("todos"));
+      //  // dispatch(getUsersByRole("todos"));
+      setTodosList()
       setValue(0);
+    } else if (location?.hash == "#all") {
+      dispatch(getAllTodoTasks());
+      setTodosList(todos);
+
+      setValue(3);
     }
   }, []);
 
   const getCurrent = () => {
-    // dispatch(getUsersByRole("todos"));
-    history.push(`/todos#all`);
+    history.push(`/todos#current`);
   };
 
   const getOverDue = () => {
     // dispatch(getUsersByStatus("todos", true));
-    history.push(`/todos#closedlost`);
+    history.push(`/todos#overdue`);
   };
 
   const getUpcomming = () => {
     // dispatch(getUsersByStatus("todos", false));
-    history.push(`/todos#closedwon`);
+    history.push(`/todos#upcomming`);
   };
 
-  const loading = false;
+  const getAll = () => {
+    dispatch(getAllTodoTasks());
+    history.push(`/todos#all`);
+  };
   const deleteUser = (id) => {
     // dispatch(deleteAdminUser(id));
   };
-
+  if (todos) {
+  }
   const renderActionButton = (params) => {
     return (
       <div style={{ display: "flex", alignItems: "center" }}>
         <Tooltip title="Edit Task">
-          <Button
-            onClick={() => {
-              setEditDialog(true);
-            }}
-          >
+          <Link to={`/todo/edit/${params.action}`} style={{ marginTop: "5px" }}>
             <EditIcon
               className="action-buttons"
               color="secondary"
@@ -71,7 +77,7 @@ const Todos = ({ todos, history, location }) => {
                 color: "#F50057",
               }}
             />
-          </Button>
+          </Link>
         </Tooltip>
         <Tooltip title="Delete">
           <Button onClick={() => deleteUser(params.action)}>
@@ -142,7 +148,7 @@ const Todos = ({ todos, history, location }) => {
         id: s++,
         name: task.clientName,
         email: task.email,
-        phone: task.phone,
+        phone: "0" + task.phone,
         createdAt: task.createdAt
           ? new Date(task.createdAt).toLocaleDateString()
           : "-",
@@ -157,42 +163,25 @@ const Todos = ({ todos, history, location }) => {
   return (
     <div className="feature">
       <Table
-        header={"Tasks"}
+        header={"Todos"}
         blockUser={() => {}}
-        path="tasks"
+        path="todo"
         label1="Overdue"
         label2="UpComing"
+        label3="Current"
         loading={loading}
         columns={columns}
         rows={rows}
         value={value}
         setValue={setValue}
-        getAll={getCurrent}
+        getAll={getAll}
         getAllInactive={getOverDue}
         getAllActive={getUpcomming}
+        Tab3Func={getCurrent}
       />
       <Modal closeModal={() => setEditDialog(false)} visible={editDialog} />
     </div>
   );
-};
-
-Todos.defaultProps = {
-  todos: [
-    {
-      clientName: "Shaiyz",
-      email: "shaiyz@gmail.com",
-      phone: "3325326599",
-      task: "Call",
-      subtask: "Whatsapp Call",
-    },
-    {
-      clientName: "Saad",
-      email: "saad@gmail.com",
-      phone: "3325326599",
-      task: "Meeting",
-      subtask: "Site office",
-    },
-  ],
 };
 
 export default Todos;

@@ -3,11 +3,10 @@ import { routes } from "./routing/SimpleRoute";
 import { useSelector } from "react-redux";
 import Sidebar from "./components/Sidebar/Sidebar";
 import { DigitalMarketer, SalesRep, TeamLead } from "./views/User";
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "./components/Navbar/Navbar";
 import TeamLeadForm from "./views/User/TeamLead/TeamLeadForm";
 import TeamLeadAdd from "./views/User/TeamLead/TeamLeadAddForm";
-import TeamLeadEdit from "./views/User/TeamLead/TeamLeadEditForm";
 import DigitalMarketerAdd from "./views/User/DigitalMarketer/DigitalMarketerAddForm";
 import DigitalMarketerEdit from "./views/User/DigitalMarketer/DigitalMarketerEditForm";
 import SalesRepAdd from "./views/User/SalesRep/SalesRepAddForm";
@@ -24,12 +23,24 @@ import ProjectsAdd from "./views/Projects/ProjectAddForm";
 import ProjectsEdit from "./views/Projects/ProjectEditForm";
 import UnitAdd from "./views/Projects/Unit/UnitAddForm";
 import UnitEdit from "./views/Projects/Unit/UnitEditForm";
-import { Todos } from "./views/Leads";
+import { TasksAddForm, Todos } from "./views/Leads";
+import { getAllUsers } from "./features/users/user.action";
+import { useDispatch } from "react-redux";
+import { Profile } from "./views/User/Profile";
+import { ChangePassword } from "./views/Auth/changepassword";
+import Project from "./views/Projects/Project";
+import Units from "./views/Projects/Unit/Unit";
+import { getAllTasks } from "./features/tasks/tasks.action";
+import TeamLeadEdit from "./views/User/TeamLead/TeamLeadEditForm";
 
 function Routes() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const { authenticated } = useSelector((state) => state.auth);
-  //   const authenticated = true;
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getAllUsers());
+    dispatch(getAllTasks());
+  }, []);
 
   const protectedRoutes = () => {
     return (
@@ -56,45 +67,66 @@ function Routes() {
                 path="/digitalmarketer"
                 component={DigitalMarketer}
               />
-              <Route exact path="/digitalmarketer/add" component={DigitalMarketerAdd} />
-              <Route exact path="/digitalmarketer/edit/:id" component={DigitalMarketerEdit} />
-
-              {/* Sales Rep */}
+              {/* <Route exact path="/teamlead" component={TeamLead} />
               <Route exact path="/salesrep" component={SalesRep} />
-              <Route exact path="/salesrep/add" component={SalesRepAdd} />
-              <Route exact path="/salesrep/edit/:id" component={SalesRepEdit} />
+              <Route exact path="/teamlead/edit/:id" component={TeamLeadForm} /> */}
+
+              <Route exact path="/user/:id" component={Profile} />
+              <Route exact path="/profile" component={Profile} />
+              
+              {/* 
+              <Route exact path="/lead/add" component={LeadForm} />
+              <Route exact path="/lead/edit/:id" component={LeadForm} /> */}
+
+              <Route
+                exact
+                path="/digitalMarketer/add"
+                component={DigitalMarketerAdd}
+              />
+              <Route
+                exact
+                path="/digitalMarketer/edit/:id"
+                component={DigitalMarketerEdit}
+              />
+
+              <Route exact path="/salesrep" component={SalesRep} />
+              <Route exact path="/salesRep/add" component={SalesRepAdd} />
+              <Route exact path="/salesRep/edit/:id" component={SalesRepEdit} />
 
               {/* Team Lead */}
               <Route exact path="/teamlead" component={TeamLead} />
-              <Route exact path="/teamlead/edit/:id" component={TeamLeadEdit} />
-              <Route exact path="/teamlead/add" component={TeamLeadAdd} />
-  
-              {/* Clients */}
+              <Route exact path="/teamLead/edit/:id" component={TeamLeadEdit} />
+              <Route exact path="/teamLead/add" component={TeamLeadAdd} />
+
               <Route exact path="/clients" component={Clients} />
               <Route exact path="/clients/add" component={ClientsAdd} />
               <Route exact path="/client/edit/:id" component={ClientEdit} />
 
               {/* Reports */}
               <Route exact path="/reports" component={Report} />
-              
+
               {/* Leads */}
               <Route exact path="/leads" component={Leads} />
               <Route exact path="/leads/add" component={LeadsAdd} />
               <Route exact path="/leads/edit/:id" component={LeadsEdit} />
 
               {/* Projects & Units */}
-              {/* <Route exact path="/projects" component={Proejcts} /> */}
-              <Route exact path="/projects/add" component={ProjectsAdd} />
-              <Route exact path="/projects/edit/:id" component={ProjectsEdit} />
+              <Route exact path="/projects" component={Project} />
+              <Route exact path="/units" component={Units} />
+
+              <Route exact path="/project/add" component={ProjectsAdd} />
+              <Route exact path="/project/edit/:id" component={ProjectsEdit} />
               <Route exact path="/unit/add" component={UnitAdd} />
               <Route exact path="/unit/edit/:id" component={UnitEdit} />
 
               {/* Todos */}
               <Route exact path="/todos" component={Todos} />
-  
+              <Route exact path="/todo/add" component={TasksAddForm} />
+              <Route exact path="/todos/edit" component={Todos} />
+
               {/* <Route exact path="/user/add" component={UserForm} />
-              <Route exact path="/user/edit/:id" component={UserForm} />
-              <Route exact path="/reports/:id" component={Report} /> */}
+              <Route exact path="/user/edit/:id" component={UserForm} /> */}
+              <Route exact path="/reports/:id" component={Report} />
             </Switch>
           </div>
         </div>

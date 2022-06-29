@@ -5,7 +5,6 @@ import {
   getAdminsListsSuccess,
   addAdminSuccess,
   deleteAdminSuccess,
-  addSuperAdminSuccess,
   getSuperAdminsListsSuccess,
   updateUserSuccess,
 } from "./admin.reducer";
@@ -52,20 +51,6 @@ export const addAdminUser = (body) => async (dispatch, getState) => {
   }
 };
 
-export const addSuperAdminUser = (body) => async (dispatch, getState) => {
-  dispatch(getLoadingLists());
-  try {
-    const res = await backend.post(`/user/create/superadmin`, body);
-    dispatch(addSuperAdminSuccess(res.data.data));
-    dispatch(setAlertMessage(res.response.data.message, "success"));
-  } catch (err) {
-    if (err.response) {
-      dispatch(setAlertMessage(err.response.data.message, "error"));
-      dispatch(getAdminsListsFailure(err));
-    }
-  }
-};
-
 export const editAdminUser = (body, id) => async (dispatch) => {
   dispatch(getLoadingLists());
   await backend
@@ -74,23 +59,6 @@ export const editAdminUser = (body, id) => async (dispatch) => {
       dispatch(updateUserSuccess(response.data.data));
       dispatch(setAlertMessage(response.data.message, "success"));
       dispatch(getAllAdminUsers());
-    })
-    .catch((err) => {
-      if (err.response) {
-        dispatch(setAlertMessage(err.response.data.message, "error"));
-        dispatch(getAdminsListsFailure(err));
-      }
-    });
-};
-
-export const editSuperAdminUser = (body, id) => async (dispatch) => {
-  dispatch(getLoadingLists());
-  await backend
-    .put(`/user/${id}`, body)
-    .then((response) => {
-      dispatch(updateUserSuccess(response.data.data));
-      dispatch(setAlertMessage(response.data.message, "success"));
-      dispatch(getAllSuperAdminUsers());
     })
     .catch((err) => {
       if (err.response) {

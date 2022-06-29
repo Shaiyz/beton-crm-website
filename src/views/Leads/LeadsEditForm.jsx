@@ -1,5 +1,11 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { backend } from '../../../api/index'
+import { useParams } from "react-router-dom";
+import { setAlertMessage } from "../../../features/alert/alert.action";
+import { getUser, updateUser } from "../../../features/users/user.action";
+
 import {
     Card,
     CardHeader,
@@ -14,30 +20,52 @@ import {
     FormGroup,
     Input
 } from 'reactstrap'
+import Alert from "../../../components/Alert/Alert";
+import { getAllLeads, updateLead } from '../../features/leads/leads.action';
 
 
 const LeadsEdit = ({ }) => {
     //body
 
-    const [successMessage, setSuccessMessage] = useState(null)
+    const dispatch = useDispatch()
+
+    const { id } = useParams()
+    const { user, users, loading } = useSelector((state) => state.users)
+    let regEmail =
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
     const [data, setData] = useState({
-        fname: "",
-        lname: "",
-        email: "",
-        assign_to:"",
+        assign_to: "",
         client_name: "",
-        intrested:""
+        intrested: "",
     })
     function resetForm() {
         setData({
-            fname: "",
-            lname: "",
-            email: "",
-            assign_to:"",
+            assign_to: "",
             client_name: "",
-            intrested:""
+            intrested: "",
         })
     }
+
+    const fetchCurrentUser = async () => {
+        try {
+            // dispatch(getUser(id))
+            const user = users.filter(user => user._id === id)
+
+            setData({
+                assign_to: user[0]?.assign_to,
+                client_name: user[0]?.client_name,
+                intrested: user[0]?.intrested,
+            })
+
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    useEffect(() => {
+        fetchCurrentUser()
+    }, [])
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -45,22 +73,31 @@ const LeadsEdit = ({ }) => {
 
     const submit = async (event) => {
 
-        // /role/{role}/user/{user}
-
         event.preventDefault()
-
-        try {
-
-            setSuccessMessage("Update Lead Successfully")
-            resetForm()
-        } catch (error) {
-            setSuccessMessage(null)
-            console.log(error)
+        if (!data.email || !data.assign_to || !data.client_name || !data.intrested) {
+            dispatch(setAlertMessage("Please fill properly.", "error"));
+            return;
+        }
+        if (data.email && !regEmail.test(data.email)) {
+            dispatch(setAlertMessage("Invalid Email", "error"));
+            return;
         }
 
+        dispatch(
+            updateLead(
+                {
+                    assign_to: data.assign_to,
+                    client_name: data.client_name,
+                    intrested: data.intrested,
+
+                },
+                id
+            )
+        );
     }
 
     function handleUserData(e) {
+        console.log(e.target.value)
         const newdata = { ...data }
         console.log(newdata)
         newdata[e.target.id] = e.target.value
@@ -68,99 +105,89 @@ const LeadsEdit = ({ }) => {
         console.log(newdata)
     }
 
-    function handleImage(e) {
-        const newdata = { ...data }
-        newdata[e.target.id] = e.target.files[0]
-        setData(newdata)
-        console.log(newdata)
-
-        if (e.target.files[0]) {
-            const reader = new FileReader()
-            reader.addEventListener("load", () => {
-                const newdata = { ...data }
-                newdata['image'] = reader.result
-                setData(newdata)
-                console.log(newdata.image)
-            })
-            reader.readAsDataURL(e.target.files[0])
+    async function uploadFile(file, id) {
+        try {
+            const media = new FormData();
+            media.append("images", file);
+            const { data } = await backend("/fileupload", media, {
+                headers: {
+                    "content-type": `multipart/form-data`,
+                },
+            });
+            const newdata = { ...data }
+            newdata[id] = data.images[0];
+            setData(newdata)
+        } catch (error) {
+            return ''
         }
     }
     return (<>
-           <Card style={{
-                  marginLeft: '20px',
-                  marginRight: '20px',
-                  }}>
+        <Card style={{
+            marginLeft: '20px',
+            marginRight: '20px',
+        }}>
             <CardHeader style={{
-                  backgroundColor: "#1F1D61",
-                  borderRadius: '10px',
-                  padding: '20px',
-                  color: "white",
-                  marginTop: '40px',
-                  marginBottom: '20px',
-                  fontWeight: '100px',
-                  fontSize: '16px',
-                //   marginLeft: '40px',
-                //   marginRight: '50px',
+                backgroundColor: "#1F1D61",
+                borderRadius: '10px',
+                padding: '20px',
+                color: "white",
+                marginTop: '40px',
+                marginBottom: '20px',
+                fontWeight: '100px',
+                fontSize: '16px',
             }}>
-             <CardTitle tag='h4'>Edit Lead</CardTitle>
+                <CardTitle tag='h4'>Edit Lead</CardTitle>
             </CardHeader>
 
-            {successMessage && <UncontrolledAlert color='success'>
-                <div className='alert-body'>
-                    {successMessage}
-                </div>
-            </UncontrolledAlert>}
+            <div className="alert-container">
+                <Alert />
+            </div>
+
             <CardBody>
                 <Form onSubmit={(event) => submit(event)} >
-                 <Row   style={{
+                    <Row style={{
                         border: '1px solid #2e272538',
-                        padding: '1px 20px 20px 20px'}}>
+                        padding: '1px 20px 20px 20px'
+                    }}>
                         <Col sm='12'>
                             <FormGroup>
                                 <Label for='assignToVertical'> Assign To Employee </Label>
                                 <select value={data.assign_to} required onChange={(e) => handleUserData(e)}>
-                                <option>--- Please Select Option ---</option>
-                                <option value="Employee 1">Employee Name 1</option>
-                                <option value="Employee 2">Employee Name 2</option>
-                                <option value="Employee 3">Employee Name 3</option>
+                                    <option>--- Please Select Option ---</option>
+                                    <option value="Employee 1">Employee Name 1</option>
+                                    <option value="Employee 2">Employee Name 2</option>
+                                    <option value="Employee 3">Employee Name 3</option>
                                 </select>
-                                {/* <Input type='text' name='assign_to' id='assign_to' value={data.assign_to} onChange={(e) => handleUserData(e)} placeholder='Assign To'
-                                /> */}
                             </FormGroup>
                         </Col>
                         <Col sm='12'>
                             <FormGroup>
                                 <Label for='clientNameVertical'>Client Name </Label>
-                                <select value={data.assign_to} required onChange={(e) => handleUserData(e)}>
-                                <option>--- Please Select Option ---</option>
-                                <option value="Client 1">CLient Name 1</option>
-                                <option value="Client 2">CLient Name 2</option>
-                                <option value="Client 3">CLient Name 3</option>
+                                <select value={data.client_name} required onChange={(e) => handleUserData(e)}>
+                                    <option>--- Please Select Option ---</option>
+                                    <option value="Client 1">CLient Name 1</option>
+                                    <option value="Client 2">CLient Name 2</option>
+                                    <option value="Client 3">CLient Name 3</option>
                                 </select>
-                                {/* <Input type='text' name='client_name' id='client_name' value={data.client_name} onChange={(e) => handleUserData(e)} placeholder='Enter Client Name'
-                                /> */}
                             </FormGroup>
                         </Col>
                         <Col sm='12'>
                             <FormGroup>
                                 <Label for='intrestedVertical'>Client Intersted Project </Label>
-                                <select value={data.type} required onChange={(e) => handleUserData(e)}>
-                                <option>--- Please Select Option ---</option>
-                                <option value="office">Office</option>
-                                <option value="appartment">Appartment</option>
-                                <option value="plot">Plot</option>
-                                <option value="suite">Suite</option>
-                                <option value="penthouse">Penthouse</option>
+                                <select value={data.intrested} required onChange={(e) => handleUserData(e)}>
+                                    <option>--- Please Select Option ---</option>
+                                    <option value="office">Office</option>
+                                    <option value="appartment">Appartment</option>
+                                    <option value="plot">Plot</option>
+                                    <option value="suite">Suite</option>
+                                    <option value="penthouse">Penthouse</option>
                                 </select>
-
-                                {/* <Input type='number' name='mobile_no' id='mobile_no' value={data.mobile_no} onChange={(e) => handleUserData(e)} placeholder='Enter Mobile Number'
-                                /> */}
                             </FormGroup>
                         </Col>
 
                         <Col sm='12'>
-                            <FormGroup className='d-flex mb-0' style={{marginTop: '10px'}}>
-                                <Button className='form_submit_btn' type='submit' style={{marginInline: '10px'}}>
+                            <FormGroup className='d-flex mb-0' style={{ marginTop: '10px' }}>
+                                <Button className='form_submit_btn' type='submit' style={{ marginInline: '10px' }}>
                                     Submit
                                 </Button>
                                 <Button className='form_reset_btn' onClick={resetForm}>

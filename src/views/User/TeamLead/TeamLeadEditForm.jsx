@@ -1,5 +1,13 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { backend } from '../../../api/index'
+import { useParams } from "react-router-dom";
+import { setAlertMessage } from "../../../features/alert/alert.action";
+// import Form from "../../../components/Form/Form";
+import { getUser, updateUser } from "../../../features/users/user.action";
+import { useDispatch, useSelector } from "react-redux";
+import { Redirect } from "react-router-dom";
+
 import {
     Card,
     CardHeader,
@@ -14,61 +22,87 @@ import {
     FormGroup,
     Input
 } from 'reactstrap'
-
+import Alert from "../../../components/Alert/Alert";
 
 const TeamLeadEdit = ({ }) => {
     //body
 
-    const [successMessage, setSuccessMessage] = useState(null)
+    //    const [successMessage, setSuccessMessage] = useState(null)
+    const dispatch = useDispatch()
+
+    const { id } = useParams()
+    const { user, users, loading } = useSelector((state) => state.users)
+    let regEmail =
+        /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
     const [data, setData] = useState({
-        fname: "",
-        lname: "",
+        first_name: "",
+        last_name: "",
         email: "",
-        age: "",
-        password: "",
-        isActive: 1,
-        detail: "",
-        role_id: "",
-        mobile_no: "",
-        gender: ""
+        age: ""
     })
     function resetForm() {
         setData({
-            fname: "",
-            lname: "",
+            first_name: "",
+            last_name: "",
             email: "",
-            age: "",
-            password: "",
-            isActive: "",
-            detail: "",
-            role_id: "",
-            mobile_no: "",
-            gender: ""
+            age: ""
+        })
+    }
+
+    const fetchCurrentUser = async () => {
+        try {
+
+            // dispatch(getUser(id))
+            const user = users.filter(user => user._id === id)
+
+            setData({
+                first_name: user[0]?.first_name,
+                last_name: user[0]?.last_name,
+                email: user[0]?.email,
+                age: user[0]?.age,
             })
+
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     useEffect(() => {
+        fetchCurrentUser()
+    }, [])
+
+    useEffect(() => {
         window.scrollTo(0, 0)
-    }, [successMessage])
+    }, [])
 
     const submit = async (event) => {
 
-        // /role/{role}/user/{user}
-
         event.preventDefault()
-
-        try {
-
-            setSuccessMessage("Update Team Lead Successfully")
-            resetForm()
-        } catch (error) {
-            setSuccessMessage(null)
-            console.log(error)
+        if (!data.email || !data.first_name || !data.last_name || !data.age) {
+            dispatch(setAlertMessage("Please fill properly.", "error"));
+            return;
+        }
+        if (data.email && !regEmail.test(data.email)) {
+            dispatch(setAlertMessage("Invalid Email", "error"));
+            return;
         }
 
+        dispatch(
+            updateUser(
+                {
+                    email: data.email,
+                    first_name: data.first_name,
+                    last_name: data.last_name,
+                    age: data.age,
+                },
+                id
+            )
+        );
     }
 
     function handleUserData(e) {
+        console.log(e.target.value)
         const newdata = { ...data }
         console.log(newdata)
         newdata[e.target.id] = e.target.value
@@ -76,84 +110,78 @@ const TeamLeadEdit = ({ }) => {
         console.log(newdata)
     }
 
-    function handleImage(e) {
-        const newdata = { ...data }
-        newdata[e.target.id] = e.target.files[0]
-        setData(newdata)
-        console.log(newdata)
-
-        if (e.target.files[0]) {
-            const reader = new FileReader()
-            reader.addEventListener("load", () => {
-                const newdata = { ...data }
-                newdata['image'] = reader.result
-                setData(newdata)
-                console.log(newdata.image)
-            })
-            reader.readAsDataURL(e.target.files[0])
+    async function uploadFile(file, id) {
+        try {
+            const media = new FormData();
+            media.append("images", file);
+            const { data } = await backend("/fileupload", media, {
+                headers: {
+                    "content-type": `multipart/form-data`,
+                },
+            });
+            const newdata = { ...data }
+            newdata[id] = data.images[0];
+            setData(newdata)
+        } catch (error) {
+            return ''
         }
     }
     return (<>
         <Card style={{
-                  marginLeft: '20px',
-                  marginRight: '20px',
-                  }}>
+            marginLeft: '20px',
+            marginRight: '20px',
+        }}>
             <CardHeader style={{
-                  backgroundColor: "#1F1D61",
-                  borderRadius: '10px',
-                  padding: '20px',
-                  color: "white",
-                  marginTop: '40px',
-                  marginBottom: '20px',
-                  fontWeight: '100px',
-                  fontSize: '16px',
-                //   marginLeft: '40px',
-                //   marginRight: '50px',
+                backgroundColor: "#1F1D61",
+                borderRadius: '10px',
+                padding: '20px',
+                color: "white",
+                marginTop: '40px',
+                marginBottom: '20px',
+                fontWeight: '100px',
+                fontSize: '16px',
             }}>
                 <CardTitle tag='h4'>Edit Team Lead Employees</CardTitle>
             </CardHeader>
 
-            {successMessage && <UncontrolledAlert color='success'>
-                <div className='alert-body'>
-                    {successMessage}
-                </div>
-            </UncontrolledAlert>}
-            <CardBody style={{
-                //   marginLeft: '40px',
-                //   marginRight: '40px',
-                  }}>
+            <div className="alert-container">
+                <Alert />
+            </div>
+
+            <CardBody>
                 <Form onSubmit={(event) => submit(event)} >
-                    <Row   style={{
+                    <Row style={{
                         border: '1px solid #2e272538',
-                        padding: '1px 20px 20px 20px'}}>
-                        <Col sm='3' >
+                        padding: '1px 20px 20px 20px'
+                    }}>
+                        {/* <Col sm='3' >
                             <FormGroup>
-                                <div><img className='custom-img-dimension' src={data.image} /></div>
-                                <Label for='imageVertical'>User Profile Image</Label>
+                                <div><img className='custom-img-dimension' src={data.profilePicture} /></div>
+                                <Label for='profilePicture'>User Profile Image</Label>
                                 <Input
                                     type="file"
-                                    name='image'
-                                    id='image'
-                                    onChange={(e) => handleImage(e)}
+                                    name='profilePicture'
+                                    id='profilePicture'
+                                    onChange={(e) => uploadFile(e.target.files[0], 'profilePicture')}
                                     required
                                 >
                                 </Input>
-                                
+
                             </FormGroup>
-                        </Col>
-                    
+                        </Col> */}
+
                         <Col sm='12'>
                             <FormGroup>
                                 <Label for='nameVertical'>First Name</Label>
-                                <Input type='text' name='fname' id='fname' value={data.fname} required onChange={(e) => handleUserData(e)} placeholder='first name'
+                                <Input type='text' name='first_name' id='first_name' value={data.first_name} required onChange={(e) => handleUserData(e)} placeholder='first name'
                                 />
                             </FormGroup>
                         </Col>
 
-                         <Col sm='12'>
+                        <Col sm='12'>
                             <FormGroup>
                                 <Label for='nameVertical'>Last Name</Label>
-                                <Input type='text' name='lname' id='lname' value={data.lname} required onChange={(e) => handleUserData(e)} placeholder='last name'
+                                <Input type='text' name='last_name' id='last_name' value={data.last_name} required onChange={(e) => handleUserData(e)} placeholder='last name'
                                 />
                             </FormGroup>
                         </Col>
@@ -165,13 +193,13 @@ const TeamLeadEdit = ({ }) => {
                                 />
                             </FormGroup>
                         </Col>
-                        <Col sm='12'>
+                        {/* <Col sm='12'>
                             <FormGroup>
                                 <Label for='passwordVertical'>Password</Label>
                                 <Input type='password' name='password' id='password' value={data.password} required onChange={(e) => handleUserData(e)} placeholder='enter password'
                                 />
                             </FormGroup>
-                        </Col>
+                        </Col> */}
 
                         <Col sm='12'>
                             <FormGroup>
@@ -181,53 +209,49 @@ const TeamLeadEdit = ({ }) => {
                             </FormGroup>
                         </Col>
 
-                        <Col sm='12'>
+                        {/* <Col sm='12'>
                             <FormGroup>
-                            <Label for='roleVertical'>Select Gender</Label>
+                                <Label for='roleVertical'>Select Gender</Label>
                                 <select value={data.gender} required onChange={(e) => handleUserData(e)}>
-                                <option>--- Please Select Option ---</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
+                                    <option>--- Please Select Option ---</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
                                 </select>
-                                {/* <Input type='number' name='gender' id='gender' value={data.gender} required onChange={(e) => handleUserData(e)} placeholder='Enter Gender'
-                                /> */}
                             </FormGroup>
-                        </Col>
+                        </Col> */}
 
-                        <Col sm='12'>
+                        {/* <Col sm='12'>
                             <FormGroup>
                                 <Label for='roleVertical'>Select Any Role</Label>
                                 <select value={data.role_id} required onChange={(e) => handleUserData(e)}>
-                                <option>--- Please Select Option ---</option>
-                                <option value="teamLead">Team Lead</option>
-                                <option value="salesRep">Sales Rep</option>
-                                <option value="digitalMarketer">Digital Marketer</option>
+                                    <option>--- Please Select Option ---</option>
+                                    <option value="teamLead">Team Lead</option>
+                                    <option value="salesRep">Sales Rep</option>
+                                    <option value="digitalMarketer">Digital Marketer</option>
                                 </select>
-                                {/* <Input type='number' name='role_id' id='role_id' value={data.role_id} required onChange={(e) => handleUserData(e)} placeholder='Enter Role'
-                                /> */}
                             </FormGroup>
-                        </Col>
+                        </Col> */}
 
-                        <Col sm='12'>
+                        {/* <Col sm='12'>
                             <FormGroup>
                                 <Label for='cnicVertical'>CNIC No</Label>
                                 <Input type='text' name='cnic' id='cnic' value={data.cnic} onChange={(e) => handleUserData(e)} placeholder='Enter User CNIC'
                                 />
                             </FormGroup>
-                        </Col>
+                        </Col> */}
 
-                        <Col sm='12'>
+                        {/* <Col sm='12'>
                             <FormGroup>
                                 <Label for='mobileNoVertical'>Mobile Number  </Label>
                                 <Input type='number' name='mobile_no' id='mobile_no' value={data.mobile_no} onChange={(e) => handleUserData(e)} placeholder='Enter Mobile Number'
                                 />
 
                             </FormGroup>
-                        </Col>
+                        </Col> */}
 
                         <Col sm='12'>
-                            <FormGroup className='d-flex mb-0' style={{marginTop: '10px'}}>
-                                <Button className='form_submit_btn' type='submit' style={{marginInline: '10px'}}>
+                            <FormGroup className='d-flex mb-0' style={{ marginTop: '10px' }}>
+                                <Button className='form_submit_btn' type='submit' style={{ marginInline: '10px' }}>
                                     Submit
                                 </Button>
                                 <Button className='form_reset_btn' onClick={resetForm}>

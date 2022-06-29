@@ -5,8 +5,17 @@ import {
   getUsersListsSuccess,
   getUserSuccess,
   updateUserSuccess,
-  getActiveUsers,
-  addUserSuccess
+  addUserSuccess,
+  addClientSuccess,
+  getClientsListsFailure,
+  getClientsListsSuccess,
+  changePasswordSuccess,
+  getchangePasswordFailure,
+  addLeadSuccess,
+  getLeadListsSuccess,
+  getLeadListsFailure,
+
+  // getActiveUsers,
 } from "./user.reducers";
 import { setAlertMessage } from "../alert/alert.action";
 
@@ -34,48 +43,10 @@ export const getUser = (id) => async (dispatch) => {
   }
 };
 
-export const getActiveUser = () => async (dispatch) => {
-  dispatch(getLoadingLists());
-  try {
-    const res = await backend.get(`/user`);
-    dispatch(getActiveUsers(res.data.data));
-  } catch (err) {
-    if (err) {
-      dispatch(getUsersListsFailure(err));
-    }
-  }
-};
-
-export const getUsersByRole = (role) => async (dispatch) => {
-  dispatch(getLoadingLists());
-  try {
-    const res = await backend.get(`/user?role=${role}`);
-    dispatch(getUsersListsSuccess(res.data.data));
-  } catch (err) {
-    if (err.response) {
-      dispatch(setAlertMessage(err.response.data.message, "warning"));
-      dispatch(getUsersListsFailure(err));
-    }
-  }
-};
-
-export const getUsersByStatus = (role, status) => async (dispatch) => {
-  dispatch(getLoadingLists());
-  try {
-    const res = await backend.get(`/user?role=${role}&isActive=${status}`);
-    dispatch(getUsersListsSuccess(res.data.data));
-  } catch (err) {
-    if (err.response) {
-      dispatch(setAlertMessage(err.response.data.message, "warning"));
-      dispatch(getUsersListsFailure(err));
-    }
-  }
-};
-
 export const updateUser = (body, id) => async (dispatch) => {
   dispatch(getLoadingLists());
   await backend
-    .put(`/user/updateUser/${id}`, body)
+    .put(`/user/${id}`, body)
     .then((response) => {
       dispatch(updateUserSuccess(response.data.data));
       dispatch(setAlertMessage(response.data.message, "success"));
@@ -106,19 +77,47 @@ export const addUser = (body, id) => async (dispatch) => {
     });
 };
 
-export const addClient = (body, id) => async (dispatch) => {
+export const changePassword = (body, id) => async (dispatch) => {
   dispatch(getLoadingLists());
   await backend
-    .post(`/user/create`, body)
+    .put(`/user/${id}/password/change`, body)
     .then((response) => {
-      dispatch(addUserSuccess(response.data.data));
-      dispatch(setAlertMessage(response.data.data.message, "success"));
-      dispatch(getAllUsers());
+      dispatch(changePasswordSuccess(response.data.data));
+      dispatch(setAlertMessage(response.data.message, "success"));
     })
     .catch((err) => {
       if (err.response) {
         dispatch(setAlertMessage(err.response.data.message, "error"));
-        dispatch(getUsersListsFailure(err));
+        dispatch(getchangePasswordFailure(err));
+      }
+    });
+};
+
+export const getAllClients = () => async (dispatch) => {
+  dispatch(getLoadingLists());
+  try {
+    const res = await backend.get(`/client`);
+    dispatch(getClientsListsSuccess(res.data.data));
+  } catch (err) {
+    if (err) {
+      dispatch(getClientsListsFailure(err));
+    }
+  }
+};
+
+export const addClient = (body, id) => async (dispatch) => {
+  dispatch(getLoadingLists());
+  await backend
+    .post(`/client`, body)
+    .then((response) => {
+      dispatch(addClientSuccess(response.data.data));
+      dispatch(setAlertMessage(response.data.data.message, "success"));
+      dispatch(getAllClients());
+    })
+    .catch((err) => {
+      if (err.response) {
+        dispatch(setAlertMessage(err.response.data.message, "error"));
+        dispatch(getClientsListsFailure(err));
       }
     });
 };

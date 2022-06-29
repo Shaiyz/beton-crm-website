@@ -78,12 +78,12 @@ const dataList = {
       icon: faHouseUser,
       list: [
         {
-          title: "All Projects",
+          title: "Projects",
           url: "projects",
         },
         {
-          title: "My Projects",
-          url: "projects",
+          title: "Units",
+          url: "units",
         },
       ],
     },
@@ -186,7 +186,6 @@ const dataList = {
       ],
     },
   ],
-
 
   saveList: (list, userId) => {
     if (!localStorage.getItem(userId)) {

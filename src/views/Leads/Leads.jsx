@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import SearchTable from "../../components/SearchTable/SearchTable";
 import Button from "@material-ui/core/Button";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -8,51 +7,54 @@ import "../User/TeamLead/Admin.css";
 import { HomeWork } from "@material-ui/icons/";
 import { Link } from "react-router-dom";
 import Table from "../../components/TableUsers/Table";
+import { getAllLeads } from "../../features/leads/leads.action";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { useState } from "react";
 
-const Leads = ({ leads, history, location }) => {
-  //   let dispatch = useDispatch();
+const Leads = ({ history, location }) => {
+  const { leads, loading } = useSelector((state) => state.leads);
+  const [leadsList, setLeads] = useState(null);
+  let dispatch = useDispatch();
   const [value, setValue] = React.useState(0);
-
   useEffect(() => {
-    // dispatch(getAllAdminUsers());
+    dispatch(getAllLeads());
   }, []);
 
+  const filtered = (task) =>
+    leads.filter(function (x) {
+      return x.task.indexOf(task.name) > -1;
+    });
   useEffect(() => {
     if (location?.hash == "#closelost") {
-      // dispatch(getUsersByStatus("leads", true));
+      const filterByTask = filtered("sales");
+
       setValue(1);
     } else if (location?.hash == "#closedwon") {
-      // dispatch(getUsersByStatus("salaesRep", false));
+      const filterByTask = filtered("sales");
+
       setValue(2);
     } else if (location?.hash == "#all" || location?.hash == "") {
-      // dispatch(getUsersByRole("leads"));
+      setLeads(leads);
       setValue(0);
     }
   }, []);
 
   const getAll = () => {
-    // dispatch(getUsersByRole("leads"));
+    setLeads(leads);
     history.push(`/leads#all`);
   };
 
   const getClosedLost = () => {
-    // dispatch(getUsersByStatus("leads", true));
     history.push(`/leads#closedlost`);
   };
 
   const getClosedWon = () => {
-    // dispatch(getUsersByStatus("leads", false));
     history.push(`/leads#closedwon`);
   };
 
-  const loading = false;
-  const deleteUser = (id) => {
-    // dispatch(deleteAdminUser(id));
-  };
-
-  const longText = `Aliquam eget finibus ante, non facilisis lectus.Sed vitae dignissim est,vel aliquam tellus.
-        Praesent non nunc mollis, fermentum neque at, semper arcu.
-        Nullam eget est sed sem iaculis gravida eget vitae justo.`;
+  const longText =
+    " Task name, Sales \n" + " Sub Task , token \n" + `Task message, test \n`;
 
   const renderActionButton = (params) => {
     return (
@@ -73,22 +75,7 @@ const Leads = ({ leads, history, location }) => {
             />
           </Link>
         </Tooltip>
-        <Tooltip title="Delete">
-          <Button onClick={() => deleteUser(params.action)}>
-            <DeleteIcon
-              className="action-buttons"
-              color="secondary"
-              fontSize="medium"
-              style={{
-                padding: 2,
-                border: "1px solid #F50057",
-                borderRadius: 8,
-                backgroundColor: "white",
-                color: "#F50057",
-              }}
-            />
-          </Button>
-        </Tooltip>
+
         <Tooltip title={longText}>
           <HomeWork
             className="action-buttons"
@@ -137,14 +124,13 @@ const Leads = ({ leads, history, location }) => {
   ];
 
   let rows = [];
-  if (leads) {
+  if (leadsList) {
     let s = 1;
-    leads.forEach((lead) => {
+    leadsList.forEach((lead) => {
       rows.push({
         id: s++,
-        fullName: lead.first_name + " " + lead.last_name,
-        email: lead.email,
-
+        fullName: lead.client.name,
+        email: lead.client.email,
         createdAt: lead.createdAt
           ? new Date(lead.createdAt).toLocaleDateString()
           : "-",
@@ -152,21 +138,13 @@ const Leads = ({ leads, history, location }) => {
           ? new Date(lead.updatedAt).toLocaleDateString()
           : "-",
         action: lead._id,
-        intrested: lead.intrested,
+        intrested: lead.intrested.name,
       });
     });
   }
 
   return (
     <div className="feature">
-      {/* <SearchTable
-        rows={rows}
-        columns={columns}
-        header={"Lead"}
-        path={"leads"}
-        loading={loading}
-      /> */}
-
       <Table
         header={"Leads"}
         blockUser={() => {}}

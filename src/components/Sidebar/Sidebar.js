@@ -82,9 +82,9 @@ const Sidebar = (props) => {
         <Link to="/dashboard" style={{ textDecorationLine: "none" }}>
           <div className="header">
             <ListItemIcon className="sidebar__header">
-              <div style={{ width: "250px" }}>
+              <div style={{ width: "400px" }}>
                 <img
-                  src="/assets/images/logo.jfif"
+                  src="/assets/images/beton.jpeg"
                   alt="logo"
                   style={{ width: "100%", objectFit: "contain" }}
                 />

@@ -1,35 +1,29 @@
 import React, { useEffect } from "react";
 import SearchTable from "../../../components/SearchTable/SearchTable";
-import {
-  getAllAdminUsers,
-  deleteAdminUser,
-} from "../../../features/admin/admin.action";
 import { useDispatch, useSelector } from "react-redux";
-import Button from "@material-ui/core/Button";
-import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { ChangeHistory } from "@material-ui/icons";
 import { Tooltip } from "@material-ui/core";
 import "./Admin.css";
 import { Link } from "react-router-dom";
+import { getAllUsers } from "../../../features/users/user.action";
 
 const TeamLead = ({}) => {
   let dispatch = useDispatch();
-  const { admins, loading } = useSelector((state) => state.admin);
+  const [teamLeads, setTeamLeads] = React.useState(null);
+  const { users, loading } = useSelector((state) => state.users);
   useEffect(() => {
-    if (!admins) {
-      dispatch(getAllAdminUsers());
+    if (!users) {
+      dispatch(getAllUsers());
+    } else {
+      setTeamLeads(users.filter((user) => user.role === "teamLead"));
     }
-  }, []);
-
-  const deleteUser = (id) => {
-    dispatch(deleteAdminUser(id));
-  };
+  }, [users]);
 
   const renderEditButton = (params) => {
     return (
       <Tooltip title="Edit Lead">
-        <Link to={`/admin/edit/${params.edit}`}>
+        <Link to={`/teamLead/edit/${params.edit}`}>
           <EditIcon
             className="action-buttons"
             color="secondary"
@@ -68,27 +62,6 @@ const TeamLead = ({}) => {
     );
   };
 
-  const renderActionButton = (params) => {
-    return (
-      <Tooltip title="Delete">
-        <Button onClick={() => deleteUser(params.action)}>
-          <DeleteIcon
-            className="action-buttons"
-            color="secondary"
-            fontSize="medium"
-            style={{
-              padding: 2,
-              border: "1px solid #F50057",
-              borderRadius: 8,
-              backgroundColor: "white",
-              color: "#F50057",
-            }}
-          />
-        </Button>
-      </Tooltip>
-    );
-  };
-
   const columns = [
     { field: "id", title: "S#", width: 200, sortable: false },
     {
@@ -103,13 +76,7 @@ const TeamLead = ({}) => {
       sortable: false,
       width: 630,
     },
-    {
-      field: "action",
-      title: "Delete",
-      sortable: false,
-      render: renderActionButton,
-      width: 200,
-    },
+
     {
       field: "edit",
       title: "Edit Info",
@@ -127,9 +94,9 @@ const TeamLead = ({}) => {
   ];
 
   let rows = [];
-  if (admins) {
+  if (teamLeads) {
     let s = 1;
-    admins.forEach((user) => {
+    teamLeads.forEach((user) => {
       rows.push({
         id: s++,
         fullName: user.first_name + " " + user.last_name,

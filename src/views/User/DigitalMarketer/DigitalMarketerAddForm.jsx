@@ -73,19 +73,23 @@ const DigitalMarketerAdd = ({ }) => {
         setData(newdata)
         console.log(newdata)
     }
-    async function uploadFile(file) {
+
+    async function uploadFile(file, id) {
         try {
-            const formData = new FormData();
-            formData.append("profilePicture", file);
-            const { data } = await backend("/fileupload", formData);
-            return data.locationArray[0].fileLocation;
+            const media = new FormData();
+            media.append("images", file);
+            const { data } = await backend("/fileupload", media, {
+                headers: {
+                    "content-type": `multipart/form-data`,
+                },
+            });
+            const newdata = { ...data }
+            newdata[id] = data.images[0];
+            setData(newdata)
         } catch (error) {
-            console.log(
-                error.response
-            );
+            console.log(error.response);
             return null
         }
-    
     }
     return (<>
         <Card style={{
@@ -124,7 +128,7 @@ const DigitalMarketerAdd = ({ }) => {
                                     type="file"
                                     name='profilePicture'
                                     id='profilePicture'
-                                    onChange={(e) => uploadFile(e)}
+                                    onChange={(e) => uploadFile(e.target.files[0], 'profilePicture')}
                                     required
                                 >
                                 </Input>
@@ -180,8 +184,6 @@ const DigitalMarketerAdd = ({ }) => {
                                     <option value="M">Male</option>
                                     <option value="F">Female</option>
                                 </select>
-                                {/* <Input type='number' name='gender' id='gender' value={data.gender} required onChange={(e) => handleUserData(e)} placeholder='Enter Gender'
-                                /> */}
                             </FormGroup>
                         </Col>
 
@@ -189,15 +191,12 @@ const DigitalMarketerAdd = ({ }) => {
                             <FormGroup>
                                 <Label for='role'>Role Name</Label>
                                 <Input value={data.role === 'digitalMarketer' ? 'Digital Marketer' : ''} disabled name='role' id='role' />
-
-                                {/* <Input type='number' name='role' id='role' value={data.role} required onChange={(e) => handleUserData(e)} placeholder='Enter Role'
-                                /> */}
                             </FormGroup>
                         </Col>
 
                         <Col sm='12'>
                             <FormGroup>
-                                <Label for='cnicVertical'>CNIC No</Label>
+                                <Label for='cnic'>CNIC No</Label>
                                 <Input type='text' name='cnic' id='cnic' value={data.cnic} onChange={(e) => handleUserData(e)} placeholder='Enter User CNIC'
                                 />
                             </FormGroup>
@@ -205,7 +204,7 @@ const DigitalMarketerAdd = ({ }) => {
 
                         <Col sm='12'>
                             <FormGroup>
-                                <Label for='mobileNoVertical'>Mobile Number  </Label>
+                                <Label for='phone'>Mobile Number  </Label>
                                 <Input type='text' name='phone' id='phone' value={data.phone} onChange={(e) => handleUserData(e)} placeholder='Enter Mobile Number'
                                 />
 

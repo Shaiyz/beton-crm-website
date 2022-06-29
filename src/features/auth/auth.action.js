@@ -21,13 +21,12 @@ export const login = (body) => async (dispatch) => {
   await backend
     .post(`/user/signin`, body, config)
     .then((res) => {
-      console.log(res.data);
       dispatch(loginSuccess(res.data));
     })
     .catch((err) => {
       if (err.response) {
         dispatch(setAlertMessage(err.response.data.message, "error"));
-        dispatch(loginFailed(err));
+        dispatch(loginFailed(err.response.data.message));
       }
     });
 };
@@ -42,15 +41,16 @@ export const forgetPassword = (email) => async (dispatch) => {
     email,
   };
   await backend
-    .put(`/staff/password/forgot`, body, config)
+    .put(`/password/forgot`, body, config)
     .then((res) => {
       dispatch(setAlertMessage(res.data.data.status, "success"));
       dispatch(forgetEmailSuccess(res.data));
     })
     .catch((err) => {
       if (err.response) {
-        dispatch(setAlertMessage(err.response.data.message, "error"));
-        dispatch(loginFailed(err));
+        // dispatch(setAlertMessage(err.response.data.message, "error"));
+        // dispatch(loginFailed(err));
+        dispatch(loginFailed(err.response.data.message));
       }
     });
 };
@@ -90,5 +90,6 @@ export const logout = (id) => async (dispatch) => {
   dispatch(getLoading());
   dispatch(logoutSuccess());
   localStorage.removeItem("token");
+  document.location.href("/");
   dispatch(setAlertMessage("Successfully logged out", "success"));
 };
