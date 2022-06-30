@@ -6,7 +6,12 @@ import {
   getUserSuccess,
   updateUserSuccess,
   getActiveUsers,
-  addUserSuccess
+  addUserSuccess,
+  addClientSuccess,
+  getClientsListsFailure,
+  getClientsListsSuccess,
+  changePasswordSuccess,
+  getchangePasswordFailure,
 } from "./user.reducers";
 import { setAlertMessage } from "../alert/alert.action";
 
@@ -68,19 +73,18 @@ export const addUser = (body, id) => async (dispatch) => {
     });
 };
 
-export const addClient = (body, id) => async (dispatch) => {
+export const changePassword = (body, id) => async (dispatch) => {
   dispatch(getLoadingLists());
   await backend
-    .post(`/user/create`, body)
+    .put(`/user/${id}/password/change`, body)
     .then((response) => {
-      dispatch(addUserSuccess(response.data.data));
-      dispatch(setAlertMessage(response.data.data.message, "success"));
-      dispatch(getAllUsers());
+      dispatch(changePasswordSuccess(response.data.data));
+      dispatch(setAlertMessage(response.data.message, "success"));
     })
     .catch((err) => {
       if (err.response) {
         dispatch(setAlertMessage(err.response.data.message, "error"));
-        dispatch(getUsersListsFailure(err));
+        dispatch(getchangePasswordFailure(err));
       }
     });
 };

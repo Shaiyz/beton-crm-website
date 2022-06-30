@@ -68,6 +68,10 @@ const leadSlice = createSlice({
     resetLeads: (state) => {
       state.leads = null;
     },
+    updateLeadSuccess: (state) => {
+      state.loading = false;
+      state.hasErrors = true;
+    },
   },
 });
 
@@ -80,4 +84,5 @@ export const {
   getLeadListsSuccess,
   getLeadListsFailure,
   addLeadSuccess,
+  updateLeadSuccess,
 } = leadSlice.actions;

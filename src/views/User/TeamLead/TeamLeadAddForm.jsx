@@ -73,19 +73,22 @@ const TeamLeadAdd = ({ }) => {
         console.log(newdata)
     }
 
-    async function uploadFile(file) {
+    async function uploadFile(file, id) {
         try {
-            const formData = new FormData();
-            formData.append("profilePicture", file);
-            const { data } = await backend("/fileupload", formData);
-            return data.locationArray[0].fileLocation;
+            const media = new FormData();
+            media.append("images", file);
+            const { data } = await backend("/fileupload", media, {
+                headers: {
+                    "content-type": `multipart/form-data`,
+                },
+            });
+            const newdata = { ...data }
+            newdata[id] = data.images[0];
+            setData(newdata)
         } catch (error) {
-            console.log(
-                error.response
-            );
+            console.log(error.response);
             return null
         }
-
     }
     return (<>
         <Card style={{
@@ -102,12 +105,14 @@ const TeamLeadAdd = ({ }) => {
                 fontWeight: '100px',
                 fontSize: '16px',
             }}>
+
                 <CardTitle tag='h4'>Add Team Lead Employees</CardTitle>
             </CardHeader>
 
             <div className="alert-container">
                 <Alert />
             </div>
+
             <CardBody>
                 <Form onSubmit={(event) => submit(event)} >
                     <Row style={{
@@ -122,7 +127,7 @@ const TeamLeadAdd = ({ }) => {
                                     type="file"
                                     name='profilePicture'
                                     id='profilePicture'
-                                    onChange={(e) => uploadFile(e)}
+                                    onChange={(e) => uploadFile(e.target.files[0], 'profilePicture')}
                                     required
                                 >
                                 </Input>

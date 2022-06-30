@@ -17,7 +17,6 @@ const userSlice = createSlice({
       state.loading = false;
       state.users = payload;
     },
-
     getActiveUsers: (state, { payload }) => {
       state.loading = false;
       state.activeUsers = payload;
@@ -45,6 +44,14 @@ const userSlice = createSlice({
     resetUser: (state) => {
       state.users = null;
     },
+    changePasswordSuccess: (state, { payload }) => {
+      state.loading = false;
+      state.user = payload;
+    },
+    getchangePasswordFailure: (state) => {
+      state.loading = false;
+      state.hasErrors = true;
+    },
   },
 });
 
@@ -58,6 +65,7 @@ export const {
   getUserSuccess,
   updateUserSuccess,
   addUserSuccess,
-  addClientSuccess,
   resetUser,
+  changePasswordSuccess,
+  getchangePasswordFailure,
 } = userSlice.actions;

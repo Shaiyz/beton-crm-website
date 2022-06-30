@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from 'react-redux'
 import {
   Card,
   CardHeader,
@@ -12,11 +13,14 @@ import {
   Form,
   FormGroup,
 } from "reactstrap";
+import Alert from "../../components/Alert/Alert";
+import { getAllLeads, addLead } from '../../features/leads/leads.action';
 
 const LeadsAdd = ({}) => {
   //body
 
-  const [successMessage, setSuccessMessage] = useState(null);
+  // const [successMessage, setSuccessMessage] = useState(null);
+  const dispatch = useDispatch()
   const [data, setData] = useState({
     fname: "",
     lname: "",
@@ -37,22 +41,15 @@ const LeadsAdd = ({}) => {
   }
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [successMessage]);
+    window.scrollTo(0, 0)
+}, [])
 
-  const submit = async (event) => {
-    // /role/{role}/user/{user}
+const submit = async (event) => {
 
-    event.preventDefault();
+    event.preventDefault()
+    dispatch(addLead(data))
+}
 
-    try {
-      setSuccessMessage("New Lead Added");
-      resetForm();
-    } catch (error) {
-      setSuccessMessage(null);
-      console.log(error);
-    }
-  };
 
   function handleUserData(e) {
     const newdata = { ...data };
@@ -85,11 +82,10 @@ const LeadsAdd = ({}) => {
           <CardTitle tag="h4">Add New Lead</CardTitle>
         </CardHeader>
 
-        {successMessage && (
-          <UncontrolledAlert color="success">
-            <div className="alert-body">{successMessage}</div>
-          </UncontrolledAlert>
-        )}
+        <div className="alert-container">
+            <Alert />
+        </div>
+
         <CardBody>
           <Form onSubmit={(event) => submit(event)}>
             <Row

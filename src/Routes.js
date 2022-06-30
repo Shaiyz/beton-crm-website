@@ -27,9 +27,11 @@ import { TasksAddForm, Todos } from "./views/Leads";
 import { getAllUsers } from "./features/users/user.action";
 import { useDispatch } from "react-redux";
 import { Profile } from "./views/User/Profile";
+import { ChangePassword } from "./views/Auth/changepassword";
 import Project from "./views/Projects/Project";
 import Units from "./views/Projects/Unit/Unit";
 import { getAllTasks } from "./features/tasks/tasks.action";
+import TeamLeadEdit from "./views/User/TeamLead/TeamLeadEditForm";
 
 function Routes() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -65,12 +67,13 @@ function Routes() {
                 path="/digitalmarketer"
                 component={DigitalMarketer}
               />
-              <Route exact path="/teamlead" component={TeamLead} />
+              {/* <Route exact path="/teamlead" component={TeamLead} />
               <Route exact path="/salesrep" component={SalesRep} />
-              <Route exact path="/teamlead/edit/:id" component={TeamLeadForm} />
+              <Route exact path="/teamlead/edit/:id" component={TeamLeadForm} /> */}
 
               <Route exact path="/user/:id" component={Profile} />
               <Route exact path="/profile" component={Profile} />
+              
               {/* 
               <Route exact path="/lead/add" component={LeadForm} />
               <Route exact path="/lead/edit/:id" component={LeadForm} /> */}
@@ -92,7 +95,7 @@ function Routes() {
 
               {/* Team Lead */}
               <Route exact path="/teamlead" component={TeamLead} />
-              <Route exact path="/teamLead/edit/:id" component={TeamLeadForm} />
+              <Route exact path="/teamLead/edit/:id" component={TeamLeadEdit} />
               <Route exact path="/teamLead/add" component={TeamLeadAdd} />
 
               <Route exact path="/clients" component={Clients} />

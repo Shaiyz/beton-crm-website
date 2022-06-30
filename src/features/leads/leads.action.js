@@ -128,3 +128,20 @@ export const addLead = (body) => async (dispatch, getState) => {
     }
   }
 };
+
+export const updateLead = (body, id) => async (dispatch) => {
+  dispatch(getLoadingLists());
+  await backend
+    .put(`/lead/${id}`, body)
+    .then((response) => {
+      dispatch(updateLeadSuccess(response.data.data));
+      dispatch(setAlertMessage(response.data.message, "success"));
+      dispatch(getAllLeads());
+    })
+    .catch((err) => {
+      if (err.response) {
+        dispatch(setAlertMessage(err.response.data.message, "error"));
+        dispatch(getLeadsListsFailure(err));
+      }
+    });
+};
