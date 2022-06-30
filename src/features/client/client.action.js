@@ -8,11 +8,20 @@ import {
 } from "./client.reducer";
 import { setAlertMessage } from "../alert/alert.action";
 
-export const getAllClients = () => async (dispatch) => {
+export const getAllClients = () => async (dispatch, getState) => {
   dispatch(getLoadingLists());
   try {
-    const res = await backend.get(`/client`);
-    dispatch(getClientsListsSuccess(res.data.data));
+    const { userInfo } = getState().auth;
+    const {
+      data: { data },
+    } = await backend.get(`/client`);
+    let clients = [];
+    if (userInfo.role === "salesRep") {
+      clients = data.filter((client) => client.createdBy?._id === userInfo._id);
+    } else {
+      clients = data;
+    }
+    dispatch(getClientsListsSuccess(clients));
   } catch (err) {
     if (err) {
       dispatch(getClientsListsFailure(err));

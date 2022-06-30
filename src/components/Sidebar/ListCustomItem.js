@@ -201,6 +201,7 @@ const ListCustomItem = ({ provided, snapshot, item }) => {
               ) : (
                 <FontAwesomeIcon icon={item.icon} />
               )} */}
+              <FontAwesomeIcon icon={item.icon} />
             </ListItemIcon>
             <ListItemText primary={item.title} />
           </CustomListItem>

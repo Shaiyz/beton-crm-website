@@ -5,6 +5,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import { Tooltip } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { getAllProjects } from "../../features/projects/projects.action";
+import { Helmet } from "react-helmet";
 const Project = () => {
   let dispatch = useDispatch();
   const { projects, loading } = useSelector((state) => state.projects);
@@ -82,6 +83,7 @@ const Project = () => {
 
   return (
     <div className="feature">
+      <Helmet title="Inventory - CRM"></Helmet>
       <SearchTable
         rows={rows}
         columns={columns}

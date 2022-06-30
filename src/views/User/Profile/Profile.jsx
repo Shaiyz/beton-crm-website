@@ -16,6 +16,7 @@ import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Accordion from "@material-ui/core/Accordion";
 import "../User.css";
+import { Helmet } from "react-helmet";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -166,6 +167,7 @@ const ViewUser = () => {
     <CircularProgress className="loader" style={{ marginTop: 50 }} />
   ) : (
     <Grid container className={classes.root}>
+      <Helmet title="Profile - CRM"></Helmet>
       <Grid item xs={12}>
         <div className="viewuser">
           <div className="viewuser__head">

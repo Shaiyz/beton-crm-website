@@ -10,6 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { updateUser } from "../../../features/users/user.action";
 import { useDispatch } from "react-redux";
 import { AssignmentIndOutlined } from "@material-ui/icons";
+import { Helmet } from "react-helmet";
 const SalesRep = () => {
   const dispatch = useDispatch();
   let location = useLocation();
@@ -43,7 +44,6 @@ const SalesRep = () => {
     }
   }, [users]);
 
-  console.log(users);
   const getAll = () => {
     setSalesRep(users.filter((user) => user.role == "salesRep"));
     history.push(`/salesRep#all`);
@@ -185,6 +185,8 @@ const SalesRep = () => {
   }
   return (
     <div className="users">
+      <Helmet title="Sales Representatives - CRM"></Helmet>
+
       <Table
         header={"Sales Representatives"}
         blockUser={() => {}}

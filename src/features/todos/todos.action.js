@@ -31,6 +31,7 @@ export const addTodoTask = (body, leadId) => async (dispatch, getState) => {
     const res = await backend.post(`/leadTask/62a6053617837ff5b81d6a58`, body);
     dispatch(addTodoSuccess(res.data.data));
     dispatch(setAlertMessage(res.response.data.message, "success"));
+    dispatch(getAllTodoTasks())
   } catch (err) {
     if (err.response) {
       dispatch(setAlertMessage(err.response.data.message, "error"));

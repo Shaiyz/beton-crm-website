@@ -2,10 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   loading: false,
-  clients: [],
+  clients: null,
   errors: false,
   client: [],
-  activeClients: [],
 };
 const clientSlice = createSlice({
   name: "clientService",
@@ -32,6 +31,9 @@ const clientSlice = createSlice({
       state.loading = false;
       state.hasErrors = true;
     },
+    resetClient: (state) => {
+      state.clients = null;
+    },
   },
 });
 
@@ -44,4 +46,5 @@ export const {
   getClientsListsSuccess,
   getClientSuccess,
   updateClientSuccess,
+  resetClient,
 } = clientSlice.actions;

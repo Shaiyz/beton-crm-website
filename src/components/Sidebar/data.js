@@ -1,9 +1,10 @@
 import {
   faUser,
   faList,
-  faAddressBook,
   faUserShield,
   faHouseUser,
+  faWarehouse,
+  faFileCircleCheck,
 } from "@fortawesome/free-solid-svg-icons";
 
 const dataList = {
@@ -14,17 +15,17 @@ const dataList = {
       icon: faUser,
       list: [
         {
-          title: "Team Lead",
+          title: "Team Leads",
           url: "teamlead",
           icon: faUser,
         },
         {
-          title: "Digital Marketer",
+          title: "Digital Marketers",
           url: "digitalmarketer",
           icon: faUser,
         },
         {
-          title: "Sales Rep",
+          title: "Sales Reps",
           url: "salesrep",
           icon: faUser,
         },
@@ -46,7 +47,7 @@ const dataList = {
           icon: faList,
         },
         {
-          title: "TODO List",
+          title: "Todo List",
           url: "todos",
           icon: faList,
         },
@@ -61,21 +62,16 @@ const dataList = {
           title: "All Clients",
           url: "clients",
         },
-        {
-          title: "My Clients",
-          url: "Clients",
-        },
       ],
     },
     {
       title: "Report",
       url: "reports",
-      icon: faAddressBook,
+      icon: faFileCircleCheck,
     },
     {
-      title: "Project",
-      url: "projects",
-      icon: faHouseUser,
+      title: "Inventory",
+      icon: faWarehouse,
       list: [
         {
           title: "Projects",
@@ -95,17 +91,12 @@ const dataList = {
       icon: faUserShield,
       list: [
         {
-          title: "All Leads",
-          url: "leads",
-          icon: faList,
-        },
-        {
           title: "My Leads",
           url: "leads",
           icon: faList,
         },
         {
-          title: "TODO List",
+          title: "Todo List",
           url: "todos",
           icon: faList,
         },
@@ -120,16 +111,12 @@ const dataList = {
           title: "All Clients",
           url: "clients",
         },
-        {
-          title: "My Clients",
-          url: "Clients",
-        },
       ],
     },
     {
       title: "Reports",
       url: "reports",
-      icon: faAddressBook,
+      icon: faFileCircleCheck,
     },
   ],
 
@@ -165,7 +152,7 @@ const dataList = {
           url: "leads",
         },
         {
-          title: "TODO List",
+          title: "Todo List",
           url: "todos",
         },
       ],
@@ -177,10 +164,6 @@ const dataList = {
       list: [
         {
           title: "All Clients",
-          url: "clients",
-        },
-        {
-          title: "My Clients",
           url: "clients",
         },
       ],

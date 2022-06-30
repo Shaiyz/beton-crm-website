@@ -1,6 +1,4 @@
 import React, { useEffect } from "react";
-import Button from "@material-ui/core/Button";
-import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { Tooltip } from "@material-ui/core";
 import "../User/TeamLead/Admin.css";
@@ -11,6 +9,7 @@ import { getAllLeads } from "../../features/leads/leads.action";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useState } from "react";
+import { Helmet } from "react-helmet";
 
 const Leads = ({ history, location }) => {
   const { leads, loading } = useSelector((state) => state.leads);
@@ -18,15 +17,17 @@ const Leads = ({ history, location }) => {
   let dispatch = useDispatch();
   const [value, setValue] = React.useState(0);
   useEffect(() => {
-    dispatch(getAllLeads());
-  }, []);
+    if (!leads) {
+      dispatch(getAllLeads());
+    }
+  }, [leads]);
 
   const filtered = (task) =>
     leads.filter(function (x) {
       return x.task.indexOf(task.name) > -1;
     });
   useEffect(() => {
-    if (location?.hash == "#closelost") {
+    if (location?.hash == "#closedlost") {
       const filterByTask = filtered("sales");
 
       setValue(1);
@@ -145,6 +146,8 @@ const Leads = ({ history, location }) => {
 
   return (
     <div className="feature">
+      <Helmet title="Leads - CRM"></Helmet>
+
       <Table
         header={"Leads"}
         blockUser={() => {}}

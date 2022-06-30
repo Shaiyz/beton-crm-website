@@ -5,6 +5,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import { Tooltip } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { getAllUnits } from "../../../features/units/units.action";
+import { Helmet } from "react-helmet";
 
 const Unit = ({}) => {
   let dispatch = useDispatch();
@@ -96,6 +97,7 @@ const Unit = ({}) => {
 
   return (
     <div className="feature">
+      <Helmet title="Inventory - CRM"></Helmet>
       <SearchTable
         rows={rows}
         columns={columns}

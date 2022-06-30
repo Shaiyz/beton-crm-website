@@ -11,6 +11,7 @@ import { AiFillEye } from "react-icons/ai";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
 import { Assignment, AssignmentIndOutlined, Report } from "@material-ui/icons";
+import { Helmet } from "react-helmet";
 
 const DigitalMarketer = () => {
   let location = useLocation();
@@ -182,6 +183,7 @@ const DigitalMarketer = () => {
   }
   return (
     <div className="users">
+      <Helmet title="Digital Marketers - CRM"></Helmet>
       <Table
         header={"Digital Marketer"}
         blockUser={() => {}}

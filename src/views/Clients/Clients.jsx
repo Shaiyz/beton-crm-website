@@ -5,14 +5,17 @@ import { Tooltip } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { getAllClients } from "../../features/client/client.action";
 import { useDispatch, useSelector } from "react-redux";
+import { Helmet } from "react-helmet";
 
 const Clients = () => {
   const { clients, loading } = useSelector((state) => state.clients);
   let dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAllClients());
-  }, []);
+    if (!clients) {
+      dispatch(getAllClients());
+    }
+  }, [clients]);
 
   const renderActionButton = (params) => {
     return (
@@ -57,7 +60,7 @@ const Clients = () => {
     },
     {
       field: "fullName",
-      title: "Client Name",
+      title: "Client",
       sortable: false,
       width: 630,
     },
@@ -102,6 +105,7 @@ const Clients = () => {
 
   return (
     <div>
+      <Helmet title="Clients - CRM"></Helmet>
       <SearchTable
         rows={rows}
         columns={columns}

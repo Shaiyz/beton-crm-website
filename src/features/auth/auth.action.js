@@ -1,5 +1,9 @@
 import { backend } from "../../api";
 import { setAlertMessage } from "../alert/alert.action";
+import { resetClient } from "../client/client.reducer";
+import { resetLeads } from "../leads/leads.reducer";
+import { resetTodo } from "../todos/todos.reducer";
+import { resetUser } from "../users/user.reducers";
 import {
   loginSuccess,
   loginFailed,
@@ -88,6 +92,10 @@ export const changeAdminPassword = (id, body) => async (dispatch) => {
 
 export const logout = (id) => async (dispatch) => {
   dispatch(getLoading());
+  dispatch(resetClient());
+  dispatch(resetTodo());
+  dispatch(resetLeads());
+  dispatch(resetUser());
   dispatch(logoutSuccess());
   localStorage.removeItem("token");
   document.location.href("/");

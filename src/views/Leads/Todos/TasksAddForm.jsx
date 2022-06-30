@@ -22,9 +22,9 @@ import { useDispatch } from "react-redux";
 
 const TodoTaskAddForm = () => {
   const [successMessage, setSuccessMessage] = useState(null);
-  const [data, setData] = useState({ comment: "" });
+  const [data, setData] = useState({ message: "" });
   function resetForm() {
-    setData({ comment: "" });
+    setData({ message: "" });
   }
   const dispatch = useDispatch();
   const { tasks, error, loading } = useSelector((state) => state.tasks);
@@ -64,11 +64,10 @@ const TodoTaskAddForm = () => {
   const submit = async (event) => {
     event.preventDefault();
     const { ...rest } = data;
-    debugger;
     try {
       dispatch(
         addTodoTask({
-          Deadline: selectedDate,
+          deadline: selectedDate,
           subtask: subTask,
           task: task,
           createdBy: userId,
@@ -164,13 +163,13 @@ const TodoTaskAddForm = () => {
               </Col>
               <Col sm="12">
                 <FormGroup>
-                  <Label for="intrestedVertical">Comment</Label>
+                  <Label for="intrestedVertical">message</Label>
                   <Input
                     type="textarea"
-                    name="comment"
+                    name="message"
                     rows={5}
                     required
-                    id="comment"
+                    id="message"
                     onChange={(e) => handleTaskData(e)}
                     placeholder="Client Id"
                   />

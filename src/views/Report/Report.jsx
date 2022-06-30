@@ -13,6 +13,7 @@ import "./Report.css";
 import { AiOutlineSearch } from "react-icons/ai";
 import { AiOutlinePrinter } from "react-icons/ai";
 import { printDiv } from "../../utils";
+import { Helmet } from "react-helmet";
 
 const Report = () => {
   const styles = useStyles();
@@ -38,10 +39,9 @@ const Report = () => {
     // dispatch(getAllEarnings(body));
   };
 
-  const printReport = () => {};
-
   return (
     <Grid item xs={12} lg={14}>
+      <Helmet title="Report - CRM"></Helmet>
       <div className="viewuser__head">
         <Grid container>
           <Grid item xs={12} sm={12}>
@@ -182,7 +182,7 @@ const Report = () => {
             </Accordion>
           </Grid>
           <Grid item lg={4} xs={12} sm={12}>
-            <Accordion expanded={true} >
+            <Accordion expanded={true}>
               <div
                 style={{
                   display: "flex",

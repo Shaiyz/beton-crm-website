@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   loading: false,
-  projects: [],
+  projects: null,
   errors: false,
   project: null,
   activeProjects: [],
@@ -32,6 +32,9 @@ const projectSlice = createSlice({
       state.loading = false;
       state.hasErrors = true;
     },
+    resetProjects: (state) => {
+      state.projects = null;
+    },
   },
 });
 
@@ -44,4 +47,5 @@ export const {
   getProjectsListsSuccess,
   getProjectSuccess,
   updateProjectSuccess,
+  resetProjects,
 } = projectSlice.actions;

@@ -5,7 +5,6 @@ const initialState = {
   units: null,
   errors: false,
   unit: [],
-  activeUnits: [],
 };
 const unitSlice = createSlice({
   name: "unitService",
@@ -18,12 +17,10 @@ const unitSlice = createSlice({
       state.loading = false;
       state.units = payload;
     },
-
     getUnitSuccess: (state, { payload }) => {
       state.loading = false;
       state.unit = payload;
     },
-
     getUnitsListsFailure: (state) => {
       state.loading = false;
       state.hasErrors = true;

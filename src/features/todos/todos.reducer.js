@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   loading: false,
-  todos: [],
+  todos: null,
   errors: false,
 };
 const todoSlice = createSlice({
@@ -38,6 +38,9 @@ const todoSlice = createSlice({
       state.loading = false;
       state.saved = false;
     },
+    resetTodo: (state) => {
+      state.todos = null;
+    },
   },
 });
 
@@ -51,4 +54,5 @@ export const {
   deleteTodoSuccess,
   addSuperTodoSuccess,
   updateTodoSuccess,
+  resetTodo,
 } = todoSlice.actions;

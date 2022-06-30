@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import Button from "@material-ui/core/Button";
-import DeleteIcon from "@material-ui/icons/Delete";
+import Check from "@material-ui/icons/Check";
 import EditIcon from "@material-ui/icons/Edit";
+import Message from "@material-ui/icons/Message";
 import { Tooltip } from "@material-ui/core";
 import "../../User/TeamLead/Admin.css";
 import Table from "../../../components/TableUsers/Table";
@@ -10,12 +11,15 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getAllTodoTasks } from "../../../features/todos/todos.action";
 import { useDispatch } from "react-redux";
+import { getNames } from "../../../utils";
+import { Helmet } from "react-helmet";
 
 const Todos = ({ history, location }) => {
   const [value, setValue] = React.useState(0);
-  const [editDialog, setEditDialog] = React.useState(false);
   const { todos, error, loading } = useSelector((state) => state.todos);
-  const [todosList, setTodosList] = useSelector((state) => state.todosList);
+  const { tasks } = useSelector((state) => state.tasks);
+  console.log(tasks);
+  const [todosList, setTodosList] = React.useState([]);
   const dispatch = useDispatch();
   useEffect(() => {
     if (location?.hash == "#overdue") {
@@ -26,13 +30,11 @@ const Todos = ({ history, location }) => {
       getCurrent();
       setValue(2);
     } else if (location?.hash == "#upcoming") {
-      //  // dispatch(getUsersByRole("todos"));
-      setTodosList()
+      setTodosList();
       setValue(0);
     } else if (location?.hash == "#all") {
       dispatch(getAllTodoTasks());
       setTodosList(todos);
-
       setValue(3);
     }
   }, []);
@@ -42,12 +44,10 @@ const Todos = ({ history, location }) => {
   };
 
   const getOverDue = () => {
-    // dispatch(getUsersByStatus("todos", true));
     history.push(`/todos#overdue`);
   };
 
   const getUpcomming = () => {
-    // dispatch(getUsersByStatus("todos", false));
     history.push(`/todos#upcomming`);
   };
 
@@ -55,16 +55,39 @@ const Todos = ({ history, location }) => {
     dispatch(getAllTodoTasks());
     history.push(`/todos#all`);
   };
-  const deleteUser = (id) => {
+  const completeTodo = (id) => {
     // dispatch(deleteAdminUser(id));
   };
-  if (todos) {
-  }
   const renderActionButton = (params) => {
     return (
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <Tooltip title="Edit Task">
-          <Link to={`/todo/edit/${params.action}`} style={{ marginTop: "5px" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Tooltip title={params.action.message}>
+          <Button onClick={() => completeTodo(params.action._id)}>
+            <Message
+              className="action-buttons"
+              color="secondary"
+              fontSize="medium"
+              style={{
+                padding: 2,
+                border: "1px solid #F50057",
+                borderRadius: 8,
+                backgroundColor: "white",
+                color: "#F50057",
+              }}
+            />
+          </Button>
+        </Tooltip>
+        <Tooltip title="Edit Todo">
+          <Link
+            to={`/todo/edit/${params.action._id}`}
+            style={{ marginTop: "5px" }}
+          >
             <EditIcon
               className="action-buttons"
               color="secondary"
@@ -79,9 +102,9 @@ const Todos = ({ history, location }) => {
             />
           </Link>
         </Tooltip>
-        <Tooltip title="Delete">
-          <Button onClick={() => deleteUser(params.action)}>
-            <DeleteIcon
+        <Tooltip title="Mark Complete">
+          <Button onClick={() => completeTodo(params.action._id)}>
+            <Check
               className="action-buttons"
               color="secondary"
               fontSize="medium"
@@ -132,6 +155,12 @@ const Todos = ({ history, location }) => {
       width: 630,
     },
     {
+      field: "deadline",
+      title: "Deadline",
+      sortable: false,
+      width: 630,
+    },
+    {
       field: "action",
       title: "Action",
       sortable: false,
@@ -143,25 +172,25 @@ const Todos = ({ history, location }) => {
   let rows = [];
   if (todos) {
     let s = 1;
-    todos.forEach((task) => {
+    todos.forEach((todo) => {
+      const task = tasks.find((i) => i._id == todo.task._id);
+      const subTask = task.subTasks.find((i) => i._id == todo.subtask);
       rows.push({
         id: s++,
-        name: task.clientName,
-        email: task.email,
-        phone: "0" + task.phone,
-        createdAt: task.createdAt
-          ? new Date(task.createdAt).toLocaleDateString()
-          : "-",
-
-        action: task._id,
-        status: task.task,
-        subtask: task.subtask,
+        name: todo.client.name,
+        email: todo.client.email,
+        phone: "0" + todo.client.phone,
+        task: getNames(todo.task?.name),
+        action: todo,
+        subtask: getNames(subTask?.name),
+        deadline: new Date(todo.deadline).toLocaleString(),
       });
     });
   }
 
   return (
     <div className="feature">
+      <Helmet title="Todos"></Helmet>
       <Table
         header={"Todos"}
         blockUser={() => {}}
@@ -179,7 +208,6 @@ const Todos = ({ history, location }) => {
         getAllActive={getUpcomming}
         Tab3Func={getCurrent}
       />
-      <Modal closeModal={() => setEditDialog(false)} visible={editDialog} />
     </div>
   );
 };

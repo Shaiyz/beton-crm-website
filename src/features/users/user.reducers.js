@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   loading: false,
-  users: [],
+  users: null,
   errors: false,
   user: [],
 };
@@ -42,6 +42,9 @@ const userSlice = createSlice({
       state.loading = false;
       state.hasErrors = true;
     },
+    resetUser: (state) => {
+      state.users = null;
+    },
   },
 });
 
@@ -56,4 +59,5 @@ export const {
   updateUserSuccess,
   addUserSuccess,
   addClientSuccess,
+  resetUser,
 } = userSlice.actions;

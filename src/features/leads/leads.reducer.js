@@ -4,7 +4,7 @@ const initialState = {
   loading: false,
   saved: false,
   addLoader: false,
-  leads: [],
+  leads: null,
   errors: false,
   editLeadLoader: false,
   lead: [],
@@ -65,6 +65,9 @@ const leadSlice = createSlice({
       state.saved = true;
       state.addLoader = false;
     },
+    resetLeads: (state) => {
+      state.leads = null;
+    },
   },
 });
 
@@ -73,6 +76,7 @@ const leadsReducer = leadSlice.reducer;
 export default leadsReducer;
 export const {
   getLoadingLists,
+  resetLeads,
   getLeadListsSuccess,
   getLeadListsFailure,
   addLeadSuccess,
