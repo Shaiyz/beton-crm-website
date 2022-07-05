@@ -5,56 +5,36 @@ import "../User/TeamLead/Admin.css";
 import { Message } from "@material-ui/icons/";
 import { Link } from "react-router-dom";
 import Table from "../../components/TableUsers/Table";
-import { getAllLeads } from "../../features/leads/leads.action";
+import { getMyLeads } from "../../features/leads/leads.action";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import { Helmet } from "react-helmet";
 import AddBox from "@material-ui/icons/AddBox";
 
-const Leads = ({ history, location }) => {
-  const { leads, loading } = useSelector((state) => state.leads);
-  const { tasks } = useSelector((state) => state.tasks);
+const MyLeads = ({ history, location }) => {
+  const { myleads, loading } = useSelector((state) => state.leads);
   const [leadsList, setLeads] = useState(null);
   let dispatch = useDispatch();
   const [value, setValue] = React.useState(0);
   useEffect(() => {
-    if (!leads) {
-      dispatch(getAllLeads());
-    }
+    // if (!myleads) {
+      dispatch(getMyLeads());
+    // }
   }, []);
 
-  const closedwon = () => {
-    let filtered = [];
-    leads?.map((lead) => {
-      if (
+  const closedwon = () =>
+    myleads?.filter(
+      (lead) =>
         lead.leadTasks.length > 0 &&
-        lead.leadTasks.slice(-1)[0].subtask ==
-          tasks
-            .find((i) => i.name == "sales")
-            .subTasks.find((i) => i.name == "closedWon")._id
-      ) {
-        filtered.push(lead);
-      }
-    });
-    return filtered;
-  };
-
-  const closedlost = () => {
-    let filtered = [];
-    leads?.map((lead) => {
-      if (
+        lead.leadTasks.slice(-1)[0].task.name == "closedWon"
+    );
+  const closedlost = () =>
+    myleads?.filter(
+      (lead) =>
         lead.leadTasks.length > 0 &&
-        lead.leadTasks.slice(-1)[0].subtask ==
-          tasks
-            .find((i) => i.name == "sales")
-            .subTasks.find((i) => i.name == "closedLost")._id
-      ) {
-        filtered.push(lead);
-      }
-    });
-    return filtered;
-  };
+        lead.leadTasks.slice(-1)[0].task.name == "closedLost"
+    );
 
   useEffect(() => {
     if (location?.hash == "#closedlost") {
@@ -64,24 +44,24 @@ const Leads = ({ history, location }) => {
       setLeads(closedwon());
       setValue(2);
     } else if (location?.hash == "#all" || location?.hash == "") {
-      setLeads(leads);
+      setLeads(myleads);
       setValue(0);
     }
-  }, [leads]);
+  }, [myleads]);
 
   const getAll = () => {
-    setLeads(leads);
-    history.push(`/leads#all`);
+    setLeads(myleads);
+    history.push(`/myleads#all`);
   };
 
   const getClosedLost = () => {
     setLeads(closedlost());
-    history.push(`/leads#closedlost`);
+    history.push(`/myleads#closedlost`);
   };
 
   const getClosedWon = () => {
     setLeads(closedwon());
-    history.push(`/leads#closedwon`);
+    history.push(`/myleads#closedwon`);
   };
 
   const todoText = (comment) => `${comment}`;
@@ -160,7 +140,7 @@ const Leads = ({ history, location }) => {
     { field: "id", title: "S#", width: 200, sortable: false },
     {
       field: "email",
-      title: "Client Email",
+      title: "Email",
       sortable: false,
       width: 630,
     },
@@ -191,7 +171,7 @@ const Leads = ({ history, location }) => {
     leadsList.forEach((lead) => {
       rows.push({
         id: s++,
-        fullName: lead.client ? lead.client.name : "Not yet selected",
+        fullName: lead.client.name,
         email: lead.client.email,
         createdAt: lead.createdAt
           ? new Date(lead.createdAt).toLocaleDateString()
@@ -200,7 +180,7 @@ const Leads = ({ history, location }) => {
           ? new Date(lead.updatedAt).toLocaleDateString()
           : "-",
         edit: lead,
-        intrested: lead.intrested ? lead.intrested.name : "Not yet selected",
+        intrested: lead.intrested.name,
       });
     });
   }
@@ -221,27 +201,11 @@ const Leads = ({ history, location }) => {
         value={value}
         setValue={setValue}
         getAll={getAll}
-        getAllInactive={getClosedWon}
-        getAllActive={getClosedLost}
+        getAllInactive={getClosedLost}
+        getAllActive={getClosedWon}
       />
     </div>
   );
 };
 
-Leads.defaultProps = {
-  leads: [
-    {
-      first_name: "Shaiyz",
-      last_name: "Khan",
-      email: "shaiyz@gmail.com",
-      intrested: "Office",
-    },
-    {
-      first_name: "Saad",
-      last_name: "Khawar",
-      email: "saad@gmail.com",
-      intrested: "Apartment",
-    },
-  ],
-};
-export default Leads;
+export default MyLeads;

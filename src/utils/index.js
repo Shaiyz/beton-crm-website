@@ -32,7 +32,7 @@ export const getNames = (name) => {
     return "Done";
   }
   if (name == "closedWon") {
-    return "Closed Won";
+    return "Closed won";
   }
   if (name === "text") {
     return "Text";

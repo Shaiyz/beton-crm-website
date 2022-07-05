@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from "react-redux";
 import {
   Card,
   CardHeader,
@@ -9,54 +9,55 @@ import {
   Col,
   Button,
   Label,
-  UncontrolledAlert,
   Form,
   FormGroup,
 } from "reactstrap";
 import Alert from "../../components/Alert/Alert";
-import { getAllLeads, addLead } from '../../features/leads/leads.action';
+import { addLead } from "../../features/leads/leads.action";
 
 const LeadsAdd = ({}) => {
-  //body
+  const dispatch = useDispatch();
+  const { userInfo } = useSelector((state) => state.auth);
+  const { users } = useSelector((state) => state.users);
+  const { clients } = useSelector((state) => state.clients);
+  const { projects } = useSelector((state) => state.projects);
+  const [data, setData] = useState(
+    userInfo.role == "salesRep"
+      ? {
+          client: "",
+          assignedTo: userInfo._id,
+        }
+      : {
+          client: "",
+        }
+  );
 
-  // const [successMessage, setSuccessMessage] = useState(null);
-  const dispatch = useDispatch()
-  const [data, setData] = useState({
-    fname: "",
-    lname: "",
-    email: "",
-    assign_to: "",
-    client_name: "",
-    intrested: "",
-  });
   function resetForm() {
-    setData({
-      fname: "",
-      lname: "",
-      email: "",
-      assign_to: "",
-      client_name: "",
-      intrested: "",
-    });
+    if (userInfo.role == "salesRep") {
+      setData({
+        assignedTo: userInfo._id,
+      });
+    } else {
+      setData({
+        client: "",
+      });
+    }
   }
 
   useEffect(() => {
-    window.scrollTo(0, 0)
-}, [])
+    window.scrollTo(0, 0);
+  }, []);
 
-const submit = async (event) => {
-
-    event.preventDefault()
-    dispatch(addLead(data))
-}
-
+  const submit = async (event) => {
+    event.preventDefault();
+    dispatch(addLead(data));
+    // resetForm();
+  };
 
   function handleUserData(e) {
     const newdata = { ...data };
-    console.log(newdata);
     newdata[e.target.id] = e.target.value;
     setData(newdata);
-    console.log(newdata);
   }
 
   return (
@@ -83,7 +84,7 @@ const submit = async (event) => {
         </CardHeader>
 
         <div className="alert-container">
-            <Alert />
+          <Alert />
         </div>
 
         <CardBody>
@@ -94,52 +95,60 @@ const submit = async (event) => {
                 padding: "1px 20px 20px 20px",
               }}
             >
+              {userInfo?.role != "salesRep" && (
+                <Col sm="12">
+                  <Label for="assignToVertical"> Assign To </Label>
+                  <FormGroup>
+                    <select
+                      value={data.assignedTo}
+                      // required
+                      id="assignedTo"
+                      onChange={(e) => handleUserData(e)}
+                    >
+                      <option value="">--- Please Select Option ---</option>
+                      {users &&
+                        users.map((user) => (
+                          <option
+                            value={user._id}
+                          >{`${user.first_name}  ${user.last_name}`}</option>
+                        ))}
+                    </select>
+                  </FormGroup>
+                </Col>
+              )}
               <Col sm="12">
+                <Label for="clientNameVertical">Client ID</Label>
                 <FormGroup>
-                  <Label for="assignToVertical"> Assign To Employee </Label>
                   <select
-                    value={data.assign_to}
+                    value={data.client}
                     required
+                    id="client"
                     onChange={(e) => handleUserData(e)}
                   >
-                    <option>--- Please Select Option ---</option>
-                    <option value="Employee 1">Employee Name 1</option>
-                    <option value="Employee 2">Employee Name 2</option>
-                    <option value="Employee 3">Employee Name 3</option>
+                    <option value="">--- Please Select Option ---</option>
+                    {clients &&
+                      clients.map((client) => (
+                        <option
+                          value={client._id}
+                        >{`${client.clientId}`}</option>
+                      ))}
                   </select>
                 </FormGroup>
               </Col>
               <Col sm="12">
+                <Label for="intrestedVertical">Intersted Project</Label>
                 <FormGroup>
-                  <Label for="clientNameVertical">Client Name </Label>
                   <select
-                    value={data.assign_to}
-                    required
+                    value={data.intrested}
+                    // required
+                    id="intrested"
                     onChange={(e) => handleUserData(e)}
                   >
-                    <option>--- Please Select Option ---</option>
-                    <option value="Client 1">CLient Name 1</option>
-                    <option value="Client 2">CLient Name 2</option>
-                    <option value="Client 3">CLient Name 3</option>
-                  </select>
-                </FormGroup>
-              </Col>
-              <Col sm="12">
-                <FormGroup>
-                  <Label for="intrestedVertical">
-                    Client Intersted Project{" "}
-                  </Label>
-                  <select
-                    value={data.type}
-                    required
-                    onChange={(e) => handleUserData(e)}
-                  >
-                    <option>--- Please Select Option ---</option>
-                    <option value="office">Office</option>
-                    <option value="appartment">Appartment</option>
-                    <option value="plot">Plot</option>
-                    <option value="suite">Suite</option>
-                    <option value="penthouse">Penthouse</option>
+                    <option value="">--- Please Select Option ---</option>
+                    {projects &&
+                      projects.map((project) => (
+                        <option value={project._id}>{`${project.name}`}</option>
+                      ))}
                   </select>
                 </FormGroup>
               </Col>

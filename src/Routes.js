@@ -32,15 +32,28 @@ import Project from "./views/Projects/Project";
 import Units from "./views/Projects/Unit/Unit";
 import { getAllTasks } from "./features/tasks/tasks.action";
 import TeamLeadEdit from "./views/User/TeamLead/TeamLeadEditForm";
+import MyLeads from "./views/Leads/MyLeads";
+import TodosEditForm from "./views/Leads/Todos/TodosEditForm";
+import { getAllProjects } from "./features/projects/projects.action";
+import { getAllClients } from "./features/client/client.action";
+import { getAllUnits } from "./features/units/units.action";
+import { getAllLeads, getMyLeads } from "./features/leads/leads.action";
 
 function Routes() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const { authenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getAllUsers());
-    dispatch(getAllTasks());
-  }, []);
+    if (authenticated) {
+      dispatch(getAllUsers());
+      dispatch(getAllTasks());
+      dispatch(getAllLeads());
+      dispatch(getMyLeads());
+      dispatch(getAllProjects());
+      dispatch(getAllClients());
+      dispatch(getAllUnits());
+    }
+  }, [authenticated]);
 
   const protectedRoutes = () => {
     return (
@@ -73,7 +86,7 @@ function Routes() {
 
               <Route exact path="/user/:id" component={Profile} />
               <Route exact path="/profile" component={Profile} />
-              
+
               {/* 
               <Route exact path="/lead/add" component={LeadForm} />
               <Route exact path="/lead/edit/:id" component={LeadForm} /> */}
@@ -107,6 +120,8 @@ function Routes() {
 
               {/* Leads */}
               <Route exact path="/leads" component={Leads} />
+              <Route exact path="/myleads" component={MyLeads} />
+
               <Route exact path="/leads/add" component={LeadsAdd} />
               <Route exact path="/leads/edit/:id" component={LeadsEdit} />
 
@@ -121,8 +136,8 @@ function Routes() {
 
               {/* Todos */}
               <Route exact path="/todos" component={Todos} />
-              <Route exact path="/todo/add" component={TasksAddForm} />
-              <Route exact path="/todos/edit" component={Todos} />
+              <Route exact path="/todo/add/:id" component={TasksAddForm} />
+              <Route exact path="/todo/edit/:id" component={TodosEditForm} />
 
               {/* <Route exact path="/user/add" component={UserForm} />
               <Route exact path="/user/edit/:id" component={UserForm} /> */}

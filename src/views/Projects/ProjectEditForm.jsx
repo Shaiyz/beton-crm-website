@@ -1,144 +1,145 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import Alert from "../../components/Alert/Alert";
 import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardBody,
-    Row,
-    Col,
-    Button,
-    Label,
-    UncontrolledAlert,
-    Form,
-    FormGroup,
-    Input
-} from 'reactstrap'
+  Card,
+  CardHeader,
+  CardTitle,
+  CardBody,
+  Row,
+  Col,
+  Button,
+  Label,
+  Form,
+  FormGroup,
+  Input,
+} from "reactstrap";
+import { updateProject } from "../../features/projects/projects.action";
 
+const ProjectEdit = () => {
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const { saved, projects } = useSelector((state) => state.projects);
+  const [data, setData] = useState({
+    pname: "",
+    location: "",
+  });
+  function resetForm() {
+    setData({
+      pname: "",
+      location: "",
+    });
+  }
+  const fetchProject = () => {
+    const project = projects.filter((project) => project._id === id);
+    setData({ name: project.name, location: project.location });
+  };
 
-const ProjectEdit = ({ }) => {
-    //body
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
-    const [successMessage, setSuccessMessage] = useState(null)
-    const [data, setData] = useState({
-        pname: "",
-        location: "",
-    })
-    function resetForm() {
-        setData({
-            pname: "",
-            location: "",
-        })
-    }
+  useEffect(() => {
+    fetchProject();
+  }, []);
 
-    useEffect(() => {
-        window.scrollTo(0, 0)
-    }, [successMessage])
+  const submit = async (event) => {
+    event.preventDefault();
+    dispatch(updateProject(data, id));
+  };
 
-    const submit = async (event) => {
+  function handleUserData(e) {
+    const newdata = { ...data };
+    newdata[e.target.id] = e.target.value;
+    setData(newdata);
+  }
 
-        // /role/{role}/user/{user}
+  return (
+    <>
+      <Card
+        style={{
+          marginLeft: "20px",
+          marginRight: "20px",
+        }}
+      >
+        <CardHeader
+          style={{
+            backgroundColor: "#1F1D61",
+            borderRadius: "10px",
+            padding: "20px",
+            color: "white",
+            marginTop: "40px",
+            marginBottom: "20px",
+            fontWeight: "100px",
+            fontSize: "16px",
+          }}
+        >
+          <CardTitle tag="h4">Edit Project</CardTitle>
+        </CardHeader>
+        <div className="alert-container">
+          <Alert />
+        </div>
+        <CardBody>
+          <Form onSubmit={(event) => submit(event)}>
+            <Row
+              style={{
+                border: "1px solid #2e272538",
+                padding: "1px 20px 20px 20px",
+              }}
+            >
+              <Col sm="12">
+                <FormGroup>
+                  <Label for="pNameVertical">Project Name</Label>
+                  <Input
+                    type="text"
+                    name="pname"
+                    id="pname"
+                    value={data.pname}
+                    required
+                    onChange={(e) => handleUserData(e)}
+                    placeholder="Proejct Name"
+                  />
+                </FormGroup>
+              </Col>
 
-        event.preventDefault()
+              <Col sm="12">
+                <FormGroup>
+                  <Label for="locationVertical">Location</Label>
+                  <Input
+                    type="text"
+                    name="location"
+                    id="location"
+                    value={data.location}
+                    required
+                    onChange={(e) => handleUserData(e)}
+                    placeholder="Location"
+                  />
+                </FormGroup>
+              </Col>
 
-        try {
-
-            setSuccessMessage("Update Project Info Successfully")
-            resetForm()
-        } catch (error) {
-            setSuccessMessage(null)
-            console.log(error)
-        }
-
-    }
-
-    function handleUserData(e) {
-        const newdata = { ...data }
-        console.log(newdata)
-        newdata[e.target.id] = e.target.value
-        setData(newdata)
-        console.log(newdata)
-    }
-
-    function handleImage(e) {
-        const newdata = { ...data }
-        newdata[e.target.id] = e.target.files[0]
-        setData(newdata)
-        console.log(newdata)
-
-        if (e.target.files[0]) {
-            const reader = new FileReader()
-            reader.addEventListener("load", () => {
-                const newdata = { ...data }
-                newdata['image'] = reader.result
-                setData(newdata)
-                console.log(newdata.image)
-            })
-            reader.readAsDataURL(e.target.files[0])
-        }
-    }
-    return (<>
-            <Card style={{
-                  marginLeft: '20px',
-                  marginRight: '20px',
-                  }}>
-            <CardHeader style={{
-                  backgroundColor: "#1F1D61",
-                  borderRadius: '10px',
-                  padding: '20px',
-                  color: "white",
-                  marginTop: '40px',
-                  marginBottom: '20px',
-                  fontWeight: '100px',
-                  fontSize: '16px',
-                //   marginLeft: '40px',
-                //   marginRight: '50px',
-            }}>
-            <CardTitle tag='h4'>Edit Project</CardTitle>
-            </CardHeader>
-
-            {successMessage && <UncontrolledAlert color='success'>
-                <div className='alert-body'>
-                    {successMessage}
-                </div>
-            </UncontrolledAlert>}
-            <CardBody>
-                <Form onSubmit={(event) => submit(event)} >
-                <Row   style={{
-                        border: '1px solid #2e272538',
-                        padding: '1px 20px 20px 20px'}}>                    
-                        <Col sm='12'>
-                            <FormGroup>
-                                <Label for='pNameVertical'>Project Name</Label>
-                                <Input type='text' name='pname' id='pname' value={data.pname} required onChange={(e) => handleUserData(e)} placeholder='Proejct Name'
-                                />
-                            </FormGroup>
-                        </Col>
-
-                         <Col sm='12'>
-                            <FormGroup>
-                                <Label for='locationVertical'>Location</Label>
-                                <Input type='text' name='location' id='location' value={data.location} required onChange={(e) => handleUserData(e)} placeholder='Location'
-                                />
-                            </FormGroup>
-                        </Col>
-
-
-                        <Col sm='12'>
-                            <FormGroup className='d-flex mb-0' style={{marginTop: '10px'}}>
-                                <Button className='form_submit_btn' type='submit' style={{marginInline: '10px'}}>
-                                    Submit
-                                </Button>
-                                <Button className='form_reset_btn' onClick={resetForm}>
-                                    Reset
-                                </Button>
-                            </FormGroup>
-                        </Col>
-                    </Row>
-                </Form>
-
-            </CardBody>
-        </Card>
-    </>)
-}
+              <Col sm="12">
+                <FormGroup
+                  className="d-flex mb-0"
+                  style={{ marginTop: "10px" }}
+                >
+                  <Button
+                    className="form_submit_btn"
+                    type="submit"
+                    style={{ marginInline: "10px" }}
+                  >
+                    Submit
+                  </Button>
+                  <Button className="form_reset_btn" onClick={resetForm}>
+                    Reset
+                  </Button>
+                </FormGroup>
+              </Col>
+            </Row>
+          </Form>
+        </CardBody>
+      </Card>
+    </>
+  );
+};
 export default ProjectEdit;

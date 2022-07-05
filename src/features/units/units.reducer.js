@@ -29,6 +29,10 @@ const unitSlice = createSlice({
       state.loading = false;
       state.hasErrors = true;
     },
+    addUnitSuccess: (state) => {
+      state.loading = false;
+      state.saved = true;
+    },
   },
 });
 
@@ -41,4 +45,5 @@ export const {
   getUnitsListsSuccess,
   getUnitSuccess,
   updateUnitSuccess,
+  addUnitSuccess,
 } = unitSlice.actions;

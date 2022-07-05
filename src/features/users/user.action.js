@@ -5,11 +5,7 @@ import {
   getUsersListsSuccess,
   getUserSuccess,
   updateUserSuccess,
-  getActiveUsers,
   addUserSuccess,
-  addClientSuccess,
-  getClientsListsFailure,
-  getClientsListsSuccess,
   changePasswordSuccess,
   getchangePasswordFailure,
 } from "./user.reducers";
@@ -62,7 +58,7 @@ export const addUser = (body, id) => async (dispatch) => {
     .post(`/user/create`, body)
     .then((response) => {
       dispatch(addUserSuccess(response.data.data));
-      dispatch(setAlertMessage(response.data.data.message, "success"));
+      dispatch(setAlertMessage(response.data.message, "success"));
       dispatch(getAllUsers());
     })
     .catch((err) => {

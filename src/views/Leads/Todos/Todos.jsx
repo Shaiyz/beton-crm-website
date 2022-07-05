@@ -6,7 +6,6 @@ import Message from "@material-ui/icons/Message";
 import { Tooltip } from "@material-ui/core";
 import "../../User/TeamLead/Admin.css";
 import Table from "../../../components/TableUsers/Table";
-import { Modal } from "./Modals";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getAllTodoTasks } from "../../../features/todos/todos.action";
@@ -18,7 +17,6 @@ const Todos = ({ history, location }) => {
   const [value, setValue] = React.useState(0);
   const { todos, error, loading } = useSelector((state) => state.todos);
   const { tasks } = useSelector((state) => state.tasks);
-  console.log(tasks);
   const [todosList, setTodosList] = React.useState([]);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -68,7 +66,7 @@ const Todos = ({ history, location }) => {
         }}
       >
         <Tooltip title={params.action.message}>
-          <Button onClick={() => completeTodo(params.action._id)}>
+          <Button>
             <Message
               className="action-buttons"
               color="secondary"
@@ -171,19 +169,24 @@ const Todos = ({ history, location }) => {
 
   let rows = [];
   if (todos) {
+    
+    const list = [...todos].sort((a, b) => {
+      return new Date(b.deadline) - new Date(a.deadline);
+    });
+
     let s = 1;
-    todos.forEach((todo) => {
-      const task = tasks.find((i) => i._id == todo.task._id);
-      const subTask = task.subTasks.find((i) => i._id == todo.subtask);
+    list.forEach((todo) => {
+      const task = tasks.find((i) => i?._id == todo?.task?._id);
+      const subTask = task?.subTasks.find((i) => i._id == todo?.subtask);
       rows.push({
         id: s++,
-        name: todo.client.name,
-        email: todo.client.email,
-        phone: "0" + todo.client.phone,
+        name: todo.client?.name,
+        email: todo.client?.email,
+        phone: "0" + todo.client?.phone,
         task: getNames(todo.task?.name),
         action: todo,
         subtask: getNames(subTask?.name),
-        deadline: new Date(todo.deadline).toLocaleString(),
+        deadline: new Date(todo?.deadline).toLocaleString(),
       });
     });
   }

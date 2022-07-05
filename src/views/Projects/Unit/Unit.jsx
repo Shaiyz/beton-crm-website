@@ -64,6 +64,12 @@ const Unit = ({}) => {
       sortable: false,
       width: 630,
     },
+    {
+      field: "project",
+      title: "Project",
+      sortable: false,
+      width: 630,
+    },
 
     {
       field: "action",
@@ -80,17 +86,18 @@ const Unit = ({}) => {
     units.forEach((unit) => {
       rows.push({
         id: s++,
-        type: unit.type,
-        size: unit.size,
-        price: unit.price,
-        quantity: unit.quantity,
-        createdAt: unit.createdAt
-          ? new Date(unit.createdAt).toLocaleDateString()
+        type: unit.unit.type,
+        size: unit.unit.size,
+        price: unit.unit.price,
+        quantity: unit.unit.quantity,
+        createdAt: unit.unit.createdAt
+          ? new Date(unit.unit.createdAt).toLocaleDateString()
           : "-",
-        updatedAt: unit.updatedAt
-          ? new Date(unit.updatedAt).toLocaleDateString()
+        project: unit.project.name,
+        updatedAt: unit.unit.updatedAt
+          ? new Date(unit.unit.updatedAt).toLocaleDateString()
           : "-",
-        action: unit._id,
+        action: unit.unit._id,
       });
     });
   }

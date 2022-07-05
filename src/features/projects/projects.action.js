@@ -1,5 +1,6 @@
 import { backend } from "../../api/index";
 import {
+  addProjectSuccess,
   getLoadingLists,
   getProjectsListsFailure,
   getProjectsListsSuccess,
@@ -35,11 +36,28 @@ export const getProject = (id) => async (dispatch) => {
 export const updateProject = (body, id) => async (dispatch) => {
   dispatch(getLoadingLists());
   await backend
-    .put(`/project/updateProject/${id}`, body)
+    .put(`/project/${id}`, body)
     .then((response) => {
       dispatch(updateProjectSuccess(response.data.data));
       dispatch(setAlertMessage(response.data.message, "success"));
       dispatch(getAllProjects());
+    })
+    .catch((err) => {
+      if (err.response) {
+        dispatch(setAlertMessage(err.response.data.message, "error"));
+        dispatch(getProjectsListsFailure(err));
+      }
+    });
+};
+
+export const addProject = (body) => async (dispatch) => {
+  dispatch(getLoadingLists());
+  await backend
+    .post(`/project`, body)
+    .then((response) => {
+      dispatch(setAlertMessage(response.data.message, "success"));
+      dispatch(getAllProjects());
+      dispatch(addProjectSuccess());
     })
     .catch((err) => {
       if (err.response) {

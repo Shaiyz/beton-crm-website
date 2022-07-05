@@ -5,6 +5,7 @@ import {
   getUnitsListsSuccess,
   getUnitSuccess,
   updateUnitSuccess,
+  addUnitSuccess,
 } from "./units.reducer";
 import { setAlertMessage } from "../alert/alert.action";
 
@@ -35,9 +36,26 @@ export const getUnit = (id) => async (dispatch) => {
 export const updateUnit = (body, id) => async (dispatch) => {
   dispatch(getLoadingLists());
   await backend
-    .put(`/unit/updateUnit/${id}`, body)
+    .put(`/unit/${id}`, body)
     .then((response) => {
       dispatch(updateUnitSuccess(response.data.data));
+      dispatch(setAlertMessage(response.data.message, "success"));
+      dispatch(getAllUnits());
+    })
+    .catch((err) => {
+      if (err.response) {
+        dispatch(setAlertMessage(err.response.data.message, "error"));
+        dispatch(getUnitsListsFailure(err));
+      }
+    });
+};
+
+export const addUnit = (body, id) => async (dispatch) => {
+  dispatch(getLoadingLists());
+  await backend
+    .post(`/unit`, body)
+    .then((response) => {
+      dispatch(addUnitSuccess(response.data.data));
       dispatch(setAlertMessage(response.data.message, "success"));
       dispatch(getAllUnits());
     })

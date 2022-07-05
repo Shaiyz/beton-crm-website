@@ -15,30 +15,29 @@ import { useSelector } from "react-redux";
 import { getNames } from "../../../utils";
 import DateFnsUtils from "@date-io/date-fns";
 import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import { addTodoTask } from "../../../features/todos/todos.action";
+import { editTodoTask } from "../../../features/todos/todos.action";
 import { useDispatch } from "react-redux";
 import { Button } from "@material-ui/core";
-import Alert from "../../../components/Alert/Alert";
 import { useParams } from "react-router-dom";
+import Alert from "../../../components/Alert/Alert";
 
-const TodoTaskAddForm = () => {
+const TodosEditForm = () => {
   const [data, setData] = useState({ message: "" });
-  function resetForm() {
-    setData({ message: "" });
-  }
-  const dispatch = useDispatch();
   const { tasks, error, loading } = useSelector((state) => state.tasks);
-  const { userId } = useSelector((state) => state.auth);
+  const { todos } = useSelector((state) => state.todos);
   const [subMenu, setSubMenu] = React.useState(null);
   const [task, setTask] = React.useState("");
   const [subTask, setSubTask] = React.useState("");
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const { id } = useParams();
+
+  const dispatch = useDispatch();
+
   const handleChange = (e) => {
     setTask(e.target.value);
     if (e.target.value != "") {
       const subtasks = tasks
-        ?.filter((i) => i._id === e.target.value)[0]
+        ?.find((i) => i._id === e.target.value)
         .subTasks.map((subTask) => {
           return { label: getNames(subTask.name), value: subTask._id };
         });
@@ -54,30 +53,46 @@ const TodoTaskAddForm = () => {
   const handleChangeSubTask = (e) => {
     setSubTask(e.target.value);
   };
+
   const handleDateChange = (value) => {
     setSelectedDate(value);
   };
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    fetchCurrentTodo();
+  }, [todos]);
+
+  const fetchCurrentTodo = () => {
+    if (todos) {
+      const todo = todos?.find((todo) => todo._id === id);
+      setData({
+        message: todo?.message,
+      });
+      setTask(todo.task._id);
+      const subtasks = todo.task.subTasks.map((subTask) => {
+        return { label: getNames(subTask.name), value: subTask._id };
+      });
+      setSubMenu(subtasks);
+      setSubTask(todo.subtask);
+      setSelectedDate(todo.deadline);
+    }
+  };
 
   const submit = async (event) => {
     event.preventDefault();
-    const { ...rest } = data;
+    const { message } = data;
     dispatch(
-      addTodoTask(
+      editTodoTask(
         {
           deadline: selectedDate,
           subtask: subTask,
           task: task,
-          createdBy: userId,
-          ...rest,
+          message: message,
         },
         id
       )
     );
-    resetForm();
   };
 
   function handleTaskData(e) {
@@ -111,6 +126,7 @@ const TodoTaskAddForm = () => {
         <div className="alert-container">
           <Alert />
         </div>
+
         <CardBody>
           <Form onSubmit={(event) => submit(event)}>
             <Row
@@ -122,7 +138,7 @@ const TodoTaskAddForm = () => {
               <Col sm="12">
                 <Label for="assignToVertical"> Task </Label>
                 <FormGroup>
-                  <select required onChange={handleChange}>
+                  <select required onChange={handleChange} value={task}>
                     <option> --- Please Select Option --- </option>
                     {menu?.map((i, ind) => (
                       <option key={ind} value={i.value}>
@@ -133,11 +149,15 @@ const TodoTaskAddForm = () => {
                 </FormGroup>
               </Col>
               <Col sm="12">
-                <Label for="clientNameVertical">Sub Task</Label>
-
+                <Label>Sub Task</Label>
                 <FormGroup>
-                  <select required onChange={handleChangeSubTask}>
-                    {/* <option>--- Please Select Option ---</option> */}
+                  <select
+                    required
+                    onChange={handleChangeSubTask}
+                    value={subTask}
+                  >
+                    <option> --- Please Select Option --- </option>
+
                     {subMenu?.map((i, ind) => (
                       <option key={ind} value={i.value}>
                         {i.label}
@@ -166,6 +186,7 @@ const TodoTaskAddForm = () => {
                   <Input
                     type="textarea"
                     name="message"
+                    value={data.message}
                     rows={5}
                     bgSize="lg"
                     required
@@ -180,15 +201,8 @@ const TodoTaskAddForm = () => {
                   className="d-flex mb-0"
                   style={{ marginInline: "10px", width: "100%" }}
                 >
-                  <Button
-                    type="submit"
-                    color="primary"
-                    // style={{ marginInline: "10px", width: "100%" }}
-                  >
+                  <Button type="submit" color="primary">
                     Submit
-                  </Button>
-                  <Button color="secondary " onClick={resetForm}>
-                    Reset
                   </Button>
                 </FormGroup>
               </Col>
@@ -199,4 +213,4 @@ const TodoTaskAddForm = () => {
     </>
   );
 };
-export default TodoTaskAddForm;
+export default TodosEditForm;

@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import Table from "../../../components/TableUsers/Table";
 import { Grid, Tooltip, Chip, Switch } from "@material-ui/core";
 import { useSelector } from "react-redux";
-// import TransitionModal from "../../../components/TransitionModal/TransitionModal";
+import EditIcon from "@material-ui/icons/Edit";
+
 import { updateUser } from "../../../features/users/user.action";
 import "./User.css";
 import { Link, useHistory, useLocation } from "react-router-dom";
@@ -10,7 +11,7 @@ import IconButton from "@material-ui/core/IconButton";
 import { AiFillEye } from "react-icons/ai";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
-import { Assignment, AssignmentIndOutlined, Report } from "@material-ui/icons";
+import { AssignmentIndOutlined } from "@material-ui/icons";
 import { Helmet } from "react-helmet";
 
 const DigitalMarketer = () => {
@@ -82,8 +83,8 @@ const DigitalMarketer = () => {
 
   const renderActionButton = (params) => {
     return (
-      <Grid container xs={12} spacing={1} style={{ whiteSpace: "nowrap" }}>
-        <Grid item lg={4}>
+      <Grid container xs={12} spacing={4} style={{ whiteSpace: "nowrap" }}>
+        <Grid item lg={3}>
           <Tooltip title="View Details">
             <IconButton style={{ padding: 2 }}>
               <Link to={`/user/${params.action._id}`}>
@@ -101,7 +102,7 @@ const DigitalMarketer = () => {
             </IconButton>
           </Tooltip>
         </Grid>
-        <Grid item lg={4}>
+        <Grid item lg={3}>
           <Tooltip title="View Report">
             <IconButton style={{ padding: 2 }}>
               <Link to={`/report/${params.action._id}`}>
@@ -119,7 +120,29 @@ const DigitalMarketer = () => {
             </IconButton>
           </Tooltip>
         </Grid>
-        <Grid item lg={4}>
+        <Grid item lg={3}>
+          <Tooltip title="Edit Digital Marketer">
+            <IconButton style={{ padding: 2 }}>
+              <Link to={`/digitalMarketer/edit/${params.action._id}`}>
+                <EditIcon
+                  size={25}
+                  className="action-buttons"
+                  color="secondary"
+                  fontSize="medium"
+                  style={{
+                    padding: 2,
+                    border: "1px solid #F50057",
+                    borderRadius: 8,
+                    backgroundColor: "white",
+                    color: "#F50057",
+                  }}
+                />
+              </Link>
+            </IconButton>
+          </Tooltip>
+        </Grid>
+
+        <Grid item lg={3}>
           <Switch
             checked={params.action.isActive}
             onChange={(e) => handleChange(e, params.action._id)}
@@ -157,7 +180,7 @@ const DigitalMarketer = () => {
       field: "action",
       title: "Action",
       render: renderActionButton,
-      width: "200px",
+      width: "1000px",
     },
   ];
 

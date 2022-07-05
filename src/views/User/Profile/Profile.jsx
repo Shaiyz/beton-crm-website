@@ -150,10 +150,10 @@ const ViewUser = () => {
   const { users, loading } = useSelector((state) => state.users);
   const [expanded, setExpanded] = useState("panel1");
   const [userdetails, setuserdetails] = useState(null);
-  const { authenticated, userInfo } = useSelector((state) => state.auth);
+  const { userInfo } = useSelector((state) => state.auth);
   useEffect(() => {
     if (id && users.length > 0) {
-      setuserdetails(users.filter((user) => user._id == id)[0]);
+      setuserdetails(users.find((user) => user._id == id));
     }
     if (!id) {
       setuserdetails(userInfo);
@@ -173,8 +173,8 @@ const ViewUser = () => {
           <div className="viewuser__head">
             <Grid item xs={12} sm={4} align="left">
               <div className="viewuser__profileimage">
-                {userdetails && userdetails?.profile_image ? (
-                  <img src={userdetails && userdetails?.profile_image} />
+                {userdetails && userdetails?.profilePicture ? (
+                  <img src={userdetails && userdetails?.profilePicture} />
                 ) : (
                   <img src="/assets/images/OIP.jfif" />
                 )}

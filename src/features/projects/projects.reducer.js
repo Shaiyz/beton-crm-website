@@ -5,7 +5,6 @@ const initialState = {
   projects: null,
   errors: false,
   project: null,
-  activeProjects: [],
 };
 const projectSlice = createSlice({
   name: "projectService",
@@ -32,6 +31,11 @@ const projectSlice = createSlice({
       state.loading = false;
       state.hasErrors = true;
     },
+    addProjectSuccess: (state) => {
+      state.loading = false;
+      state.saved = true;
+    },
+
     resetProjects: (state) => {
       state.projects = null;
     },
@@ -48,4 +52,5 @@ export const {
   getProjectSuccess,
   updateProjectSuccess,
   resetProjects,
+  addProjectSuccess,
 } = projectSlice.actions;

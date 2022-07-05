@@ -5,6 +5,7 @@ const initialState = {
   saved: false,
   addLoader: false,
   leads: null,
+  myleads: null,
   errors: false,
   editLeadLoader: false,
   lead: [],
@@ -26,40 +27,50 @@ const leadSlice = createSlice({
     getLeadListsSuccess: (state, { payload }) => {
       state.loading = false;
       state.leads = payload;
-      state.lead = [];
     },
-    getLeadAvailableListsSuccess: (state, { payload }) => {
+    getMyLeadListsFailure: (state) => {
       state.loading = false;
-      state.availableLeads = payload;
+      state.hasErrors = true;
+      state.addLoader = false;
+      state.myleads = null;
     },
-    getLeadSearch: (state, { payload }) => {
+    getMyLeadListsSuccess: (state, { payload }) => {
       state.loading = false;
-      state.searchedLead = payload;
+      state.myleads = payload;
     },
-    getEmptyLeadSearch: (state, { payload }) => {
-      state.loading = false;
-      state.searchedLead = [];
-    },
-    getLeadSuccess: (state, { payload }) => {
-      state.lead = payload;
-      state.loading = false;
-    },
+    // getLeadAvailableListsSuccess: (state, { payload }) => {
+    //   state.loading = false;
+    //   state.availableLeads = payload;
+    // },
+    // getLeadSearch: (state, { payload }) => {
+    //   state.loading = false;
+    //   state.searchedLead = payload;
+    // },
+    // getEmptyLeadSearch: (state, { payload }) => {
+    //   state.loading = false;
+    //   state.searchedLead = [];
+    // },
+    // getLeadSuccess: (state, { payload }) => {
+    //   state.lead = payload;
+    //   state.loading = false;
+    // },
+    // updateEditLeadSuccess: (state, { payload }) => {
+    //   state.lead = payload;
+    //   state.loading = false;
+    //   state.editLeadLoader = false;
+    // },
     getLeadListsFailure: (state) => {
       state.loading = false;
       state.hasErrors = true;
       state.addLoader = false;
-      state.leads = [];
+      state.leads = null;
     },
     updateLeadSuccess: (state, { payload }) => {
       state.lead = payload;
       state.loading = false;
       state.saved = true;
     },
-    updateEditLeadSuccess: (state, { payload }) => {
-      state.lead = payload;
-      state.loading = false;
-      state.editLeadLoader = false;
-    },
+
     addLeadSuccess: (state, { payload }) => {
       state.loading = false;
       state.saved = true;
@@ -67,10 +78,7 @@ const leadSlice = createSlice({
     },
     resetLeads: (state) => {
       state.leads = null;
-    },
-    updateLeadSuccess: (state) => {
-      state.loading = false;
-      state.hasErrors = true;
+      state.myleads = null;
     },
   },
 });
@@ -85,4 +93,6 @@ export const {
   getLeadListsFailure,
   addLeadSuccess,
   updateLeadSuccess,
+  getMyLeadListsSuccess,
+  getMyLeadListsFailure,
 } = leadSlice.actions;

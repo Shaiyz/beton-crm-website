@@ -43,7 +43,7 @@ const dataList = {
         },
         {
           title: "My Leads",
-          url: "leads",
+          url: "myleads",
           icon: faList,
         },
         {
@@ -92,7 +92,7 @@ const dataList = {
       list: [
         {
           title: "My Leads",
-          url: "leads",
+          url: "myleads",
           icon: faList,
         },
         {
@@ -149,7 +149,7 @@ const dataList = {
         },
         {
           title: "My Leads",
-          url: "leads",
+          url: "myleads",
         },
         {
           title: "Todo List",

@@ -57,3 +57,19 @@ export const updateClient = (body, id) => async (dispatch) => {
       }
     });
 };
+
+export const addClient = (body, id) => async (dispatch) => {
+  dispatch(getLoadingLists());
+  await backend
+    .post(`/client`, body)
+    .then((response) => {
+      dispatch(setAlertMessage(response.data.message, "success"));
+      dispatch(getAllClients());
+    })
+    .catch((err) => {
+      if (err.response) {
+        dispatch(setAlertMessage(err.response.data.message, "error"));
+        dispatch(getClientsListsFailure(err));
+      }
+    });
+};
