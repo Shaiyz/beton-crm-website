@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import Alert from "../../../components/Alert/Alert";
 import {
@@ -21,7 +21,7 @@ const UnitAdd = () => {
   const { projectId } = useParams();
   const [data, setData] = useState({
     quantity: "",
-    type: "",
+    type: "office",
     size: "",
     price: "",
   });
@@ -38,9 +38,9 @@ const UnitAdd = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const submit = async (event) => {
+  const submit = (event) => {
     event.preventDefault();
-    dispatch(addUnit(projectId));
+    dispatch(addUnit(data, projectId));
   };
 
   function handleUserData(e) {
@@ -103,9 +103,9 @@ const UnitAdd = () => {
                   <select
                     value={data.type}
                     required
+                    id="type"
                     onChange={(e) => handleUserData(e)}
                   >
-                    <option>--- Please Select Option ---</option>
                     <option value="office">Office</option>
                     <option value="appartment">Appartment</option>
                     <option value="plot">Plot</option>
@@ -114,7 +114,7 @@ const UnitAdd = () => {
                   </select>
                 </FormGroup>
               </Col>
-              <Col sm="12">
+              <Col sm="12" lg="12">
                 <Label for="sizeVertical">Size</Label>
                 <FormGroup>
                   <Input

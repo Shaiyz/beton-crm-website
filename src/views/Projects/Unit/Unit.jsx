@@ -82,6 +82,7 @@ const Unit = ({}) => {
 
   let rows = [];
   if (units) {
+    console.log(units)
     let s = 1;
     units.forEach((unit) => {
       rows.push({

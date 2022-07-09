@@ -8,54 +8,91 @@ import "../../User/TeamLead/Admin.css";
 import Table from "../../../components/TableUsers/Table";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { getAllTodoTasks } from "../../../features/todos/todos.action";
-import { useDispatch } from "react-redux";
 import { getNames } from "../../../utils";
 import { Helmet } from "react-helmet";
+import {
+  completeTodoTask,
+  getAllTodoTasks,
+} from "../../../features/todos/todos.action";
+import { useDispatch } from "react-redux";
+var todaysDate = new Date();
+let list = [];
 
 const Todos = ({ history, location }) => {
   const [value, setValue] = React.useState(0);
-  const { todos, error, loading } = useSelector((state) => state.todos);
+  const { todos, loading } = useSelector((state) => state.todos);
   const { tasks } = useSelector((state) => state.tasks);
   const [todosList, setTodosList] = React.useState([]);
   const dispatch = useDispatch();
+
   useEffect(() => {
-    if (location?.hash == "#overdue") {
-      //  //dispatch(getUsersByStatus("todos", true));
-      setValue(1);
-    } else if (location?.hash == "#current") {
-      //  // dispatch(getUsersByStatus("salaesRep", false));
-      getCurrent();
-      setValue(2);
-    } else if (location?.hash == "#upcoming") {
-      setTodosList();
-      setValue(0);
-    } else if (location?.hash == "#all") {
+    if (!todos) {
       dispatch(getAllTodoTasks());
-      setTodosList(todos);
-      setValue(3);
     }
   }, []);
 
+  useEffect(() => {
+    if (location?.hash == "#overdue") {
+      getOverDue();
+      setValue(2);
+    } else if (location?.hash == "#current") {
+      getCurrent();
+      setValue(1);
+      list = [];
+    } else if (location?.hash == "#upcoming") {
+      getUpcomming();
+      setValue(3);
+    } else if (location?.hash == "#all" || location?.hash == "") {
+      setTodosList(todos);
+      setValue(0);
+    }
+  }, [todos]);
+
   const getCurrent = () => {
+    let list = [];
+    [...todos].map((i) => {
+      var inputDate = new Date(i.deadline);
+      if (inputDate.setHours(0, 0, 0, 0) == todaysDate.setHours(0, 0, 0, 0)) {
+        list.push(i);
+      }
+    });
+    setTodosList(list);
     history.push(`/todos#current`);
+    return (list = []);
   };
 
   const getOverDue = () => {
+    [...todos].map((i) => {
+      var inputDate = new Date(i.deadline);
+      if (inputDate.setHours(0, 0, 0, 0) < todaysDate.setHours(0, 0, 0, 0)) {
+        list.push(i);
+      }
+    });
+    setTodosList(list);
     history.push(`/todos#overdue`);
+    return (list = []);
   };
 
   const getUpcomming = () => {
+    [...todos].map((i) => {
+      var inputDate = new Date(i.deadline);
+      if (inputDate.setHours(0, 0, 0, 0) > todaysDate.setHours(0, 0, 0, 0)) {
+        list.push(i);
+      }
+    });
+    setTodosList(list);
     history.push(`/todos#upcomming`);
+    return (list = []);
   };
 
   const getAll = () => {
-    dispatch(getAllTodoTasks());
+    setTodosList(todos);
     history.push(`/todos#all`);
   };
   const completeTodo = (id) => {
-    // dispatch(deleteAdminUser(id));
+    dispatch(completeTodoTask({ completed: true }, id));
   };
+
   const renderActionButton = (params) => {
     return (
       <div
@@ -82,10 +119,7 @@ const Todos = ({ history, location }) => {
           </Button>
         </Tooltip>
         <Tooltip title="Edit Todo">
-          <Link
-            to={`/todo/edit/${params.action._id}`}
-            style={{ marginTop: "5px" }}
-          >
+          <Link to={`/todo/edit/${params.action._id}`}>
             <EditIcon
               className="action-buttons"
               color="secondary"
@@ -141,6 +175,10 @@ const Todos = ({ history, location }) => {
       width: 630,
     },
     {
+      field: "completed",
+      title: "Completed",
+    },
+    {
       field: "task",
       title: "Task",
       sortable: false,
@@ -148,7 +186,7 @@ const Todos = ({ history, location }) => {
     },
     {
       field: "subtask",
-      title: "SubTask",
+      title: "Sub task",
       sortable: false,
       width: 630,
     },
@@ -168,9 +206,8 @@ const Todos = ({ history, location }) => {
   ];
 
   let rows = [];
-  if (todos) {
-    
-    const list = [...todos].sort((a, b) => {
+  if (todos && todosList?.length > 0) {
+    const list = [...todosList].sort((a, b) => {
       return new Date(b.deadline) - new Date(a.deadline);
     });
 
@@ -186,6 +223,7 @@ const Todos = ({ history, location }) => {
         task: getNames(todo.task?.name),
         action: todo,
         subtask: getNames(subTask?.name),
+        completed: todo.completed == true ? "yes" : "no",
         deadline: new Date(todo?.deadline).toLocaleString(),
       });
     });
@@ -196,20 +234,19 @@ const Todos = ({ history, location }) => {
       <Helmet title="Todos"></Helmet>
       <Table
         header={"Todos"}
-        blockUser={() => {}}
         path="todo"
-        label1="Overdue"
-        label2="UpComing"
-        label3="Current"
+        label1="Current"
+        label2="Overdue"
+        label3="Upcoming"
         loading={loading}
         columns={columns}
         rows={rows}
         value={value}
         setValue={setValue}
         getAll={getAll}
+        getAllActive={getCurrent}
         getAllInactive={getOverDue}
-        getAllActive={getUpcomming}
-        Tab3Func={getCurrent}
+        Tab3Func={getUpcomming}
       />
     </div>
   );

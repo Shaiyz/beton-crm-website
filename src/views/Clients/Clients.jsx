@@ -21,7 +21,7 @@ const Clients = () => {
     return (
       <div style={{ display: "flex", alignItems: "center" }}>
         <Tooltip title="Edit Client">
-          <Link to={`/client/edit/${params.edit}`} style={{ marginTop: "5px" }}>
+          <Link to={`/client/edit/${params.action}`} style={{ marginTop: "5px" }}>
             <EditIcon
               className="action-buttons"
               color="secondary"

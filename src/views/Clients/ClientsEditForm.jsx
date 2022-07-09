@@ -23,48 +23,28 @@ const ClientEdit = () => {
   const dispatch = useDispatch();
 
   const { id } = useParams();
-  const { clients, loading } = useSelector((state) => state.clients);
+  const { clients } = useSelector((state) => state.clients);
   let regEmail =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-  const [data, setData] = useState({
-    clientId: "",
-    name: "",
-    email: "",
-    phone: "",
-    phone2: "",
-    cnicFornt: "",
-    cnicBack: "",
-  });
-  function resetForm() {
+  const [data, setData] = useState();
+  const [loading, setLoading] = useState(false);
+  const fetchCurrentClient = () => {
+    const client = clients.find((client) => client._id === id);
+    console.log(client);
     setData({
-      clientId: "",
-      name: "",
-      email: "",
-      phone: "",
-      phone2: "",
-      cnicFornt: "",
-      cnicBack: "",
+      clientId: client.clientId,
+      name: client.name,
+      email: client.email,
+      phone: client.phone,
+      phone2: client.phone2,
+      cnicBack: client.cnicBack,
+      cnicFront: client.cnicFront,
     });
-  }
-  const fetchCurrentUser = async () => {
-    try {
-      const user = clients.filter((client) => client._id === id);
-
-      setData({
-        clientId: user[0]?.clientId,
-        name: user[0]?.name,
-        email: user[0]?.email,
-        phone: user[0]?.phone,
-        phone2: user[0]?.phone2,
-      });
-    } catch (err) {
-      console.log(err);
-    }
   };
 
   useEffect(() => {
-    fetchCurrentUser();
+    fetchCurrentClient();
   }, []);
 
   useEffect(() => {
@@ -73,7 +53,7 @@ const ClientEdit = () => {
 
   const submit = async (event) => {
     event.preventDefault();
-    if (!data.email || !data.name || !data.phone || !data.phone2) {
+    if (!data.email || !data.name || !data.phone) {
       dispatch(setAlertMessage("Please fill properly.", "error"));
       return;
     }
@@ -85,26 +65,30 @@ const ClientEdit = () => {
     dispatch(updateClient(data, id));
   };
 
-  function handleUserData(e) {
+  function handleClientData(e) {
     const newdata = { ...data };
     newdata[e.target.id] = e.target.value;
     setData(newdata);
   }
 
   async function uploadFile(file, id) {
+    setLoading(true);
+
     try {
       const media = new FormData();
       media.append("images", file);
-      const { data } = await backend.post("/fileupload", media, {
+      const image = await backend.post("/fileupload", media, {
         headers: {
           "content-type": `multipart/form-data`,
         },
       });
       const newdata = { ...data };
-      newdata[id] = data.images[0];
+      newdata[id] = image.data.images[0];
       setData(newdata);
     } catch (error) {
       return "";
+    } finally {
+      setLoading(false);
     }
   }
   return (
@@ -141,30 +125,15 @@ const ClientEdit = () => {
               }}
             >
               <Col sm="12">
+                <Label for="name">Enter Client Name</Label>
                 <FormGroup>
-                  <Label for="clientId">Client ID</Label>
-                  <Input
-                    type="text"
-                    name="clientId"
-                    id="clientId"
-                    value={data.clientId}
-                    required
-                    onChange={(e) => handleUserData(e)}
-                    placeholder="Client Id"
-                    readOnly
-                  />
-                </FormGroup>
-              </Col>
-              <Col sm="12">
-                <FormGroup>
-                  <Label for="name">Enter Client Name</Label>
                   <Input
                     type="text"
                     name="name"
                     id="name"
-                    value={data.name}
+                    value={data?.name}
                     required
-                    onChange={(e) => handleUserData(e)}
+                    onChange={(e) => handleClientData(e)}
                     placeholder="Enter Client Name"
                   />
                 </FormGroup>
@@ -177,9 +146,8 @@ const ClientEdit = () => {
                     type="email"
                     name="email"
                     id="email"
-                    value={data.email}
-                    required
-                    onChange={(e) => handleUserData(e)}
+                    value={data?.email}
+                    onChange={(e) => handleClientData(e)}
                     placeholder="Client Email"
                   />
                 </FormGroup>
@@ -192,8 +160,9 @@ const ClientEdit = () => {
                     type="number"
                     name="phone"
                     id="phone"
-                    value={data.phone}
-                    onChange={(e) => handleUserData(e)}
+                    required
+                    value={data?.phone}
+                    onChange={(e) => handleClientData(e)}
                     placeholder="Enter Phone Number 1"
                   />
                 </FormGroup>
@@ -206,8 +175,8 @@ const ClientEdit = () => {
                     type="number"
                     name="phone2"
                     id="phone2"
-                    value={data.phone2}
-                    onChange={(e) => handleUserData(e)}
+                    value={data?.phone2}
+                    onChange={(e) => handleClientData(e)}
                     placeholder="Enter Phone Number 2"
                   />
                 </FormGroup>
@@ -215,8 +184,15 @@ const ClientEdit = () => {
 
               <Col sm="3">
                 <FormGroup>
-                  <div>
-                    <img className="custom-img-dimension" src={data.image} />
+                  <div
+                    style={{
+                      width: "20%",
+                    }}
+                  >
+                    <img
+                      style={{ objectFit: "contain", width: "100%" }}
+                      src={data?.cnicFront}
+                    />
                   </div>
                   <Label for="cnicFront">Client CNIC Front</Label>
                   <Input
@@ -224,15 +200,21 @@ const ClientEdit = () => {
                     name="cnicFront"
                     id="cnicFront"
                     onChange={(e) => uploadFile(e.target.files[0], "cnicFront")}
-                    required
                   ></Input>
                 </FormGroup>
               </Col>
 
               <Col sm="3">
                 <FormGroup>
-                  <div>
-                    <img className="custom-img-dimension" src={data.image} />
+                  <div
+                    style={{
+                      width: "20%",
+                    }}
+                  >
+                    <img
+                      style={{ objectFit: "contain", width: "100%" }}
+                      src={data?.cnicBack}
+                    />
                   </div>
                   <Label for="cnicBack">Client CNIC Back</Label>
                   <Input
@@ -240,7 +222,6 @@ const ClientEdit = () => {
                     name="cnicBack"
                     id="cnicBack"
                     onChange={(e) => uploadFile(e.target.files[0], "cnicBack")}
-                    required
                   ></Input>
                 </FormGroup>
               </Col>
@@ -256,9 +237,6 @@ const ClientEdit = () => {
                     style={{ marginInline: "10px" }}
                   >
                     Submit
-                  </Button>
-                  <Button className="form_reset_btn" onClick={resetForm}>
-                    Reset
                   </Button>
                 </FormGroup>
               </Col>

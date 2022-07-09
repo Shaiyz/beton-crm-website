@@ -29,6 +29,9 @@ const todoSlice = createSlice({
       state.loading = false;
       state.saved = true;
     },
+    completeTodoSuccess: (state, { payload }) => {
+      state.loading = false;
+    },
 
     updateTodoSuccess: (state) => {
       state.loading = false;
@@ -55,4 +58,5 @@ export const {
   addSuperTodoSuccess,
   updateTodoSuccess,
   resetTodo,
+  completeTodoSuccess,
 } = todoSlice.actions;

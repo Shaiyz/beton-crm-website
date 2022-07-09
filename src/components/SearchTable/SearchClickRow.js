@@ -42,12 +42,10 @@ const Table = ({ rows, columns, loading, header, path }) => {
                   )}
               </Link>
             </Grid>
-          </Grid>{" "}
+          </Grid>
         </div>
 
-        <div className="alert-container">
-          <Alert />
-        </div>
+        <Alert />
         <div style={{ width: "100%" }}>
           {loading ? (
             <CircularProgress className="loader" />

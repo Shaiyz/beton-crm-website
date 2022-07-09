@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import EditIcon from "@material-ui/icons/Edit";
-import { Button, Tooltip } from "@material-ui/core";
+import { IconButton, Tooltip } from "@material-ui/core";
 import "../User/TeamLead/Admin.css";
 import { Message } from "@material-ui/icons/";
 import { Link } from "react-router-dom";
@@ -10,7 +10,6 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import { Helmet } from "react-helmet";
-import AddBox from "@material-ui/icons/AddBox";
 
 const Leads = ({ history, location }) => {
   const { leads, loading } = useSelector((state) => state.leads);
@@ -94,18 +93,20 @@ const Leads = ({ history, location }) => {
             to={`/leads/edit/${params.edit?._id}`}
             style={{ marginTop: "5px" }}
           >
-            <EditIcon
-              className="action-buttons"
-              color="secondary"
-              fontSize="medium"
-              style={{
-                padding: 2,
-                border: "1px solid #F50057",
-                borderRadius: 8,
-                backgroundColor: "white",
-                color: "#F50057",
-              }}
-            />
+            <IconButton>
+              <EditIcon
+                className="action-buttons"
+                color="secondary"
+                fontSize="medium"
+                style={{
+                  padding: 2,
+                  border: "1px solid #F50057",
+                  borderRadius: 8,
+                  backgroundColor: "white",
+                  color: "#F50057",
+                }}
+              />
+            </IconButton>
           </Link>
         </Tooltip>
 
@@ -118,38 +119,24 @@ const Leads = ({ history, location }) => {
               : "No task performed"
           )}
         >
-          <Button>
-            <Message
-              className="action-buttons"
-              color="secondary"
-              fontSize="medium"
-              style={{
-                padding: 2,
-                border: "1px solid #F50057",
-                borderRadius: 8,
-                backgroundColor: "white",
-                color: "#F50057",
-              }}
-            />
-          </Button>
-        </Tooltip>
-        <Tooltip title="Add Todo">
           <Link
-            to={`/todo/add/${params.edit?._id}`}
+            to={`/lead/todos/${params.edit?._id}`}
             style={{ marginTop: "5px" }}
           >
-            <AddBox
-              className="action-buttons"
-              color="secondary"
-              fontSize="medium"
-              style={{
-                padding: 2,
-                border: "1px solid #F50057",
-                borderRadius: 8,
-                backgroundColor: "white",
-                color: "#F50057",
-              }}
-            />
+            <IconButton>
+              <Message
+                className="action-buttons"
+                color="secondary"
+                fontSize="medium"
+                style={{
+                  padding: 2,
+                  border: "1px solid #F50057",
+                  borderRadius: 8,
+                  backgroundColor: "white",
+                  color: "#F50057",
+                }}
+              />
+            </IconButton>
           </Link>
         </Tooltip>
       </div>
@@ -171,11 +158,24 @@ const Leads = ({ history, location }) => {
       width: 630,
     },
     {
+      field: "phone",
+      title: "Client Phone",
+      sortable: false,
+      width: 630,
+    },
+    {
       field: "intrested",
       title: "Intrested",
       sortable: false,
       width: 630,
     },
+    {
+      field: "assigned",
+      title: "Assigned To",
+      sortable: false,
+      width: 630,
+    },
+
     {
       field: "edit",
       title: "Action",
@@ -193,6 +193,7 @@ const Leads = ({ history, location }) => {
         id: s++,
         fullName: lead.client ? lead.client.name : "Not yet selected",
         email: lead.client.email,
+        phone: "0" + lead.client.phone,
         createdAt: lead.createdAt
           ? new Date(lead.createdAt).toLocaleDateString()
           : "-",
@@ -200,7 +201,10 @@ const Leads = ({ history, location }) => {
           ? new Date(lead.updatedAt).toLocaleDateString()
           : "-",
         edit: lead,
-        intrested: lead.intrested ? lead.intrested.name : "Not yet selected",
+        assigned: lead.assignedTo
+          ? lead.assignedTo.first_name + " " + lead.assignedTo.last_name
+          : "Not assigned",
+        intrested: lead.intrested ? lead.intrested.name : "Not  selected",
       });
     });
   }
@@ -211,7 +215,6 @@ const Leads = ({ history, location }) => {
 
       <Table
         header={"Leads"}
-        blockUser={() => {}}
         path="leads"
         label1="Closed Lost"
         label2="Closed Won"

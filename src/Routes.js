@@ -5,7 +5,6 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import { DigitalMarketer, SalesRep, TeamLead } from "./views/User";
 import React, { useEffect } from "react";
 import Navbar from "./components/Navbar/Navbar";
-import TeamLeadForm from "./views/User/TeamLead/TeamLeadForm";
 import TeamLeadAdd from "./views/User/TeamLead/TeamLeadAddForm";
 import DigitalMarketerAdd from "./views/User/DigitalMarketer/DigitalMarketerAddForm";
 import DigitalMarketerEdit from "./views/User/DigitalMarketer/DigitalMarketerEditForm";
@@ -18,7 +17,6 @@ import LeadsEdit from "./views/Leads/LeadsEditForm";
 import Clients from "./views/Clients/Clients";
 import ClientsAdd from "./views/Clients/ClientsAddForm";
 import ClientEdit from "./views/Clients/ClientsEditForm";
-// import Projects from "./views/Projects/Projects";
 import ProjectsAdd from "./views/Projects/ProjectAddForm";
 import ProjectsEdit from "./views/Projects/ProjectEditForm";
 import UnitAdd from "./views/Projects/Unit/UnitAddForm";
@@ -27,7 +25,7 @@ import { TasksAddForm, Todos } from "./views/Leads";
 import { getAllUsers } from "./features/users/user.action";
 import { useDispatch } from "react-redux";
 import { Profile } from "./views/User/Profile";
-import { ChangePassword } from "./views/Auth/changepassword";
+import ChangePassword from "./views/Auth/Changepassword";
 import Project from "./views/Projects/Project";
 import Units from "./views/Projects/Unit/Unit";
 import { getAllTasks } from "./features/tasks/tasks.action";
@@ -38,6 +36,7 @@ import { getAllProjects } from "./features/projects/projects.action";
 import { getAllClients } from "./features/client/client.action";
 import { getAllUnits } from "./features/units/units.action";
 import { getAllLeads, getMyLeads } from "./features/leads/leads.action";
+import LeadTasks from "./views/Leads/LeadTasks";
 
 function Routes() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -74,22 +73,21 @@ function Routes() {
             )}
 
             <Switch>
-              {/* Digital Marketer */}
               <Route
                 exact
                 path="/digitalmarketer"
                 component={DigitalMarketer}
               />
-              {/* <Route exact path="/teamlead" component={TeamLead} />
-              <Route exact path="/salesrep" component={SalesRep} />
-              <Route exact path="/teamlead/edit/:id" component={TeamLeadForm} /> */}
 
               <Route exact path="/user/:id" component={Profile} />
               <Route exact path="/profile" component={Profile} />
 
-              {/* 
-              <Route exact path="/lead/add" component={LeadForm} />
-              <Route exact path="/lead/edit/:id" component={LeadForm} /> */}
+              <Route exact path="/changepassword" component={ChangePassword} />
+              <Route
+                exact
+                path="/changepassword/:id"
+                component={ChangePassword}
+              />
 
               <Route
                 exact
@@ -124,6 +122,7 @@ function Routes() {
 
               <Route exact path="/leads/add" component={LeadsAdd} />
               <Route exact path="/leads/edit/:id" component={LeadsEdit} />
+              <Route exact path="/lead/todos/:leadId" component={LeadTasks} />
 
               {/* Projects & Units */}
               <Route exact path="/projects" component={Project} />
@@ -131,7 +130,7 @@ function Routes() {
 
               <Route exact path="/project/add" component={ProjectsAdd} />
               <Route exact path="/project/edit/:id" component={ProjectsEdit} />
-              <Route exact path="/unit/add" component={UnitAdd} />
+              <Route exact path="/unit/add/:projectId" component={UnitAdd} />
               <Route exact path="/unit/edit/:id" component={UnitEdit} />
 
               {/* Todos */}
@@ -139,8 +138,6 @@ function Routes() {
               <Route exact path="/todo/add/:id" component={TasksAddForm} />
               <Route exact path="/todo/edit/:id" component={TodosEditForm} />
 
-              {/* <Route exact path="/user/add" component={UserForm} />
-              <Route exact path="/user/edit/:id" component={UserForm} /> */}
               <Route exact path="/reports/:id" component={Report} />
             </Switch>
           </div>

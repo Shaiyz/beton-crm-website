@@ -39,7 +39,8 @@ const ProjectAdd = () => {
 
   const submit = async (event) => {
     event.preventDefault();
-    dispatch(addProject());
+    dispatch(addProject(data));
+    window.scrollTo(0, 0);
   };
 
   function handleUserData(e) {

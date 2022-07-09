@@ -8,11 +8,13 @@ import {
 } from "@material-ui/core";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Formfield from "../../components/Formfeild/Formfeild";
 import Alert from "../../components/Alert/Alert";
 import { forgetPasswordFormConfig, loginFormConfig } from "./AuthFormConfig";
-import {backend} from "../../api";
+import { backend } from "../../api";
+import { setAlertMessage } from "../../features/alert/alert.action";
+import { useDispatch } from "react-redux";
 
 const useStyle = makeStyles((theme) => ({
   loginSec: {
@@ -20,7 +22,6 @@ const useStyle = makeStyles((theme) => ({
     width: "100%",
     height: "80vh",
     background: `linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.2)), url('assets/images/hero-img.webp') 100% 50% no-repeat`,
-    // backgroundSize: 'cover',
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -35,7 +36,6 @@ const useStyle = makeStyles((theme) => ({
       maxWidth: 280,
     },
   },
-
   form: {
     padding: "10px",
     margin: "0",
@@ -46,6 +46,7 @@ const ForgetPassword = ({ history }) => {
   const { authnticated } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
+  const dispatch = useDispatch();
   const classes = useStyle();
   const [formData, setFormData] = useState(forgetPasswordFormConfig);
 
@@ -75,10 +76,15 @@ const ForgetPassword = ({ history }) => {
         email: formData.email.value,
       });
       setLoading(false);
-      history.push("/login");
+      dispatch(setAlertMessage("Please check your email.", "success"));
+      // history.push("/login");
     } catch (error) {
       setLoading(false);
-      setError(error.response ? error.response.data.message : error.message);
+      dispatch(
+        setAlertMessage(
+          error.response ? error.response.data.message : error.message
+        )
+      );
     }
   };
 
@@ -95,6 +101,7 @@ const ForgetPassword = ({ history }) => {
           </Typography>
           <hr />
           {loading && <CircularProgress />}
+          <Alert variant="success"></Alert>
           {error && <Alert variant="error">{error}</Alert>}
           <form onSubmit={formSubmitHandler} className={classes.form}>
             {Object.keys(formData).map((el) => (

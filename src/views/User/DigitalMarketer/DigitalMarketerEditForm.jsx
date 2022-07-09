@@ -1,10 +1,9 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { backend } from "../../../api/index";
 import { useParams } from "react-router-dom";
 import { setAlertMessage } from "../../../features/alert/alert.action";
-import { getUser, updateUser } from "../../../features/users/user.action";
+import { updateUser } from "../../../features/users/user.action";
 
 import {
   Card,
@@ -15,7 +14,6 @@ import {
   Col,
   Button,
   Label,
-  UncontrolledAlert,
   Form,
   FormGroup,
   Input,
@@ -45,7 +43,6 @@ const DigitalMarketerEdit = ({}) => {
         cnic: user?.cnic,
         phone: user?.phone,
         gender: user?.gender,
-        role: "digitalMarketer",
       });
     } catch (err) {
       console.log(err);
@@ -255,7 +252,7 @@ const DigitalMarketerEdit = ({}) => {
 
               <Col sm="12">
                 <FormGroup>
-                  <Label for="mobileNoVertical">Mobile Number </Label>
+                  <Label for="mobileNoVertical">Mobile Number</Label>
                   <Input
                     type="number"
                     name="phone"

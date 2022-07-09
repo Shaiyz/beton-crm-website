@@ -3,7 +3,6 @@ import Table from "../../../components/TableUsers/Table";
 import { Grid, Tooltip, Chip, Switch } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import EditIcon from "@material-ui/icons/Edit";
-
 import { updateUser } from "../../../features/users/user.action";
 import "./User.css";
 import { Link, useHistory, useLocation } from "react-router-dom";

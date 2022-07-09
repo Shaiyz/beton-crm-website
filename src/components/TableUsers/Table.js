@@ -38,22 +38,24 @@ const TableUsers = ({
             <Grid item xs={8}>
               <h2 className={styles.heading2}>{header}</h2>
             </Grid>
-            <Grid item xs={4} align="right">
-              <Link to={`/${path}/add`} style={{ textDecoration: "none" }}>
-                <Button
-                  className={styles.btn}
-                  variant="contained"
-                  startIcon={<AddIcon />}
-                >
-                  Add New {header}
-                </Button>
-              </Link>
-            </Grid>
+            {header !== "Todos" && (
+              <>
+                <Grid item xs={4} align="right">
+                  <Link to={`/${path}/add`} style={{ textDecoration: "none" }}>
+                    <Button
+                      className={styles.btn}
+                      variant="contained"
+                      startIcon={<AddIcon />}
+                    >
+                      Add New {header}
+                    </Button>
+                  </Link>
+                </Grid>
+              </>
+            )}
           </Grid>
         </div>
-        <div className="alert-container">
           <Alert />
-        </div>
 
         <div style={{ width: "100%" }}>
           {loading ? (

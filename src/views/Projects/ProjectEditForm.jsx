@@ -22,25 +22,17 @@ const ProjectEdit = () => {
   const dispatch = useDispatch();
   const { saved, projects } = useSelector((state) => state.projects);
   const [data, setData] = useState({
-    pname: "",
+    name: "",
     location: "",
   });
-  function resetForm() {
-    setData({
-      pname: "",
-      location: "",
-    });
-  }
+
   const fetchProject = () => {
-    const project = projects.filter((project) => project._id === id);
+    const project = projects.find((project) => project._id === id);
     setData({ name: project.name, location: project.location });
   };
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
     fetchProject();
   }, []);
 
@@ -93,12 +85,12 @@ const ProjectEdit = () => {
                   <Label for="pNameVertical">Project Name</Label>
                   <Input
                     type="text"
-                    name="pname"
-                    id="pname"
-                    value={data.pname}
+                    name="name"
+                    id="name"
+                    value={data.name}
                     required
                     onChange={(e) => handleUserData(e)}
-                    placeholder="Proejct Name"
+                    placeholder="Project Name"
                   />
                 </FormGroup>
               </Col>
@@ -129,9 +121,6 @@ const ProjectEdit = () => {
                     style={{ marginInline: "10px" }}
                   >
                     Submit
-                  </Button>
-                  <Button className="form_reset_btn" onClick={resetForm}>
-                    Reset
                   </Button>
                 </FormGroup>
               </Col>

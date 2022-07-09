@@ -53,7 +53,7 @@ export const updateUnit = (body, id) => async (dispatch) => {
 export const addUnit = (body, id) => async (dispatch) => {
   dispatch(getLoadingLists());
   await backend
-    .post(`/unit`, body)
+    .post(`/unit/${id}`, body)
     .then((response) => {
       dispatch(addUnitSuccess(response.data.data));
       dispatch(setAlertMessage(response.data.message, "success"));

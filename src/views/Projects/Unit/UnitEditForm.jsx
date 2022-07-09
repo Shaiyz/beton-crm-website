@@ -21,20 +21,7 @@ const UnitEdit = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { units } = useSelector((state) => state.units);
-  const [data, setData] = useState({
-    quantity: "",
-    type: "",
-    size: "",
-    price: "",
-  });
-  function resetForm() {
-    setData({
-      quantity: "",
-      type: "",
-      size: "",
-      price: "",
-    });
-  }
+  const [data, setData] = useState();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -42,12 +29,12 @@ const UnitEdit = () => {
   }, []);
 
   const fetchUnit = () => {
-    const unit = units.filter((unit) => unit._id == id);
+    const unit = units.find((unit) => unit.unit._id == id);
     setData({
-      quantity: unit.quantity,
-      size: unit.size,
-      type: unit.type,
-      price: unit.price,
+      quantity: unit?.unit.quantity,
+      size: unit?.unit.size,
+      type: unit?.unit.type ? unit.unit.type : "",
+      price: unit?.unit.price,
     });
   };
 
@@ -102,7 +89,7 @@ const UnitEdit = () => {
                     type="text"
                     name="quantity"
                     id="quantity"
-                    value={data.quantity}
+                    value={data?.quantity}
                     required
                     onChange={(e) => handleUserData(e)}
                     placeholder="Quantity"
@@ -111,11 +98,13 @@ const UnitEdit = () => {
               </Col>
 
               <Col sm="12">
+                <Label for="typeVertical">Type</Label>
+
                 <FormGroup>
-                  <Label for="typeVertical">Type</Label>
                   <select
-                    value={data.type}
+                    value={data?.type}
                     required
+                    id="type"
                     onChange={(e) => handleUserData(e)}
                   >
                     <option value="office">Office</option>
@@ -127,13 +116,13 @@ const UnitEdit = () => {
                 </FormGroup>
               </Col>
               <Col sm="12">
+                <Label for="sizeVertical">Size</Label>
                 <FormGroup>
-                  <Label for="sizeVertical">Size</Label>
                   <Input
                     type="text"
                     name="size"
                     id="size"
-                    value={data.size}
+                    value={data?.size}
                     required
                     onChange={(e) => handleUserData(e)}
                     placeholder="Size"
@@ -142,13 +131,13 @@ const UnitEdit = () => {
               </Col>
 
               <Col sm="12">
+                <Label for="priceVertical">Price</Label>
                 <FormGroup>
-                  <Label for="priceVertical">Price</Label>
                   <Input
                     type="text"
                     name="price"
                     id="price"
-                    value={data.price}
+                    value={data?.price}
                     required
                     onChange={(e) => handleUserData(e)}
                     placeholder="price"
@@ -167,9 +156,6 @@ const UnitEdit = () => {
                     style={{ marginInline: "10px" }}
                   >
                     Submit
-                  </Button>
-                  <Button className="form_reset_btn" onClick={resetForm}>
-                    Reset
                   </Button>
                 </FormGroup>
               </Col>

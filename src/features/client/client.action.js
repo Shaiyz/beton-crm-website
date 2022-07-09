@@ -44,7 +44,7 @@ export const getClient = (id) => async (dispatch) => {
 export const updateClient = (body, id) => async (dispatch) => {
   dispatch(getLoadingLists());
   await backend
-    .put(`/client/updateClient/${id}`, body)
+    .put(`/client/${id}`, body)
     .then((response) => {
       dispatch(updateClientSuccess(response.data.data));
       dispatch(setAlertMessage(response.data.message, "success"));

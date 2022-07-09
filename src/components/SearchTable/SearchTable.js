@@ -8,6 +8,7 @@ import Alert from "../Alert/Alert";
 import "./Table.css";
 import MaterialTable from "material-table";
 import icons from "./icons";
+
 const Table = ({ rows, columns, loading, header, path }) => {
   const styles = useStyles();
   return (
@@ -19,22 +20,22 @@ const Table = ({ rows, columns, loading, header, path }) => {
               <h2 className={styles.heading2}>{header}</h2>
             </Grid>
             <Grid item xs={4} align="right">
-              <Link to={`/${path}/add`} style={{ textDecoration: "none" }}>
-                <Button
-                  className={styles.btn}
-                  variant="contained"
-                  startIcon={<AddIcon />}
-                >
-                  Add New {header}
-                </Button>
-              </Link>
+              {header !== "Units" && (
+                <Link to={`/${path}/add`} style={{ textDecoration: "none" }}>
+                  <Button
+                    className={styles.btn}
+                    variant="contained"
+                    startIcon={<AddIcon />}
+                  >
+                    Add New {header}
+                  </Button>
+                </Link>
+              )}
             </Grid>
           </Grid>
         </div>
 
-        <div className="alert-container">
           <Alert />
-        </div>
         <div style={{ width: "100%" }}>
           {loading ? (
             <CircularProgress className="loader" />

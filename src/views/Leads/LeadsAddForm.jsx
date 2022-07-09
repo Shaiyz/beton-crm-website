@@ -83,9 +83,7 @@ const LeadsAdd = ({}) => {
           <CardTitle tag="h4">Add New Lead</CardTitle>
         </CardHeader>
 
-        <div className="alert-container">
           <Alert />
-        </div>
 
         <CardBody>
           <Form onSubmit={(event) => submit(event)}>

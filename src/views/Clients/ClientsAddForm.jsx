@@ -17,27 +17,16 @@ import { backend } from "../../api/index";
 import Alert from "../../components/Alert/Alert";
 import { addClient } from "../../features/client/client.action";
 
-const ClientAdd = ({}) => {
-  //body
-  //    const [successMessage, setSuccessMessage] = useState(null)
+const ClientAdd = () => {
   const { userInfo } = useSelector((state) => state.auth);
-
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const [data, setData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    phone2: "",
-    cnicFornt: "",
-    cnicBack: "",
-  });
+  const [data, setData] = useState();
   function resetForm() {
     setData({
       name: "",
       email: "",
-      phone: "",
-      phone2: "",
-      cnicFornt: "",
+      cnicFront: "",
       cnicBack: "",
     });
   }
@@ -48,7 +37,7 @@ const ClientAdd = ({}) => {
 
   const submit = async (event) => {
     event.preventDefault();
-    const clientData = { addedBy: userInfo._id, ...data };
+    const clientData = { createdBy: userInfo._id, ...data };
     dispatch(addClient(clientData));
   };
 
@@ -59,19 +48,22 @@ const ClientAdd = ({}) => {
   }
 
   async function uploadFile(file, id) {
+    setLoading(true);
     try {
       const media = new FormData();
       media.append("images", file);
-      const { data } = await backend.post("/fileupload", media, {
+      const image = await backend.post("/fileupload", media, {
         headers: {
           "content-type": `multipart/form-data`,
         },
       });
       const newdata = { ...data };
-      newdata[id] = data.images[0];
+      newdata[id] = image.data.images[0];
       setData(newdata);
     } catch (error) {
-      return null;
+      return "";
+    } finally {
+      setLoading(false);
     }
   }
   return (
@@ -111,12 +103,12 @@ const ClientAdd = ({}) => {
             >
               <Col sm="12">
                 <FormGroup>
-                  <Label for="name">Enter Client Name</Label>
+                  <Label for="name">Client Name</Label>
                   <Input
                     type="text"
                     name="name"
                     id="name"
-                    value={data.name}
+                    value={data?.name}
                     required
                     onChange={(e) => handleUserData(e)}
                     placeholder="Enter Client Name"
@@ -126,15 +118,14 @@ const ClientAdd = ({}) => {
 
               <Col sm="12">
                 <FormGroup>
-                  <Label for="email">Enter Your Email</Label>
+                  <Label for="email">Client Email</Label>
                   <Input
                     type="email"
                     name="email"
                     id="email"
-                    value={data.email}
-                    required
+                    value={data?.email}
                     onChange={(e) => handleUserData(e)}
-                    placeholder="Enter Your Email"
+                    placeholder="Enter Email"
                   />
                 </FormGroup>
               </Col>
@@ -146,7 +137,8 @@ const ClientAdd = ({}) => {
                     type="number"
                     name="phone"
                     id="phone"
-                    value={data.phone}
+                    required
+                    value={data?.phone}
                     onChange={(e) => handleUserData(e)}
                     placeholder="Enter Phone Number 1"
                   />
@@ -160,7 +152,7 @@ const ClientAdd = ({}) => {
                     type="number"
                     name="phone2"
                     id="phone2"
-                    value={data.phone2}
+                    value={data?.phone2}
                     onChange={(e) => handleUserData(e)}
                     placeholder="Enter Phone Number 2"
                   />
@@ -168,26 +160,40 @@ const ClientAdd = ({}) => {
               </Col>
 
               <Col sm="3">
+                <div
+                  style={{
+                    width: "20%",
+                  }}
+                >
+                  <img
+                    style={{ objectFit: "contain", width: "100%" }}
+                    src={data?.cnicFront}
+                  />
+                </div>
                 <FormGroup>
-                  <div>
-                    <img className="custom-img-dimension" src={data.image} />
-                  </div>
                   <Label for="cnicFornt">CNIC Front</Label>
                   <Input
                     type="file"
-                    name="cnicFornt"
-                    id="cnicFornt"
-                    onChange={(e) => uploadFile(e.target.files[0], "cnicFornt")}
+                    name="cnicFront"
+                    id="cnicFront"
+                    onChange={(e) => uploadFile(e.target.files[0], "cnicFront")}
                     required
                   ></Input>
                 </FormGroup>
               </Col>
 
               <Col sm="3">
+                <div
+                  style={{
+                    width: "20%",
+                  }}
+                >
+                  <img
+                    style={{ objectFit: "contain", width: "100%" }}
+                    src={data?.cnicBack}
+                  />
+                </div>
                 <FormGroup>
-                  <div>
-                    <img className="custom-img-dimension" src={data.image} />
-                  </div>
                   <Label for="cnicBack">CNIC Back</Label>
                   <Input
                     type="file"
@@ -208,6 +214,7 @@ const ClientAdd = ({}) => {
                     className="form_submit_btn"
                     type="submit"
                     style={{ marginInline: "10px" }}
+                    disabled={loading}
                   >
                     Submit
                   </Button>

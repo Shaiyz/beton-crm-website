@@ -2,7 +2,9 @@ import React, { useEffect } from "react";
 import SearchTable from "../../components/SearchTable/SearchTable";
 import { useDispatch, useSelector } from "react-redux";
 import EditIcon from "@material-ui/icons/Edit";
-import { Tooltip } from "@material-ui/core";
+import UnitIcon from "@material-ui/icons/Home";
+
+import { IconButton, Tooltip } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { getAllProjects } from "../../features/projects/projects.action";
 import { Helmet } from "react-helmet";
@@ -18,22 +20,44 @@ const Project = () => {
 
   const renderEditButton = (params) => {
     return (
-      <Tooltip title="Edit Project">
-        <Link to={`/project/edit/${params.action}`}>
-          <EditIcon
-            className="action-buttons"
-            color="secondary"
-            fontSize="medium"
-            style={{
-              padding: 2,
-              border: "1px solid #F50057",
-              borderRadius: 8,
-              backgroundColor: "white",
-              color: "#F50057",
-            }}
-          />
-        </Link>
-      </Tooltip>
+      <>
+        <Tooltip title="Edit Project">
+          <IconButton>
+            <Link to={`/project/edit/${params.action}`}>
+              <EditIcon
+                className="action-buttons"
+                color="secondary"
+                fontSize="medium"
+                style={{
+                  padding: 2,
+                  border: "1px solid #F50057",
+                  borderRadius: 8,
+                  backgroundColor: "white",
+                  color: "#F50057",
+                }}
+              />
+            </Link>
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Add Unit">
+          <IconButton>
+            <Link to={`/unit/add/${params.action}`}>
+              <UnitIcon
+                className="action-buttons"
+                color="secondary"
+                fontSize="medium"
+                style={{
+                  padding: 2,
+                  border: "1px solid #F50057",
+                  borderRadius: 8,
+                  backgroundColor: "white",
+                  color: "#F50057",
+                }}
+              />
+            </Link>
+          </IconButton>
+        </Tooltip>
+      </>
     );
   };
 

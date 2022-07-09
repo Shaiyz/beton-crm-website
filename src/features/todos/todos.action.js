@@ -6,9 +6,10 @@ import {
   addTodoSuccess,
   deleteTodoSuccess,
   updateTodoSuccess,
+  completeTodoSuccess,
 } from "./todos.reducer";
 import { setAlertMessage } from "../alert/alert.action";
-import { getAllLeads } from "../leads/leads.action";
+import { getAllLeads, getMyLeads } from "../leads/leads.action";
 
 // Get All Todo users
 export const getAllTodoTasks = () => async (dispatch, getState) => {
@@ -34,6 +35,7 @@ export const addTodoTask = (body, leadId) => async (dispatch, getState) => {
     dispatch(setAlertMessage(res.data.message, "success"));
     dispatch(getAllTodoTasks());
     dispatch(getAllLeads());
+    dispatch(getMyLeads());
   } catch (err) {
     if (err.response) {
       dispatch(setAlertMessage(err.response.data.message, "error"));
@@ -50,6 +52,26 @@ export const editTodoTask = (body, id) => async (dispatch) => {
       dispatch(updateTodoSuccess(response.data.data));
       dispatch(setAlertMessage(response.data.message, "success"));
       dispatch(getAllTodoTasks());
+      dispatch(getMyLeads());
+      dispatch(getAllLeads());
+    })
+    .catch((err) => {
+      if (err.response) {
+        dispatch(setAlertMessage(err.response.data.message, "error"));
+        dispatch(getTodosListsFailure(err));
+      }
+    });
+};
+export const completeTodoTask = (body, id) => async (dispatch) => {
+  dispatch(getLoadingLists());
+  await backend
+    .put(`/leadTask/${id}`, body)
+    .then((response) => {
+      dispatch(completeTodoSuccess(response.data.data));
+      dispatch(setAlertMessage("Todo completed", "success"));
+      dispatch(getAllTodoTasks());
+      dispatch(getAllLeads());
+      dispatch(getMyLeads());
     })
     .catch((err) => {
       if (err.response) {

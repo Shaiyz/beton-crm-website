@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import EditIcon from "@material-ui/icons/Edit";
-import { Button, Tooltip } from "@material-ui/core";
+import { Button, IconButton, Tooltip } from "@material-ui/core";
 import "../User/TeamLead/Admin.css";
 import { Message } from "@material-ui/icons/";
 import { Link } from "react-router-dom";
@@ -14,28 +14,46 @@ import AddBox from "@material-ui/icons/AddBox";
 
 const MyLeads = ({ history, location }) => {
   const { myleads, loading } = useSelector((state) => state.leads);
+  const { tasks } = useSelector((state) => state.tasks);
   const [leadsList, setLeads] = useState(null);
   let dispatch = useDispatch();
   const [value, setValue] = React.useState(0);
   useEffect(() => {
-    // if (!myleads) {
+    if (!myleads) {
       dispatch(getMyLeads());
-    // }
-  }, []);
+    }
+  }, [myleads]);
 
-  const closedwon = () =>
-    myleads?.filter(
-      (lead) =>
+  const closedwon = () => {
+    let filtered = [];
+    myleads?.map((lead) => {
+      if (
         lead.leadTasks.length > 0 &&
-        lead.leadTasks.slice(-1)[0].task.name == "closedWon"
-    );
-  const closedlost = () =>
-    myleads?.filter(
-      (lead) =>
+        lead.leadTasks.slice(-1)[0].subtask ==
+          tasks
+            .find((i) => i.name == "sales")
+            .subTasks.find((i) => i.name == "closedWon")._id
+      ) {
+        filtered.push(lead);
+      }
+    });
+    return filtered;
+  };
+  const closedlost = () => {
+    let filtered = [];
+    myleads?.map((lead) => {
+      if (
         lead.leadTasks.length > 0 &&
-        lead.leadTasks.slice(-1)[0].task.name == "closedLost"
-    );
-
+        lead.leadTasks.slice(-1)[0].subtask ==
+          tasks
+            .find((i) => i.name == "sales")
+            .subTasks.find((i) => i.name == "closedLost")._id
+      ) {
+        filtered.push(lead);
+      }
+    });
+    return filtered;
+  };
   useEffect(() => {
     if (location?.hash == "#closedlost") {
       setLeads(closedlost());
@@ -74,18 +92,20 @@ const MyLeads = ({ history, location }) => {
             to={`/leads/edit/${params.edit?._id}`}
             style={{ marginTop: "5px" }}
           >
-            <EditIcon
-              className="action-buttons"
-              color="secondary"
-              fontSize="medium"
-              style={{
-                padding: 2,
-                border: "1px solid #F50057",
-                borderRadius: 8,
-                backgroundColor: "white",
-                color: "#F50057",
-              }}
-            />
+            <IconButton>
+              <EditIcon
+                className="action-buttons"
+                color="secondary"
+                fontSize="medium"
+                style={{
+                  padding: 2,
+                  border: "1px solid #F50057",
+                  borderRadius: 8,
+                  backgroundColor: "white",
+                  color: "#F50057",
+                }}
+              />
+            </IconButton>
           </Link>
         </Tooltip>
 
@@ -98,38 +118,45 @@ const MyLeads = ({ history, location }) => {
               : "No task performed"
           )}
         >
-          <Button>
-            <Message
-              className="action-buttons"
-              color="secondary"
-              fontSize="medium"
-              style={{
-                padding: 2,
-                border: "1px solid #F50057",
-                borderRadius: 8,
-                backgroundColor: "white",
-                color: "#F50057",
-              }}
-            />
-          </Button>
+          <Link
+            to={`/lead/todos/${params.edit?._id}`}
+            style={{ marginTop: "5px" }}
+          >
+            <IconButton>
+              <Message
+                className="action-buttons"
+                color="secondary"
+                fontSize="medium"
+                style={{
+                  padding: 2,
+                  border: "1px solid #F50057",
+                  borderRadius: 8,
+                  backgroundColor: "white",
+                  color: "#F50057",
+                }}
+              />
+            </IconButton>
+          </Link>
         </Tooltip>
         <Tooltip title="Add Todo">
           <Link
             to={`/todo/add/${params.edit?._id}`}
             style={{ marginTop: "5px" }}
           >
-            <AddBox
-              className="action-buttons"
-              color="secondary"
-              fontSize="medium"
-              style={{
-                padding: 2,
-                border: "1px solid #F50057",
-                borderRadius: 8,
-                backgroundColor: "white",
-                color: "#F50057",
-              }}
-            />
+            <IconButton>
+              <AddBox
+                className="action-buttons"
+                color="secondary"
+                fontSize="medium"
+                style={{
+                  padding: 2,
+                  border: "1px solid #F50057",
+                  borderRadius: 8,
+                  backgroundColor: "white",
+                  color: "#F50057",
+                }}
+              />
+            </IconButton>
           </Link>
         </Tooltip>
       </div>
@@ -191,7 +218,6 @@ const MyLeads = ({ history, location }) => {
 
       <Table
         header={"Leads"}
-        blockUser={() => {}}
         path="leads"
         label1="Closed Lost"
         label2="Closed Won"
@@ -201,8 +227,8 @@ const MyLeads = ({ history, location }) => {
         value={value}
         setValue={setValue}
         getAll={getAll}
-        getAllInactive={getClosedLost}
-        getAllActive={getClosedWon}
+        getAllInactive={getClosedWon}
+        getAllActive={getClosedLost}
       />
     </div>
   );
