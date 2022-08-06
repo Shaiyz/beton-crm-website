@@ -10,6 +10,7 @@ import {
 } from "./todos.reducer";
 import { setAlertMessage } from "../alert/alert.action";
 import { getAllLeads, getMyLeads } from "../leads/leads.action";
+import { getAllUnits } from "../units/units.action";
 
 // Get All Todo users
 export const getAllTodoTasks = () => async (dispatch, getState) => {
@@ -36,6 +37,9 @@ export const addTodoTask = (body, leadId) => async (dispatch, getState) => {
     dispatch(getAllTodoTasks());
     dispatch(getAllLeads());
     dispatch(getMyLeads());
+    if (body.client) {
+      dispatch(getAllUnits());
+    }
   } catch (err) {
     if (err.response) {
       dispatch(setAlertMessage(err.response.data.message, "error"));

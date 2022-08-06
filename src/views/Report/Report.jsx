@@ -3,6 +3,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Button,
+  CircularProgress,
   Grid,
   makeStyles,
   Typography,
@@ -14,33 +15,88 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { AiOutlinePrinter } from "react-icons/ai";
 import { printDiv } from "../../utils";
 import { Helmet } from "react-helmet";
+import { useSelector } from "react-redux";
+import { backend } from "../../api/index";
+import { Link, useParams } from "react-router-dom";
 
 const Report = () => {
   const styles = useStyles();
   var now = new Date();
-  let date = now.getDate();
+  let day = new Date().getDay();
+  day = day < 10 ? "0" + day : day;
   let month = now.getMonth() + 1;
+  month = month < 10 ? "0" + month : month;
   let year = now.getFullYear();
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const { userInfo } = useSelector((state) => state.auth);
+  const { tasks } = useSelector((state) => state.tasks);
+  const [report, setReport] = useState(null);
+  const { id } = useParams();
+  const meetingTask = tasks?.find((task) => task.name == "meeting");
+  const arrange = meetingTask?.subTasks.find((i) => i.name == "arrange");
+  const done = meetingTask?.subTasks.find((i) => i.name == "done");
+  const [userId, setId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   React.useEffect(() => {
-    setStartDate(year + "-0" + month + "-" + "01");
-    setEndDate(year + "-0" + month + "-" + 30);
-    let body = {
-      startDate: year + "-0" + month + "-" + "01",
-      endDate: year + "-0" + month + "-" + 30,
-    };
-    // dispatch(getAllEarnings(body));
+    if (id) {
+      setId(id);
+    } else {
+      setId(userInfo._id);
+    }
   }, []);
+
+  React.useEffect(() => {
+    if (userId) {
+      let date = `${year}-${month}-${day}`;
+      setStartDate(date);
+      setEndDate(date);
+      let body = {
+        startDate: date,
+        endDate: date,
+      };
+
+      (async () => {
+        setLoading(true);
+        try {
+          const {
+            data: { data },
+          } = await backend.get(
+            `/report/${userId}/${body.startDate}/${body.endDate}?done=${done._id}&arrange=${arrange._id}`
+          );
+          setReport(data);
+        } catch (err) {
+          console.log(err);
+        } finally {
+          setLoading(false);
+        }
+      })();
+    }
+  }, [userId]);
+
   const customSearch = (e) => {
     e.preventDefault();
     let body = { startDate: startDate, endDate: endDate };
-    // dispatch(getAllEarnings(body));
-  };
+    (async () => {
+      setLoading(true);
 
+      try {
+        const {
+          data: { data },
+        } = await backend.get(
+          `/report/${userId}/${body.startDate}/${body.endDate}?done=${done._id}&arrange=${arrange._id}`
+        );
+        setReport(data);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  };
   return (
-    <Grid item xs={12} lg={14}>
+    <Grid item xs={12} lg={12} style={{ padding: 30 }}>
       <Helmet title="Report - CRM"></Helmet>
       <div className="viewuser__head">
         <Grid container>
@@ -91,145 +147,167 @@ const Report = () => {
           </Grid>
         </Grid>
       </div>
-      <div className={styles.root}>
-        <Grid container lg={12} id="print-div">
-          <Grid item lg={4} xs={12} sm={12}>
-            <Accordion expanded={true}>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <AccordionSummary aria-label="Expand">
-                  <Typography className={styles.headingAccordian}>
-                    Leads
+
+      {loading ? (
+        <CircularProgress className="loader" />
+      ) : (
+        <div className={styles.root}>
+          <Grid container lg={12} id="print-div">
+            <Grid item lg={4} xs={12} sm={12}>
+              <Accordion expanded={true}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <AccordionSummary aria-label="Expand">
+                    <Typography className={styles.headingAccordian}>
+                      Leads
+                    </Typography>
+                  </AccordionSummary>
+                </div>
+                <AccordionDetails
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <Typography className={styles.subheadingAccordian}>
+                    Assigned
                   </Typography>
-                </AccordionSummary>
-              </div>
-              <AccordionDetails
-                style={{ display: "flex", justifyContent: "space-between" }}
-              >
-                <Typography className={styles.subheadingAccordian}>
-                  Assigned
-                </Typography>
-                <Typography className={styles.secondaryHeading}>
-                  0.00
-                </Typography>
-              </AccordionDetails>
-              <AccordionDetails
-                style={{ display: "flex", justifyContent: "space-between" }}
-              >
-                <Typography className={styles.subheadingAccordian}>
-                  Added
-                </Typography>
-                <Typography className={styles.secondaryHeading}>
-                  0.00
-                </Typography>
-              </AccordionDetails>
-              <AccordionDetails
-                style={{ display: "flex", justifyContent: "space-between" }}
-              >
-                <Typography className={styles.subheadingAccordian}>
-                  TLW
-                </Typography>
-                <Typography className={styles.secondaryHeading}>
-                  0.00
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
-          </Grid>
-          <Grid item lg={4} xs={12} sm={12}>
-            <Accordion expanded={true}>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <AccordionSummary aria-label="Expand">
-                  <Typography className={styles.headingAccordian}>
-                    Calls
+                  <Typography className={styles.secondaryHeading}>
+                    {report && report.leadAssigned}
                   </Typography>
-                </AccordionSummary>
-              </div>
-              <AccordionDetails
-                style={{ display: "flex", justifyContent: "space-between" }}
-              >
-                <Typography className={styles.subheadingAccordian}>
-                  Verified calls
-                </Typography>
-                <Typography className={styles.secondaryHeading}>10</Typography>
-              </AccordionDetails>
-              <AccordionDetails
-                style={{ display: "flex", justifyContent: "space-between" }}
-              >
-                <Typography className={styles.subheadingAccordian}>
-                  Total TT
-                </Typography>
-                <Typography className={styles.secondaryHeading}>20</Typography>
-              </AccordionDetails>
-              <AccordionDetails
-                style={{ display: "flex", justifyContent: "space-between" }}
-              >
-                <Typography className={styles.subheadingAccordian}>
-                  AT Calls
-                </Typography>
-                <Typography className={styles.secondaryHeading}>10</Typography>
-              </AccordionDetails>
-            </Accordion>
-          </Grid>
-          <Grid item lg={4} xs={12} sm={12}>
-            <Accordion expanded={true}>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <AccordionSummary aria-label="Expand">
-                  <Typography className={styles.headingAccordian}>
-                    Meetings
+                </AccordionDetails>
+                <AccordionDetails
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <Typography className={styles.subheadingAccordian}>
+                    Added
                   </Typography>
-                </AccordionSummary>
-              </div>
-              <AccordionDetails
-                style={{ display: "flex", justifyContent: "space-between" }}
-              >
-                <Typography className={styles.subheadingAccordian}>
-                  Met
-                </Typography>
-                <Typography className={styles.secondaryHeading}>
-                  0.00
-                </Typography>
-              </AccordionDetails>
-              <AccordionDetails
-                style={{ display: "flex", justifyContent: "space-between" }}
-              >
-                <Typography className={styles.subheadingAccordian}>
-                  U Met
-                </Typography>
-                <Typography className={styles.secondaryHeading}>
-                  0.00
-                </Typography>
-              </AccordionDetails>
-              <AccordionDetails
-                style={{ display: "flex", justifyContent: "space-between" }}
-              >
-                <Typography className={styles.subheadingAccordian}>
-                  Met/Met P
-                </Typography>
-                <Typography className={styles.secondaryHeading}>
-                  0.00
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
+                  <Typography className={styles.secondaryHeading}>
+                    {report && report.leadAdded}
+                  </Typography>
+                </AccordionDetails>
+                <AccordionDetails
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <Typography className={styles.subheadingAccordian}>
+                    TLW
+                  </Typography>
+                  <Typography className={styles.secondaryHeading}>
+                    {report && report.TLW}
+                  </Typography>
+                </AccordionDetails>
+              </Accordion>
+            </Grid>
+            <Grid item lg={4} xs={12} sm={12}>
+              <Accordion expanded={true}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <AccordionSummary aria-label="Expand">
+                    <Typography className={styles.headingAccordian}>
+                      Calls
+                    </Typography>
+                  </AccordionSummary>
+                </div>
+                <AccordionDetails
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <Typography className={styles.subheadingAccordian}>
+                    <Link
+                      style={{ textDecoration: "none", color: "black" }}
+                      to="/calls"
+                    >
+                      Verified calls
+                    </Link>
+                  </Typography>
+                  <Typography className={styles.secondaryHeading}>
+                    {report && report.verifiedCalls}
+                  </Typography>
+                </AccordionDetails>
+                <AccordionDetails
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <Typography className={styles.subheadingAccordian}>
+                    Total TT
+                  </Typography>
+                  <Typography className={styles.secondaryHeading}>
+                    {report &&
+                      new Date(parseInt(report.TTT) * 1000)
+                        .toISOString()
+                        .substring(11, 19)}
+                  </Typography>
+                </AccordionDetails>
+                <AccordionDetails
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <Typography className={styles.subheadingAccordian}>
+                    AT Calls
+                  </Typography>
+                  <Typography className={styles.secondaryHeading}>
+                    {report &&
+                      new Date(
+                        parseInt(report.ATT ? report.ATT : "00:00") * 1000
+                      )
+                        .toISOString()
+                        .substring(11, 19)}
+                  </Typography>
+                </AccordionDetails>
+              </Accordion>
+            </Grid>
+            <Grid item lg={4} xs={12} sm={12}>
+              <Accordion expanded={true}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <AccordionSummary aria-label="Expand">
+                    <Typography className={styles.headingAccordian}>
+                      Meetings
+                    </Typography>
+                  </AccordionSummary>
+                </div>
+                <AccordionDetails
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <Typography className={styles.subheadingAccordian}>
+                    Met
+                  </Typography>
+                  <Typography className={styles.secondaryHeading}>
+                    {report && report.met}
+                  </Typography>
+                </AccordionDetails>
+                <AccordionDetails
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <Typography className={styles.subheadingAccordian}>
+                    U Met
+                  </Typography>
+                  <Typography className={styles.secondaryHeading}>-</Typography>
+                </AccordionDetails>
+                <AccordionDetails
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <Typography className={styles.subheadingAccordian}>
+                    Met Arranged
+                  </Typography>
+                  <Typography className={styles.secondaryHeading}>
+                    {report && report.metArranged}
+                  </Typography>
+                </AccordionDetails>
+              </Accordion>
+            </Grid>
           </Grid>
-        </Grid>
-      </div>
+        </div>
+      )}
     </Grid>
   );
 };

@@ -8,6 +8,8 @@ import {
   addUnitSuccess,
 } from "./units.reducer";
 import { setAlertMessage } from "../alert/alert.action";
+import { getAllProjects } from "../projects/projects.action";
+import { getMyLeads } from "../leads/leads.action";
 
 export const getAllUnits = () => async (dispatch) => {
   dispatch(getLoadingLists());
@@ -41,6 +43,8 @@ export const updateUnit = (body, id) => async (dispatch) => {
       dispatch(updateUnitSuccess(response.data.data));
       dispatch(setAlertMessage(response.data.message, "success"));
       dispatch(getAllUnits());
+      dispatch(getAllProjects());
+      dispatch(getMyLeads());
     })
     .catch((err) => {
       if (err.response) {
@@ -58,6 +62,8 @@ export const addUnit = (body, id) => async (dispatch) => {
       dispatch(addUnitSuccess(response.data.data));
       dispatch(setAlertMessage(response.data.message, "success"));
       dispatch(getAllUnits());
+      dispatch(getAllProjects());
+      dispatch(getMyLeads());
     })
     .catch((err) => {
       if (err.response) {

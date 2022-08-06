@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { backend } from "../../../api/index";
-
 import {
   Card,
   CardHeader,
@@ -66,13 +65,13 @@ const SalesRepAdd = () => {
     try {
       const media = new FormData();
       media.append("images", file);
-      const { data } = await backend("/fileupload", media, {
+      const image = await backend.post("/fileupload", media, {
         headers: {
           "content-type": `multipart/form-data`,
         },
       });
       const newdata = { ...data };
-      newdata[id] = data.images[0];
+      newdata[id] = image.data.images[0];
       setData(newdata);
     } catch (error) {
       return null;
@@ -115,10 +114,14 @@ const SalesRepAdd = () => {
             >
               <Col sm="3">
                 <FormGroup>
-                  <div>
+                  <div
+                    style={{
+                      width: "20%",
+                    }}
+                  >
                     <img
-                      className="custom-img-dimension"
-                      src={data.profilePicture}
+                      style={{ objectFit: "cover", width: "100%" }}
+                      src={data?.profilePicture}
                     />
                   </div>
                   <Label for="profilePicture">User Profile Image</Label>
@@ -129,7 +132,6 @@ const SalesRepAdd = () => {
                     onChange={(e) =>
                       uploadFile(e.target.files[0], "profilePicture")
                     }
-                    required
                   ></Input>
                 </FormGroup>
               </Col>

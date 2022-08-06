@@ -31,7 +31,7 @@ const UnitEdit = () => {
   const fetchUnit = () => {
     const unit = units.find((unit) => unit.unit._id == id);
     setData({
-      quantity: unit?.unit.quantity,
+      name: unit?.unit.name ? unit?.unit.name : "",
       size: unit?.unit.size,
       type: unit?.unit.type ? unit.unit.type : "",
       price: unit?.unit.price,
@@ -40,6 +40,7 @@ const UnitEdit = () => {
 
   const submit = async (event) => {
     event.preventDefault();
+    console.log(data);
     dispatch(updateUnit(data, id));
   };
 
@@ -84,15 +85,15 @@ const UnitEdit = () => {
             >
               <Col sm="12">
                 <FormGroup>
-                  <Label for="nameVertical">Quantity</Label>
+                  <Label for="nameVertical">Unit Name</Label>
                   <Input
                     type="text"
-                    name="quantity"
-                    id="quantity"
-                    value={data?.quantity}
+                    name="name"
+                    id="name"
+                    value={data?.name}
                     required
                     onChange={(e) => handleUserData(e)}
-                    placeholder="Quantity"
+                    placeholder="Unit Name"
                   />
                 </FormGroup>
               </Col>

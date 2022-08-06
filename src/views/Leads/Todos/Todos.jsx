@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import Button from "@material-ui/core/Button";
 import Check from "@material-ui/icons/Check";
+import Task from "@material-ui/icons/DoneOutlined";
+
 import EditIcon from "@material-ui/icons/Edit";
 import Message from "@material-ui/icons/Message";
 import { Tooltip } from "@material-ui/core";
@@ -93,7 +95,9 @@ const Todos = ({ history, location }) => {
     dispatch(completeTodoTask({ completed: true }, id));
   };
 
+  console.log(todosList);
   const renderActionButton = (params) => {
+    console.log(params.action);
     return (
       <div
         style={{
@@ -134,22 +138,41 @@ const Todos = ({ history, location }) => {
             />
           </Link>
         </Tooltip>
-        <Tooltip title="Mark Complete">
-          <Button onClick={() => completeTodo(params.action._id)}>
-            <Check
-              className="action-buttons"
-              color="secondary"
-              fontSize="medium"
-              style={{
-                padding: 2,
-                border: "1px solid #F50057",
-                borderRadius: 8,
-                backgroundColor: "white",
-                color: "#F50057",
-              }}
-            />
-          </Button>
-        </Tooltip>
+        {params.action.completed == false ? (
+          <Tooltip title="Mark Complete">
+            <Button onClick={() => completeTodo(params.action._id)}>
+              <Check
+                className="action-buttons"
+                color="secondary"
+                fontSize="medium"
+                style={{
+                  padding: 2,
+                  border: "1px solid #F50057",
+                  borderRadius: 8,
+                  backgroundColor: "white",
+                  color: "#F50057",
+                }}
+              />
+            </Button>
+          </Tooltip>
+        ) : (
+          <Tooltip title="Completed">
+            <Button>
+              <Task
+                className="action-buttons"
+                color="secondary"
+                fontSize="medium"
+                style={{
+                  padding: 2,
+                  border: "1px solid #F50057",
+                  borderRadius: 8,
+                  backgroundColor: "white",
+                  color: "#F50057",
+                }}
+              />
+            </Button>
+          </Tooltip>
+        )}
       </div>
     );
   };
@@ -174,10 +197,7 @@ const Todos = ({ history, location }) => {
       sortable: false,
       width: 630,
     },
-    {
-      field: "completed",
-      title: "Completed",
-    },
+
     {
       field: "task",
       title: "Task",
@@ -186,7 +206,7 @@ const Todos = ({ history, location }) => {
     },
     {
       field: "subtask",
-      title: "Sub task",
+      title: "Subtask",
       sortable: false,
       width: 630,
     },
@@ -219,11 +239,10 @@ const Todos = ({ history, location }) => {
         id: s++,
         name: todo.client?.name,
         email: todo.client?.email,
-        phone: "0" + todo.client?.phone,
+        phone: todo.client?.phone,
         task: getNames(todo.task?.name),
         action: todo,
         subtask: getNames(subTask?.name),
-        completed: todo.completed == true ? "yes" : "no",
         deadline: new Date(todo?.deadline).toLocaleString(),
       });
     });
@@ -233,6 +252,7 @@ const Todos = ({ history, location }) => {
     <div className="feature">
       <Helmet title="Todos"></Helmet>
       <Table
+        refresh={() => dispatch(getAllTodoTasks())}
         header={"Todos"}
         path="todo"
         label1="Current"

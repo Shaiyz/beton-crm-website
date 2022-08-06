@@ -10,7 +10,6 @@ import IconButton from "@material-ui/core/IconButton";
 import { AiFillEye } from "react-icons/ai";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch } from "react-redux";
-import { AssignmentIndOutlined } from "@material-ui/icons";
 import { Helmet } from "react-helmet";
 
 const DigitalMarketer = () => {
@@ -101,7 +100,7 @@ const DigitalMarketer = () => {
             </IconButton>
           </Tooltip>
         </Grid>
-        <Grid item lg={3}>
+        {/* <Grid item lg={3}>
           <Tooltip title="View Report">
             <IconButton style={{ padding: 2 }}>
               <Link to={`/report/${params.action._id}`}>
@@ -118,7 +117,7 @@ const DigitalMarketer = () => {
               </Link>
             </IconButton>
           </Tooltip>
-        </Grid>
+        </Grid> */}
         <Grid item lg={3}>
           <Tooltip title="Edit Digital Marketer">
             <IconButton style={{ padding: 2 }}>
@@ -208,7 +207,6 @@ const DigitalMarketer = () => {
       <Helmet title="Digital Marketers - CRM"></Helmet>
       <Table
         header={"Digital Marketer"}
-        blockUser={() => {}}
         path="digitalMarketer"
         label1="Active"
         label2="Inactive"

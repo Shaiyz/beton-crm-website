@@ -3,6 +3,7 @@ import Table from "../../../components/TableUsers/Table";
 import { Grid, Tooltip, Chip, Switch } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import "../User.css";
+import EditIcon from "@material-ui/icons/Edit";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import IconButton from "@material-ui/core/IconButton";
 import { AiFillEye } from "react-icons/ai";
@@ -85,7 +86,7 @@ const SalesRep = () => {
   const renderActionButton = (params) => {
     return (
       <Grid container xs={12} spacing={1}>
-        <Grid item lg={4}>
+        <Grid item lg={3}>
           <Tooltip title="View Details">
             <IconButton style={{ padding: 2 }}>
               <Link to={`/user/${params.action._id}`}>
@@ -103,10 +104,10 @@ const SalesRep = () => {
             </IconButton>
           </Tooltip>
         </Grid>
-        <Grid item lg={4}>
+        <Grid item lg={3}>
           <Tooltip title="View Report">
             <IconButton style={{ padding: 2 }}>
-              <Link to={`/report/${params.action._id}`}>
+              <Link to={`/reports/${params.action._id}`}>
                 <AssignmentIndOutlined
                   size={25}
                   style={{
@@ -121,7 +122,29 @@ const SalesRep = () => {
             </IconButton>
           </Tooltip>
         </Grid>
-        <Grid item lg={4}>
+        <Grid item lg={3}>
+          <Tooltip title="Edit Digital Marketer">
+            <IconButton style={{ padding: 2 }}>
+              <Link to={`/salesRep/edit/${params.action._id}`}>
+                <EditIcon
+                  size={25}
+                  className="action-buttons"
+                  color="secondary"
+                  fontSize="medium"
+                  style={{
+                    padding: 2,
+                    border: "1px solid #F50057",
+                    borderRadius: 8,
+                    backgroundColor: "white",
+                    color: "#F50057",
+                  }}
+                />
+              </Link>
+            </IconButton>
+          </Tooltip>
+        </Grid>
+
+        <Grid item lg={3}>
           <Switch
             checked={params.action.isActive}
             onChange={(e) => handleChange(e, params.action._id)}
@@ -141,6 +164,10 @@ const SalesRep = () => {
       field: "mobileNumber",
       title: "Mobile",
     },
+    {
+      field: "Email",
+      title: "email",
+    },
 
     {
       field: "status",
@@ -150,10 +177,6 @@ const SalesRep = () => {
     {
       field: "createdAt",
       title: "Date Created",
-    },
-    {
-      field: "updatedAt",
-      title: "Date Updated",
     },
 
     {
@@ -172,13 +195,11 @@ const SalesRep = () => {
         id: s++,
         fullName: user.first_name + " " + user.last_name,
         mobileNumber: user?.phone,
+        email: user?.email,
         status: user.isActive ? "Active" : "Inactive",
         action: user,
         createdAt: user.createdAt
           ? new Date(user.createdAt).toLocaleDateString()
-          : "-",
-        updatedAt: user.updatedAt
-          ? new Date(user.updatedAt).toLocaleDateString()
           : "-",
       });
     });

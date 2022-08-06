@@ -28,6 +28,8 @@ const ClientAdd = () => {
       email: "",
       cnicFront: "",
       cnicBack: "",
+      address: "",
+      cnic: "",
     });
   }
 
@@ -129,12 +131,38 @@ const ClientAdd = () => {
                   />
                 </FormGroup>
               </Col>
+              <Col sm="12">
+                <FormGroup>
+                  <Label for="email">Client CNIC</Label>
+                  <Input
+                    type="text"
+                    name="cnic"
+                    id="cnic"
+                    value={data?.cnic}
+                    onChange={(e) => handleUserData(e)}
+                    placeholder="Enter CNIC"
+                  />
+                </FormGroup>
+              </Col>
+              <Col sm="12">
+                <FormGroup>
+                  <Label for="email">Client Address</Label>
+                  <Input
+                    type="text"
+                    name="address"
+                    id="address"
+                    value={data?.address}
+                    onChange={(e) => handleUserData(e)}
+                    placeholder="Enter Address"
+                  />
+                </FormGroup>
+              </Col>
 
               <Col sm="12">
                 <FormGroup>
                   <Label for="phone">Phone Number 1</Label>
                   <Input
-                    type="number"
+                    type="text"
                     name="phone"
                     id="phone"
                     required
@@ -149,7 +177,7 @@ const ClientAdd = () => {
                 <FormGroup>
                   <Label for="phone2">Phone Number 2</Label>
                   <Input
-                    type="number"
+                    type="text"
                     name="phone2"
                     id="phone2"
                     value={data?.phone2}
@@ -177,7 +205,7 @@ const ClientAdd = () => {
                     name="cnicFront"
                     id="cnicFront"
                     onChange={(e) => uploadFile(e.target.files[0], "cnicFront")}
-                    required
+                    // required
                   ></Input>
                 </FormGroup>
               </Col>
@@ -200,7 +228,7 @@ const ClientAdd = () => {
                     name="cnicBack"
                     id="cnicBack"
                     onChange={(e) => uploadFile(e.target.files[0], "cnicBack")}
-                    required
+                    // required
                   ></Input>
                 </FormGroup>
               </Col>

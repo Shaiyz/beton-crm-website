@@ -1,7 +1,8 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { useLocation } from "react-router-dom";
 import AddIcon from "@material-ui/icons/Add";
+import RefreshIcon from "@material-ui/icons/Refresh";
+
 import { Grid, Tabs, Tab, CircularProgress, Button } from "@material-ui/core";
 import Alert from "../Alert/Alert";
 import icons from "../SearchTable/icons";
@@ -10,6 +11,7 @@ import "./Table.css";
 import { Link } from "react-router-dom";
 
 const TableUsers = ({
+  refresh,
   header,
   loading,
   rows,
@@ -38,9 +40,10 @@ const TableUsers = ({
             <Grid item xs={8}>
               <h2 className={styles.heading2}>{header}</h2>
             </Grid>
+
             {header !== "Todos" && (
               <>
-                <Grid item xs={4} align="right">
+                <Grid item xs={4} align="right" spacing={2}>
                   <Link to={`/${path}/add`} style={{ textDecoration: "none" }}>
                     <Button
                       className={styles.btn}
@@ -50,14 +53,36 @@ const TableUsers = ({
                       Add New {header}
                     </Button>
                   </Link>
+                  {header ==
+                    "Leads"&&(
+                      <Button
+                        className={styles.btn}
+                        variant="contained"
+                        startIcon={<RefreshIcon size={20} />}
+                        onClick={() => refresh()}
+                      ></Button>
+                    )}
+                </Grid>
+              </>
+            )}
+            {header == "Todos" && (
+              <>
+                <Grid xs={4} align="right">
+                  <Button
+                    className={styles.btn}
+                    variant="contained"
+                    startIcon={<RefreshIcon />}
+                    onClick={() => refresh()}
+                  ></Button>
                 </Grid>
               </>
             )}
           </Grid>
         </div>
-          <Alert />
 
         <div style={{ width: "100%" }}>
+          <Alert />
+
           {loading ? (
             <CircularProgress className="loader" />
           ) : (
@@ -107,16 +132,17 @@ const TableUsers = ({
               data={rows}
               columns={columns}
               options={{
+                grouping: true,
                 search: true,
                 pageSize: 20,
                 pageSizeOptions: [5, 20, 50, 100],
                 paginationType: "stepped",
                 headerStyle: {
                   fontWeight: "bold",
+                  whiteSpace: "nowrap",
                 },
                 rowStyle: {
                   fontSize: 14,
-                  // fontWeight: "bold",
                   color: "#604339",
                   letterSpacing: "0.5px",
                 },

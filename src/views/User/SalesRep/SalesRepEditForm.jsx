@@ -1,11 +1,9 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { backend } from "../../../api/index";
 import { useParams } from "react-router-dom";
 import { setAlertMessage } from "../../../features/alert/alert.action";
-import { getUser, updateUser } from "../../../features/users/user.action";
-
+import { updateUser } from "../../../features/users/user.action";
 import {
   Card,
   CardHeader,
@@ -44,6 +42,7 @@ const SalesRepEdit = ({}) => {
         cnic: user?.cnic,
         phone: user?.phone,
         gender: user?.gender,
+        role: "salesRep",
       });
     } catch (err) {
       console.log(err);
@@ -72,10 +71,7 @@ const SalesRepEdit = ({}) => {
     dispatch(
       updateUser(
         {
-          email: data.email,
-          first_name: data.first_name,
-          last_name: data.last_name,
-          age: data.age,
+          ...data,
         },
         id
       )
@@ -92,13 +88,13 @@ const SalesRepEdit = ({}) => {
     try {
       const media = new FormData();
       media.append("images", file);
-      const { data } = await backend("/fileupload", media, {
+      const image = await backend.post("/fileupload", media, {
         headers: {
           "content-type": `multipart/form-data`,
         },
       });
       const newdata = { ...data };
-      newdata[id] = data.images[0];
+      newdata[id] = image.data.images[0];
       setData(newdata);
     } catch (error) {
       return "";
@@ -141,10 +137,14 @@ const SalesRepEdit = ({}) => {
             >
               <Col sm="3">
                 <FormGroup>
-                  <div>
+                  <div
+                    style={{
+                      width: "20%",
+                    }}
+                  >
                     <img
-                      className="custom-img-dimension"
-                      src={data.profilePicture}
+                      style={{ objectFit: "cover", width: "100%" }}
+                      src={data?.profilePicture}
                     />
                   </div>
                   <Label for="profilePicture">User Profile Image</Label>
@@ -155,7 +155,6 @@ const SalesRepEdit = ({}) => {
                     onChange={(e) =>
                       uploadFile(e.target.files[0], "profilePicture")
                     }
-                    required
                   ></Input>
                 </FormGroup>
               </Col>
@@ -167,7 +166,7 @@ const SalesRepEdit = ({}) => {
                     type="text"
                     name="first_name"
                     id="first_name"
-                    value={data.first_name}
+                    value={data?.first_name}
                     required
                     onChange={(e) => handleUserData(e)}
                     placeholder="first name"
@@ -182,7 +181,7 @@ const SalesRepEdit = ({}) => {
                     type="text"
                     name="last_name"
                     id="last_name"
-                    value={data.last_name}
+                    value={data?.last_name}
                     required
                     onChange={(e) => handleUserData(e)}
                     placeholder="last name"
@@ -197,7 +196,7 @@ const SalesRepEdit = ({}) => {
                     type="email"
                     name="email"
                     id="email"
-                    value={data.email}
+                    value={data?.email}
                     required
                     onChange={(e) => handleUserData(e)}
                     placeholder="your email"
@@ -211,7 +210,7 @@ const SalesRepEdit = ({}) => {
                     type="number"
                     name="age"
                     id="age"
-                    value={data.age}
+                    value={data?.age}
                     required
                     onChange={(e) => handleUserData(e)}
                     placeholder="Enter age"
@@ -220,32 +219,17 @@ const SalesRepEdit = ({}) => {
               </Col>
 
               <Col sm="12">
-                <FormGroup>
-                  <Label for="roleVertical">Select Gender</Label>
-                  <select
-                    value={data.gender}
-                    required
-                    onChange={(e) => handleUserData(e)}
-                  >
-                    <option>--- Please Select Option ---</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                  </select>
-                </FormGroup>
-              </Col>
+                <Label for="roleVertical">Select Gender</Label>
 
-              <Col sm="12">
                 <FormGroup>
-                  <Label for="roleVertical">Select Any Role</Label>
                   <select
-                    value={data.role_id}
+                    value={data?.gender}
                     required
                     onChange={(e) => handleUserData(e)}
                   >
                     <option>--- Please Select Option ---</option>
-                    <option value="teamLead">Team Lead</option>
-                    <option value="salesRep">Sales Rep</option>
-                    <option value="digitalMarketer">Digital Marketer</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
                   </select>
                 </FormGroup>
               </Col>
@@ -257,7 +241,7 @@ const SalesRepEdit = ({}) => {
                     type="text"
                     name="cnic"
                     id="cnic"
-                    value={data.cnic}
+                    value={data?.cnic}
                     onChange={(e) => handleUserData(e)}
                     placeholder="Enter User CNIC"
                   />
@@ -271,7 +255,7 @@ const SalesRepEdit = ({}) => {
                     type="number"
                     name="phone"
                     id="phone"
-                    value={data.phone}
+                    value={data?.phone}
                     onChange={(e) => handleUserData(e)}
                     placeholder="Enter Mobile Number"
                   />

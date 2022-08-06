@@ -31,7 +31,6 @@ const ClientEdit = () => {
   const [loading, setLoading] = useState(false);
   const fetchCurrentClient = () => {
     const client = clients.find((client) => client._id === id);
-    console.log(client);
     setData({
       clientId: client.clientId,
       name: client.name,
@@ -40,6 +39,8 @@ const ClientEdit = () => {
       phone2: client.phone2,
       cnicBack: client.cnicBack,
       cnicFront: client.cnicFront,
+      address: client.address,
+      cnic: client.cnic,
     });
   };
 
@@ -53,12 +54,8 @@ const ClientEdit = () => {
 
   const submit = async (event) => {
     event.preventDefault();
-    if (!data.email || !data.name || !data.phone) {
+    if (!data.name || !data.phone) {
       dispatch(setAlertMessage("Please fill properly.", "error"));
-      return;
-    }
-    if (data.email && !regEmail.test(data.email)) {
-      dispatch(setAlertMessage("Invalid Email", "error"));
       return;
     }
 
@@ -152,12 +149,38 @@ const ClientEdit = () => {
                   />
                 </FormGroup>
               </Col>
+              <Col sm="12">
+                <FormGroup>
+                  <Label for="email">Client CNIC</Label>
+                  <Input
+                    type="text"
+                    name="cnic"
+                    id="cnic"
+                    value={data?.cnic}
+                    onChange={(e) => handleClientData(e)}
+                    placeholder="Enter CNIC"
+                  />
+                </FormGroup>
+              </Col>
+              <Col sm="12">
+                <FormGroup>
+                  <Label for="email">Client Address</Label>
+                  <Input
+                    type="text"
+                    name="address"
+                    id="address"
+                    value={data?.address}
+                    onChange={(e) => handleClientData(e)}
+                    placeholder="Enter Address"
+                  />
+                </FormGroup>
+              </Col>
 
               <Col sm="12">
                 <FormGroup>
                   <Label for="phone">Phone Number 1</Label>
                   <Input
-                    type="number"
+                    type="text"
                     name="phone"
                     id="phone"
                     required
@@ -172,7 +195,7 @@ const ClientEdit = () => {
                 <FormGroup>
                   <Label for="phone2">Phone Number 2</Label>
                   <Input
-                    type="number"
+                    type="text"
                     name="phone2"
                     id="phone2"
                     value={data?.phone2}

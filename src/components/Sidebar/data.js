@@ -118,6 +118,16 @@ const dataList = {
       url: "reports",
       icon: faFileCircleCheck,
     },
+    {
+      title: "Inventory",
+      icon: faWarehouse,
+      list: [
+        {
+          title: "Units",
+          url: "units",
+        },
+      ],
+    },
   ],
 
   digitalMarketerData: [
@@ -147,14 +157,14 @@ const dataList = {
           title: "All Leads",
           url: "leads",
         },
-        {
-          title: "My Leads",
-          url: "myleads",
-        },
-        {
-          title: "Todo List",
-          url: "todos",
-        },
+        // {
+        //   title: "My Leads",
+        //   url: "myleads",
+        // },
+        // {
+        //   title: "Todo List",
+        //   url: "todos",
+        // },
       ],
     },
     {
@@ -165,6 +175,20 @@ const dataList = {
         {
           title: "All Clients",
           url: "clients",
+        },
+      ],
+    },
+    {
+      title: "Inventory",
+      icon: faWarehouse,
+      list: [
+        {
+          title: "Projects",
+          url: "projects",
+        },
+        {
+          title: "Units",
+          url: "units",
         },
       ],
     },

@@ -26,8 +26,10 @@ const LeadsAdd = ({}) => {
       ? {
           client: "",
           assignedTo: userInfo._id,
+          addedBy: userInfo._id,
         }
       : {
+          addedBy: userInfo._id,
           client: "",
         }
   );
@@ -51,7 +53,6 @@ const LeadsAdd = ({}) => {
   const submit = async (event) => {
     event.preventDefault();
     dispatch(addLead(data));
-    // resetForm();
   };
 
   function handleUserData(e) {
@@ -82,9 +83,7 @@ const LeadsAdd = ({}) => {
         >
           <CardTitle tag="h4">Add New Lead</CardTitle>
         </CardHeader>
-
-          <Alert />
-
+        <Alert />
         <CardBody>
           <Form onSubmit={(event) => submit(event)}>
             <Row
@@ -99,7 +98,6 @@ const LeadsAdd = ({}) => {
                   <FormGroup>
                     <select
                       value={data.assignedTo}
-                      // required
                       id="assignedTo"
                       onChange={(e) => handleUserData(e)}
                     >

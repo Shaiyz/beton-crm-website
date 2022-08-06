@@ -46,17 +46,21 @@ const useStyles = makeStyles((theme) => ({
 function LeadTasks() {
   const classes = useStyles();
   const { leadId } = useParams();
-  const { leads, loading } = useSelector((state) => state.leads);
+  const { leads, myleads, loading } = useSelector((state) => state.leads);
   const [lead, setleads] = useState();
 
   useEffect(() => {
-    if (leads) {
+    if (leads || myleads) {
       fetchLeadTasks();
     }
-  }, [leads]);
+  }, [leads, myleads]);
   const fetchLeadTasks = () => {
-    setleads(leads.find((lead) => lead._id == leadId));
+    const data = leads
+      ? leads.find((lead) => lead._id == leadId)
+      : myleads.find((lead) => lead._id == leadId);
+    setleads(data);
   };
+
   return (
     <div className={classes.root}>
       <Box
@@ -81,10 +85,13 @@ function LeadTasks() {
                 )}
               </h5>
 
-              <p className={classes.noteMsg}>Completed: {item.completed ? "Yes" : "No"}</p>
+              <p className={classes.noteMsg}>
+                Completed: {item.completed ? "Yes" : "No"}
+              </p>
               <p className={classes.noteMsg}>Message: {item.message}</p>
 
-              <p className={classes.noteDate}>
+              <p className={classes.noteMsg}>
+                Deadline:
                 {new Date(
                   item.deadline ? item.deadline : new Date()
                 ).toLocaleString()}

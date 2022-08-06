@@ -40,15 +40,17 @@ import LeadTasks from "./views/Leads/LeadTasks";
 
 function Routes() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const { authenticated } = useSelector((state) => state.auth);
+  const { authenticated, userInfo } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   useEffect(() => {
     if (authenticated) {
-      dispatch(getAllUsers());
+      if (userInfo.role != "salesRep") {
+        dispatch(getAllUsers());
+        dispatch(getAllLeads());
+        dispatch(getAllProjects());
+      }
       dispatch(getAllTasks());
-      dispatch(getAllLeads());
       dispatch(getMyLeads());
-      dispatch(getAllProjects());
       dispatch(getAllClients());
       dispatch(getAllUnits());
     }
@@ -113,9 +115,6 @@ function Routes() {
               <Route exact path="/clients/add" component={ClientsAdd} />
               <Route exact path="/client/edit/:id" component={ClientEdit} />
 
-              {/* Reports */}
-              <Route exact path="/reports" component={Report} />
-
               {/* Leads */}
               <Route exact path="/leads" component={Leads} />
               <Route exact path="/myleads" component={MyLeads} />
@@ -137,7 +136,8 @@ function Routes() {
               <Route exact path="/todos" component={Todos} />
               <Route exact path="/todo/add/:id" component={TasksAddForm} />
               <Route exact path="/todo/edit/:id" component={TodosEditForm} />
-
+              {/* Reports */}
+              <Route exact path="/reports" component={Report} />
               <Route exact path="/reports/:id" component={Report} />
             </Switch>
           </div>

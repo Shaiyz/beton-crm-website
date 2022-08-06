@@ -35,8 +35,9 @@ const Table = ({ rows, columns, loading, header, path }) => {
           </Grid>
         </div>
 
-          <Alert />
         <div style={{ width: "100%" }}>
+          <Alert />
+
           {loading ? (
             <CircularProgress className="loader" />
           ) : (
@@ -51,8 +52,10 @@ const Table = ({ rows, columns, loading, header, path }) => {
                 pageSizeOptions: [5, 20, 50, 100],
                 paginationType: "stepped",
                 search: true,
+                grouping: true,
                 headerStyle: {
                   fontWeight: "bold",
+                  flexWrap: "nowrap",
                 },
                 rowStyle: {
                   fontSize: 14,

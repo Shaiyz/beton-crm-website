@@ -16,12 +16,14 @@ const Clients = () => {
       dispatch(getAllClients());
     }
   }, [clients]);
-
   const renderActionButton = (params) => {
     return (
       <div style={{ display: "flex", alignItems: "center" }}>
         <Tooltip title="Edit Client">
-          <Link to={`/client/edit/${params.action}`} style={{ marginTop: "5px" }}>
+          <Link
+            to={`/client/edit/${params.action}`}
+            style={{ marginTop: "5px" }}
+          >
             <EditIcon
               className="action-buttons"
               color="secondary"
@@ -98,7 +100,7 @@ const Clients = () => {
           ? new Date(client.updatedAt).toLocaleDateString()
           : "-",
         action: client._id,
-        phone: "0" + client.phone,
+        phone: client.phone,
       });
     });
   }

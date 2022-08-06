@@ -64,6 +64,7 @@ export const updateLead = (body, id) => async (dispatch) => {
       dispatch(updateLeadSuccess(response.data.data));
       dispatch(setAlertMessage(response.data.message, "success"));
       dispatch(getAllLeads());
+      dispatch(getMyLeads());
       dispatch(getAllProjects());
     })
     .catch((err) => {

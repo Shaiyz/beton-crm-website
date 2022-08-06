@@ -2,24 +2,58 @@ import React, { useEffect } from "react";
 import SearchTable from "../../../components/SearchTable/SearchTable";
 import { useDispatch, useSelector } from "react-redux";
 import EditIcon from "@material-ui/icons/Edit";
-import { Tooltip } from "@material-ui/core";
+import { makeStyles, Chip, Tooltip } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { getAllUnits } from "../../../features/units/units.action";
 import { Helmet } from "react-helmet";
 
 const Unit = ({}) => {
   let dispatch = useDispatch();
+  const styles = useStyles();
   const { units, loading } = useSelector((state) => state.units);
+  const { userInfo } = useSelector((state) => state.auth);
   useEffect(() => {
     if (!units) {
       dispatch(getAllUnits());
     }
   }, [units]);
 
+  const renderStatusButton = (params) => {
+    return (
+      <Chip
+        variant="contained"
+        className={
+          params.status == "sold"
+            ? styles.statusSold
+            : params.status == "available"
+            ? styles.statusAvailable
+            : styles.statusToken
+        }
+        size="small"
+        label={params.status}
+      />
+    );
+  };
+
   const renderEditButton = (params) => {
     return (
       <Tooltip title="Edit Unit">
-        <Link to={`/unit/edit/${params.action}`}>
+        {userInfo?.role != "salesRep" ? (
+          <Link to={`/unit/edit/${params.action}`}>
+            <EditIcon
+              className="action-buttons"
+              color="secondary"
+              fontSize="medium"
+              style={{
+                padding: 2,
+                border: "1px solid #F50057",
+                borderRadius: 8,
+                backgroundColor: "white",
+                color: "#F50057",
+              }}
+            />
+          </Link>
+        ) : (
           <EditIcon
             className="action-buttons"
             color="secondary"
@@ -32,7 +66,7 @@ const Unit = ({}) => {
               color: "#F50057",
             }}
           />
-        </Link>
+        )}
       </Tooltip>
     );
   };
@@ -42,55 +76,51 @@ const Unit = ({}) => {
     {
       field: "type",
       title: "Type",
-      sortable: false,
       width: 630,
     },
     {
-      field: "quantity",
-      title: "Quantity",
-      sortable: false,
-      width: 630,
+      field: "name",
+      title: "Name",
     },
     {
       field: "size",
       title: "Size",
-      sortable: false,
       width: 630,
     },
-
     {
-      field: "price",
       title: "Price",
-      sortable: false,
+      field: "price",
       width: 630,
     },
     {
       field: "project",
       title: "Project",
-      sortable: false,
-      width: 630,
     },
-
+    {
+      field: "status",
+      title: "Status",
+      render: renderStatusButton,
+    },
     {
       field: "action",
-      title: "Action",
-      sortable: false,
       render: renderEditButton,
       width: 200,
     },
   ];
-
   let rows = [];
   if (units) {
-    console.log(units)
     let s = 1;
     units.forEach((unit) => {
       rows.push({
         id: s++,
+        name: unit.unit.name ? unit.unit.name : "L-213",
         type: unit.unit.type,
         size: unit.unit.size,
+        status:
+          unit.unit.status == "partial"
+            ? "Partial Downpayment"
+            : unit.unit.status,
         price: unit.unit.price,
-        quantity: unit.unit.quantity,
         createdAt: unit.unit.createdAt
           ? new Date(unit.unit.createdAt).toLocaleDateString()
           : "-",
@@ -116,5 +146,32 @@ const Unit = ({}) => {
     </div>
   );
 };
+
+const useStyles = makeStyles((theme) => ({
+  statusAvailable: {
+    backgroundColor: "white",
+    border: "1px solid #2eb85c",
+    color: "#2eb85c",
+    fontWeight: "bold",
+  },
+  statusSold: {
+    backgroundColor: "white",
+    border: "1px solid #e55353",
+    color: "#e55353",
+    fontWeight: "bold",
+  },
+  statusToken: {
+    backgroundColor: "white",
+    border: "1px solid #87CEFA",
+    color: "#87CEFA",
+    fontWeight: "bold",
+  },
+  statusPartialPayment: {
+    backgroundColor: "white",
+    border: "1px solid #87CEFA",
+    color: "#87CEFA",
+    fontWeight: "bold",
+  },
+}));
 
 export default Unit;

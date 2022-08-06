@@ -26,14 +26,24 @@ const Leads = ({ history, location }) => {
   const closedwon = () => {
     let filtered = [];
     leads?.map((lead) => {
-      if (
-        lead.leadTasks.length > 0 &&
-        lead.leadTasks.slice(-1)[0].subtask ==
-          tasks
-            .find((i) => i.name == "sales")
-            .subTasks.find((i) => i.name == "closedWon")._id
-      ) {
-        filtered.push(lead);
+      // if (
+      //   lead.leadTasks.length > 0 &&
+      //   lead.leadTasks.slice(-1)[0].subtask ==
+      //     tasks
+      //       .find((i) => i.name == "sales")
+      //       .subTasks.find((i) => i.name == "closedWon")._id
+      // ) {
+      //   filtered.push(lead);
+      // }
+      if (lead.leadTasks.length > 0) {
+        const won = lead.leadTasks.find(
+          (task) =>
+            task.subtask ==
+            tasks
+              .find((i) => i.name == "sales")
+              .subTasks.find((i) => i.name == "closedWon")._id
+        );
+        if (won) filtered.push(lead);
       }
     });
     return filtered;
@@ -154,12 +164,16 @@ const Leads = ({ history, location }) => {
     {
       field: "fullName",
       title: "Client Name",
-      sortable: false,
-      width: 630,
     },
     {
       field: "phone",
       title: "Client Phone",
+      sortable: false,
+      width: 630,
+    },
+    {
+      field: "clientId",
+      title: "Client Id",
       sortable: false,
       width: 630,
     },
@@ -192,8 +206,9 @@ const Leads = ({ history, location }) => {
       rows.push({
         id: s++,
         fullName: lead.client ? lead.client.name : "Not yet selected",
-        email: lead.client.email,
-        phone: "0" + lead.client.phone,
+        email: lead.client?.email,
+        phone: lead.client?.phone,
+        clientId: lead.client?.clientId,
         createdAt: lead.createdAt
           ? new Date(lead.createdAt).toLocaleDateString()
           : "-",
@@ -214,6 +229,7 @@ const Leads = ({ history, location }) => {
       <Helmet title="Leads - CRM"></Helmet>
 
       <Table
+        refresh={() => dispatch(getAllLeads())}
         header={"Leads"}
         path="leads"
         label1="Closed Lost"

@@ -138,8 +138,8 @@ const TodosEditForm = () => {
               <Col sm="12">
                 <Label for="assignToVertical"> Task </Label>
                 <FormGroup>
-                  <select required onChange={handleChange} value={task}>
-                    <option> --- Please Select Option --- </option>
+                  <select disabled required onChange={handleChange} value={task}>
+                    <option value=""> --- Please Select Option --- </option>
                     {menu?.map((i, ind) => (
                       <option key={ind} value={i.value}>
                         {i.label}
@@ -154,9 +154,10 @@ const TodosEditForm = () => {
                   <select
                     required
                     onChange={handleChangeSubTask}
+                    disabled
                     value={subTask}
                   >
-                    <option> --- Please Select Option --- </option>
+                    <option value=""> --- Please Select Option --- </option>
 
                     {subMenu?.map((i, ind) => (
                       <option key={ind} value={i.value}>

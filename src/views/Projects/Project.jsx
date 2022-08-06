@@ -3,7 +3,6 @@ import SearchTable from "../../components/SearchTable/SearchTable";
 import { useDispatch, useSelector } from "react-redux";
 import EditIcon from "@material-ui/icons/Edit";
 import UnitIcon from "@material-ui/icons/Home";
-
 import { IconButton, Tooltip } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { getAllProjects } from "../../features/projects/projects.action";
@@ -11,7 +10,6 @@ import { Helmet } from "react-helmet";
 const Project = () => {
   let dispatch = useDispatch();
   const { projects, loading } = useSelector((state) => state.projects);
-
   useEffect(() => {
     if (!projects) {
       dispatch(getAllProjects());

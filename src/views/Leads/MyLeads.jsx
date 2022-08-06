@@ -23,18 +23,18 @@ const MyLeads = ({ history, location }) => {
       dispatch(getMyLeads());
     }
   }, [myleads]);
-
   const closedwon = () => {
     let filtered = [];
     myleads?.map((lead) => {
-      if (
-        lead.leadTasks.length > 0 &&
-        lead.leadTasks.slice(-1)[0].subtask ==
-          tasks
-            .find((i) => i.name == "sales")
-            .subTasks.find((i) => i.name == "closedWon")._id
-      ) {
-        filtered.push(lead);
+      if (lead.leadTasks.length > 0) {
+        const won = lead.leadTasks.find(
+          (task) =>
+            task.subtask ==
+            tasks
+              .find((i) => i.name == "sales")
+              .subTasks.find((i) => i.name == "closedWon")._id
+        );
+        if (won) filtered.push(lead);
       }
     });
     return filtered;
@@ -62,7 +62,7 @@ const MyLeads = ({ history, location }) => {
       setLeads(closedwon());
       setValue(2);
     } else if (location?.hash == "#all" || location?.hash == "") {
-      setLeads(myleads);
+      setLeads(myleads.length > 0 ? myleads : null);
       setValue(0);
     }
   }, [myleads]);
@@ -168,25 +168,37 @@ const MyLeads = ({ history, location }) => {
     {
       field: "email",
       title: "Email",
-      sortable: false,
       width: 630,
     },
     {
       field: "fullName",
       title: "Client Name",
+      width: 630,
+    },
+    {
+      field: "clientId",
+      title: "Client Id",
+      width: 630,
+    },
+    {
+      field: "phone",
+      title: "Client Phone",
       sortable: false,
       width: 630,
     },
     {
       field: "intrested",
       title: "Intrested",
-      sortable: false,
+      width: 630,
+    },
+    {
+      field: "status",
+      title: "Status",
       width: 630,
     },
     {
       field: "edit",
       title: "Action",
-      sortable: false,
       render: renderActionButton,
       width: 10,
     },
@@ -198,8 +210,12 @@ const MyLeads = ({ history, location }) => {
     leadsList.forEach((lead) => {
       rows.push({
         id: s++,
-        fullName: lead.client.name,
-        email: lead.client.email,
+        fullName: lead.client?.name,
+        email: lead.client?.email,
+        phone: lead.client?.phone,
+        clientId: lead.client?.clientId,
+        status: lead?.leadTasks.length > 0 ? "Old Lead" : "New Lead",
+
         createdAt: lead.createdAt
           ? new Date(lead.createdAt).toLocaleDateString()
           : "-",
@@ -207,7 +223,7 @@ const MyLeads = ({ history, location }) => {
           ? new Date(lead.updatedAt).toLocaleDateString()
           : "-",
         edit: lead,
-        intrested: lead.intrested.name,
+        intrested: lead.intrested?.name,
       });
     });
   }
@@ -215,9 +231,9 @@ const MyLeads = ({ history, location }) => {
   return (
     <div className="feature">
       <Helmet title="Leads - CRM"></Helmet>
-
       <Table
         header={"Leads"}
+        refresh={() => dispatch(getMyLeads())}
         path="leads"
         label1="Closed Lost"
         label2="Closed Won"

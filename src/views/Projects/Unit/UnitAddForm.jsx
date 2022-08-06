@@ -20,15 +20,15 @@ import { addUnit } from "../../../features/units/units.action";
 const UnitAdd = () => {
   const { projectId } = useParams();
   const [data, setData] = useState({
-    quantity: "",
+    name: "",
     type: "office",
     size: "",
     price: "",
   });
   function resetForm() {
     setData({
-      quantity: "",
-      type: "",
+      name: "",
+      type: "office",
       size: "",
       price: "",
     });
@@ -83,16 +83,16 @@ const UnitAdd = () => {
               }}
             >
               <Col sm="12">
-                <Label for="nameVertical">Quantity</Label>
+                <Label for="nameVertical">Unit Name</Label>
                 <FormGroup>
                   <Input
                     type="text"
-                    name="quantity"
-                    id="quantity"
-                    value={data.quantity}
+                    name="name"
+                    id="name"
+                    value={data.name}
                     required
                     onChange={(e) => handleUserData(e)}
-                    placeholder="Quantity"
+                    placeholder="Name"
                   />
                 </FormGroup>
               </Col>

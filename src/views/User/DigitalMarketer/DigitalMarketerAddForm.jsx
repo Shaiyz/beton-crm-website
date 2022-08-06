@@ -12,7 +12,6 @@ import {
   Col,
   Button,
   Label,
-  UncontrolledAlert,
   Form,
   FormGroup,
   Input,
@@ -68,7 +67,7 @@ const DigitalMarketerAdd = ({}) => {
     try {
       const media = new FormData();
       media.append("images", file);
-      const image = await backend("/fileupload", media, {
+      const image = await backend.post("/fileupload", media, {
         headers: {
           "content-type": `multipart/form-data`,
         },
@@ -100,7 +99,7 @@ const DigitalMarketerAdd = ({}) => {
             fontSize: "16px",
           }}
         >
-          <CardTitle tag="h4">Add Team Lead Employees</CardTitle>
+          <CardTitle tag="h4">Add Digital Marketer</CardTitle>
         </CardHeader>
 
         <div className="alert-container">
@@ -117,10 +116,14 @@ const DigitalMarketerAdd = ({}) => {
             >
               <Col sm="3">
                 <FormGroup>
-                  <div>
+                  <div
+                    style={{
+                      width: "20%",
+                    }}
+                  >
                     <img
-                      className="custom-img-dimension"
-                      src={data.profilePicture}
+                      style={{ objectFit: "cover", width: "100%" }}
+                      src={data?.profilePicture}
                     />
                   </div>
                   <Label for="profilePicture">User Profile Image</Label>
@@ -131,7 +134,6 @@ const DigitalMarketerAdd = ({}) => {
                     onChange={(e) =>
                       uploadFile(e.target.files[0], "profilePicture")
                     }
-                    required
                   ></Input>
                 </FormGroup>
               </Col>

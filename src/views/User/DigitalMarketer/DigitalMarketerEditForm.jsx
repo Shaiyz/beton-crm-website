@@ -120,7 +120,7 @@ const DigitalMarketerEdit = ({}) => {
             fontSize: "16px",
           }}
         >
-          <CardTitle tag="h4">Edit Digital Marketer Employee</CardTitle>
+          <CardTitle tag="h4">Edit Digital Marketer</CardTitle>
         </CardHeader>
 
         <div className="alert-container">

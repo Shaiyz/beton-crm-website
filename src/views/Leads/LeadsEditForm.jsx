@@ -122,15 +122,16 @@ const LeadsEdit = () => {
             >
               {userInfo?.role !== "salesRep" && (
                 <Col sm="12">
+                  <Label for="assignToVertical">Assign To</Label>
+
                   <FormGroup>
-                    <Label for="assignToVertical">Assign To</Label>
                     <select
                       value={data.assignedTo}
                       required
                       id="assignedTo"
                       onChange={(e) => handleUserData(e)}
                     >
-                      <option>--- Please Select Option ---</option>
+                      <option value="">--- Please Select Option ---</option>
 
                       {users &&
                         users.map((user) => (
@@ -161,8 +162,8 @@ const LeadsEdit = () => {
                 </FormGroup>
               </Col>
               <Col sm="12">
+                <Label for="intrestedVertical">Interested Project</Label>
                 <FormGroup>
-                  <Label for="intrestedVertical">Interested Project</Label>
                   <select
                     value={data.intrested ? data.intrested : "remove"}
                     required

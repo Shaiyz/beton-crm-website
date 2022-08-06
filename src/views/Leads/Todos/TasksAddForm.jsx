@@ -24,16 +24,21 @@ import { useParams } from "react-router-dom";
 const TodoTaskAddForm = () => {
   const [data, setData] = useState({ message: "" });
   function resetForm() {
-    setData({ message: "" });
+    setData({ ...data, message: "" });
+    setSelectedDate(new Date());
   }
   const dispatch = useDispatch();
   const { tasks, error, loading } = useSelector((state) => state.tasks);
+  const { myleads } = useSelector((state) => state.leads);
   const { userId } = useSelector((state) => state.auth);
   const [subMenu, setSubMenu] = React.useState(null);
   const [task, setTask] = React.useState("");
   const [subTask, setSubTask] = React.useState("");
+  const [subTaskName, setSubTaskName] = React.useState("message");
   const [selectedDate, setSelectedDate] = React.useState(new Date());
+  const [lead, setLead] = useState(null);
   const { id } = useParams();
+
   const handleChange = (e) => {
     setTask(e.target.value);
     if (e.target.value != "") {
@@ -44,6 +49,9 @@ const TodoTaskAddForm = () => {
         });
       setSubMenu(subtasks);
       setSubTask(subtasks[0].value);
+    } else {
+      setSubTask("");
+      setSubMenu(null);
     }
   };
 
@@ -54,17 +62,46 @@ const TodoTaskAddForm = () => {
   const handleChangeSubTask = (e) => {
     setSubTask(e.target.value);
   };
+
   const handleDateChange = (value) => {
     setSelectedDate(value);
   };
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    const lead = myleads?.find((lead) => lead._id == id);
+    setLead(lead);
   }, []);
 
-  const submit = async (event) => {
+  useEffect(() => {
+    if (
+      subTask == subMenu?.find((i) => i.label == "Closed won")?.value ||
+      subTask == subMenu?.find((i) => i.label == "Token")?.value ||
+      subTask == subMenu?.find((i) => i.label == "Partial downpayment")?.value
+    ) {
+      const name = subMenu?.find((i) => i.value == subTask)?.label;
+      setSubTaskName(
+        name == "Token"
+          ? "token"
+          : name == "Closed won"
+          ? "closedWon"
+          : "partialPayment"
+      );
+      setData({
+        project: lead.intrested?._id,
+        client: lead.client?._id,
+        ...data,
+      });
+    } else {
+      const { message } = data;
+      setData({ message });
+    }
+  }, [subTask]);
+
+  const submit = (event) => {
     event.preventDefault();
     const { ...rest } = data;
+
     dispatch(
       addTodoTask(
         {
@@ -72,6 +109,7 @@ const TodoTaskAddForm = () => {
           subtask: subTask,
           task: task,
           createdBy: userId,
+          subTaskName,
           ...rest,
         },
         id
@@ -85,7 +123,6 @@ const TodoTaskAddForm = () => {
     newdata[e.target.name] = e.target.value;
     setData(newdata);
   }
-
   return (
     <>
       <Card
@@ -123,7 +160,7 @@ const TodoTaskAddForm = () => {
                 <Label for="assignToVertical"> Task </Label>
                 <FormGroup>
                   <select required onChange={handleChange}>
-                    <option> --- Please Select Option --- </option>
+                    <option value=""> --- Please Select Option --- </option>
                     {menu?.map((i, ind) => (
                       <option key={ind} value={i.value}>
                         {i.label}
@@ -137,7 +174,6 @@ const TodoTaskAddForm = () => {
 
                 <FormGroup>
                   <select required onChange={handleChangeSubTask}>
-                    {/* <option>--- Please Select Option ---</option> */}
                     {subMenu?.map((i, ind) => (
                       <option key={ind} value={i.value}>
                         {i.label}
@@ -161,20 +197,56 @@ const TodoTaskAddForm = () => {
               </Col>
               <Col sm="12" lg="12">
                 <Label for="intrestedVertical">Message</Label>
-
                 <FormGroup>
                   <Input
                     type="textarea"
                     name="message"
                     rows={5}
                     bgSize="lg"
-                    required
                     id="message"
                     onChange={(e) => handleTaskData(e)}
                     placeholder="Todo Message"
                   />
                 </FormGroup>
               </Col>
+              {data.client && (
+                <>
+                  <Col sm="12" lg="12">
+                    <Label for="intrestedVertical">Unit</Label>
+                    <FormGroup>
+                      <select
+                        required
+                        onChange={(e) =>
+                          setData({ ...data, unit: e.target.value })
+                        }
+                      >
+                        <option value=""> --- Please Select Option --- </option>
+
+                        {lead?.intrested?.unit.map((i, ind) => (
+                          <option key={ind} value={i._id}>
+                            {i.name}
+                          </option>
+                        ))}
+                      </select>
+                    </FormGroup>
+                  </Col>
+                  <Col sm="12" lg="12">
+                    <Label for="intrestedVertical">Amount Collected</Label>
+                    <FormGroup>
+                      <Input
+                        type="number"
+                        name="amount"
+                        defaultValue={0}
+                        bgSize="lg"
+                        required
+                        id="amount"
+                        onChange={(e) => handleTaskData(e)}
+                        placeholder="Enter Price"
+                      />
+                    </FormGroup>
+                  </Col>
+                </>
+              )}
               <Col sm="12">
                 <FormGroup
                   className="d-flex mb-0"
