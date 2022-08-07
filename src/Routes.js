@@ -37,6 +37,7 @@ import { getAllClients } from "./features/client/client.action";
 import { getAllUnits } from "./features/units/units.action";
 import { getAllLeads, getMyLeads } from "./features/leads/leads.action";
 import LeadTasks from "./views/Leads/LeadTasks";
+import { Calls } from "./views/Calls";
 
 function Routes() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -139,6 +140,9 @@ function Routes() {
               {/* Reports */}
               <Route exact path="/reports" component={Report} />
               <Route exact path="/reports/:id" component={Report} />
+
+              {/* Calls */}
+              <Route exact path="/calls" component={Calls} />
             </Switch>
           </div>
         </div>

@@ -11,6 +11,7 @@ import unitReducer from "../features/units/units.reducer";
 import clientReducer from "../features/client/client.reducer";
 import taskReducer from "../features/tasks/tasks.reducer";
 import todoReducer from "../features/todos/todos.reducer";
+import callReducer from "../features/calls/calls.reducer";
 
 const reducers = combineReducers({
   users: userReducer,
@@ -22,6 +23,7 @@ const reducers = combineReducers({
   clients: clientReducer,
   tasks: taskReducer,
   todos: todoReducer,
+  calls: callReducer,
 });
 
 const persistConfig = {

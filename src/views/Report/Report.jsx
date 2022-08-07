@@ -18,11 +18,14 @@ import { Helmet } from "react-helmet";
 import { useSelector } from "react-redux";
 import { backend } from "../../api/index";
 import { Link, useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { getCalls } from "../../features/calls/calls.action";
 
 const Report = () => {
+  const dispatch = useDispatch();
   const styles = useStyles();
   var now = new Date();
-  let day = new Date().getDay();
+  let day = now.getDate();
   day = day < 10 ? "0" + day : day;
   let month = now.getMonth() + 1;
   month = month < 10 ? "0" + month : month;
@@ -50,6 +53,7 @@ const Report = () => {
   React.useEffect(() => {
     if (userId) {
       let date = `${year}-${month}-${day}`;
+      console.log(date);
       setStartDate(date);
       setEndDate(date);
       let body = {
@@ -67,7 +71,6 @@ const Report = () => {
           );
           setReport(data);
         } catch (err) {
-          console.log(err);
         } finally {
           setLoading(false);
         }
@@ -221,6 +224,11 @@ const Report = () => {
                   <Typography className={styles.subheadingAccordian}>
                     <Link
                       style={{ textDecoration: "none", color: "black" }}
+                      onClick={() => {
+                        dispatch(
+                          getCalls(userId, { start: startDate, end: endDate })
+                        );
+                      }}
                       to="/calls"
                     >
                       Verified calls
