@@ -19,7 +19,7 @@ import { addTodoTask } from "../../../features/todos/todos.action";
 import { useDispatch } from "react-redux";
 import { Button } from "@material-ui/core";
 import Alert from "../../../components/Alert/Alert";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 const TodoTaskAddForm = () => {
   const [data, setData] = useState({ message: "" });
@@ -29,6 +29,8 @@ const TodoTaskAddForm = () => {
   }
   const dispatch = useDispatch();
   const { tasks, error, loading } = useSelector((state) => state.tasks);
+  const { saved } = useSelector((state) => state.todos);
+
   const { myleads } = useSelector((state) => state.leads);
   const { userId } = useSelector((state) => state.auth);
   const [subMenu, setSubMenu] = React.useState(null);
@@ -38,7 +40,7 @@ const TodoTaskAddForm = () => {
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const [lead, setLead] = useState(null);
   const { id } = useParams();
-
+  const history = useHistory();
   const handleChange = (e) => {
     setTask(e.target.value);
     if (e.target.value != "") {
@@ -68,10 +70,13 @@ const TodoTaskAddForm = () => {
   };
 
   useEffect(() => {
+    if (saved === true) {
+      history.goBack();
+    }
     window.scrollTo(0, 0);
     const lead = myleads?.find((lead) => lead._id == id);
     setLead(lead);
-  }, []);
+  }, [saved]);
 
   useEffect(() => {
     if (

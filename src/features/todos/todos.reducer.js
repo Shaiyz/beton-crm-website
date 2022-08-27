@@ -11,12 +11,10 @@ const todoSlice = createSlice({
   reducers: {
     getLoadingLists: (state) => {
       state.loading = true;
-      state.saved = false;
     },
     getTodosListsSuccess: (state, { payload }) => {
       state.loading = false;
       state.todos = payload;
-      state.saved = false;
     },
 
     getTodosListsFailure: (state) => {
@@ -44,6 +42,9 @@ const todoSlice = createSlice({
     resetTodo: (state) => {
       state.todos = null;
     },
+    setSaved: (state, action) => {
+      state.saved = action.payload;
+    },
   },
 });
 
@@ -59,4 +60,5 @@ export const {
   updateTodoSuccess,
   resetTodo,
   completeTodoSuccess,
+  setSaved,
 } = todoSlice.actions;

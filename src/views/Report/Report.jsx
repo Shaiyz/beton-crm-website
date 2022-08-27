@@ -52,13 +52,13 @@ const Report = () => {
 
   React.useEffect(() => {
     if (userId) {
-      let date = `${year}-${month}-${day}`;
-      console.log(date);
-      setStartDate(date);
-      setEndDate(date);
+      let start = `${year}-${month}-${day}`;
+      let end = `${year}-${month}-${day}`;
+      setStartDate(start);
+      setEndDate(start);
       let body = {
-        startDate: date,
-        endDate: date,
+        startDate: start,
+        endDate: end,
       };
 
       (async () => {
@@ -69,6 +69,7 @@ const Report = () => {
           } = await backend.get(
             `/report/${userId}/${body.startDate}/${body.endDate}?done=${done._id}&arrange=${arrange._id}`
           );
+          console.log(data)
           setReport(data);
         } catch (err) {
         } finally {

@@ -7,10 +7,12 @@ import {
   updateLeadSuccess,
   getMyLeadListsFailure,
   getMyLeadListsSuccess,
+  setLoadingListOff,
 } from "./leads.reducer";
 import { setAlertMessage } from "../alert/alert.action";
 import { getLoading } from "../auth/auth.reducers";
 import { getAllProjects } from "../projects/projects.action";
+import { getAllClients } from "../client/client.action";
 
 // get All lead
 export const getAllLeads = () => async (dispatch, getState) => {
@@ -47,11 +49,28 @@ export const addLead = (body) => async (dispatch, getState) => {
     dispatch(setAlertMessage(res.data.message, "success"));
     dispatch(getAllLeads());
     dispatch(getMyLeads());
+    dispatch(getAllClients());
     dispatch(getAllProjects());
   } catch (err) {
     if (err.response) {
       dispatch(setAlertMessage(err.response.data.message, "error"));
       dispatch(getLeadListsFailure(err));
+    }
+  }
+};
+
+export const duplicateLead = (body) => async (dispatch, getState) => {
+  dispatch(getLoading());
+  try {
+    const res = await backend.post(`/lead/duplicate`, body);
+    dispatch(addLeadSuccess(res.data.data));
+    dispatch(setAlertMessage(res.data.message, "success"));
+    dispatch(getAllLeads());
+    dispatch(getMyLeads());
+    dispatch(getAllProjects());
+  } catch (err) {
+    if (err.response) {
+      dispatch(setAlertMessage(err.response.data.message, "error"));
     }
   }
 };
@@ -65,11 +84,13 @@ export const updateLead = (body, id) => async (dispatch) => {
       dispatch(setAlertMessage(response.data.message, "success"));
       dispatch(getAllLeads());
       dispatch(getMyLeads());
+      dispatch(getAllClients());
       dispatch(getAllProjects());
     })
     .catch((err) => {
       if (err.response) {
         dispatch(setAlertMessage(err.response.data.message, "error"));
       }
+      dispatch(setLoadingListOff());
     });
 };

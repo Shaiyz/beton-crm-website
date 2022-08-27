@@ -1,21 +1,25 @@
 import React, { useEffect } from "react";
 import EditIcon from "@material-ui/icons/Edit";
-import { Button, IconButton, Tooltip } from "@material-ui/core";
+import { Button, Grid, IconButton, Tooltip } from "@material-ui/core";
 import "../User/TeamLead/Admin.css";
-import { Message } from "@material-ui/icons/";
+import { Message, ControlPointDuplicate } from "@material-ui/icons/";
 import { Link } from "react-router-dom";
 import Table from "../../components/TableUsers/Table";
-import { getMyLeads } from "../../features/leads/leads.action";
+import { duplicateLead, getMyLeads } from "../../features/leads/leads.action";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import { Helmet } from "react-helmet";
 import AddBox from "@material-ui/icons/AddBox";
+import TransitionModal from "../../components/TransitionModal/TransitionModal";
 
 const MyLeads = ({ history, location }) => {
   const { myleads, loading } = useSelector((state) => state.leads);
   const { tasks } = useSelector((state) => state.tasks);
+  const { userInfo } = useSelector((state) => state.auth);
+
   const [leadsList, setLeads] = useState(null);
+  const [open, setOpen] = useState(null);
   let dispatch = useDispatch();
   const [value, setValue] = React.useState(0);
   useEffect(() => {
@@ -159,6 +163,24 @@ const MyLeads = ({ history, location }) => {
             </IconButton>
           </Link>
         </Tooltip>
+
+        <Tooltip title={"Duplicate lead"}>
+          <IconButton style={{ marginTop: "5px" }}>
+            <ControlPointDuplicate
+              className="action-buttons"
+              color="secondary"
+              fontSize="medium"
+              style={{
+                padding: 2,
+                border: "1px solid #F50057",
+                borderRadius: 8,
+                backgroundColor: "white",
+                color: "#F50057",
+              }}
+              onClick={() => setOpen(params.edit)}
+            />
+          </IconButton>
+        </Tooltip>
       </div>
     );
   };
@@ -246,6 +268,41 @@ const MyLeads = ({ history, location }) => {
         getAllInactive={getClosedWon}
         getAllActive={getClosedLost}
       />
+      <TransitionModal></TransitionModal>{" "}
+      <TransitionModal
+        open={open ? true : false}
+        handleClose={() => setOpen(null)}
+        style={{ width: 200 }}
+      >
+        <Grid item xs={12} sm={12}>
+          <p style={{ fontWeight: "bold" }}>
+            Are you sure you want to duplicate lead ?
+          </p>
+        </Grid>
+        <Grid item xs={12} sm={12} align="center" style={{ marginTop: 10 }}>
+          <Button
+            style={{ marginRight: 10 }}
+            variant="outlined"
+            color="secondary"
+            size="small"
+            onClick={() => {
+              dispatch(
+                duplicateLead({
+                  assignedTo: userInfo._id,
+                  addedBy: userInfo._id,
+                  client: open.client,
+                })
+              );
+              setOpen(null);
+            }}
+          >
+            Yes
+          </Button>
+          <Button variant="outlined" size="small" onClick={() => setOpen(null)}>
+            Cancel
+          </Button>
+        </Grid>
+      </TransitionModal>
     </div>
   );
 };

@@ -20,7 +20,7 @@ const Table = ({ rows, columns, loading, header, path }) => {
               <h2 className={styles.heading2}>{header}</h2>
             </Grid>
             <Grid item xs={4} align="right">
-              {header !== "Units" && header !== "Calls" && (
+              {header !== "Units" && header !== "Calls" && header !== "Client" && (
                 <Link to={`/${path}/add`} style={{ textDecoration: "none" }}>
                   <Button
                     className={styles.btn}

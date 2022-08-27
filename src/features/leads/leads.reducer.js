@@ -19,6 +19,11 @@ const leadSlice = createSlice({
       state.saved = false;
       state.addLoader = false;
     },
+    setLoadingListOff: (state) => {
+      state.loading = false;
+      state.saved = false;
+      state.addLoader = false;
+    },
 
     getLoading: (state) => {
       state.addLoader = true;
@@ -38,27 +43,7 @@ const leadSlice = createSlice({
       state.loading = false;
       state.myleads = payload;
     },
-    // getLeadAvailableListsSuccess: (state, { payload }) => {
-    //   state.loading = false;
-    //   state.availableLeads = payload;
-    // },
-    // getLeadSearch: (state, { payload }) => {
-    //   state.loading = false;
-    //   state.searchedLead = payload;
-    // },
-    // getEmptyLeadSearch: (state, { payload }) => {
-    //   state.loading = false;
-    //   state.searchedLead = [];
-    // },
-    // getLeadSuccess: (state, { payload }) => {
-    //   state.lead = payload;
-    //   state.loading = false;
-    // },
-    // updateEditLeadSuccess: (state, { payload }) => {
-    //   state.lead = payload;
-    //   state.loading = false;
-    //   state.editLeadLoader = false;
-    // },
+
     getLeadListsFailure: (state) => {
       state.loading = false;
       state.hasErrors = true;
@@ -89,6 +74,7 @@ export default leadsReducer;
 export const {
   getLoadingLists,
   resetLeads,
+  setLoadingListOff,
   getLeadListsSuccess,
   getLeadListsFailure,
   addLeadSuccess,

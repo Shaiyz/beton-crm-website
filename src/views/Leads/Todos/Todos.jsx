@@ -17,6 +17,8 @@ import {
   getAllTodoTasks,
 } from "../../../features/todos/todos.action";
 import { useDispatch } from "react-redux";
+import { setSaved } from "../../../features/todos/todos.reducer";
+import { AddBox } from "@material-ui/icons";
 var todaysDate = new Date();
 let list = [];
 
@@ -28,6 +30,7 @@ const Todos = ({ history, location }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(setSaved(false));
     if (!todos) {
       dispatch(getAllTodoTasks());
     }
@@ -95,9 +98,7 @@ const Todos = ({ history, location }) => {
     dispatch(completeTodoTask({ completed: true }, id));
   };
 
-  console.log(todosList);
   const renderActionButton = (params) => {
-    console.log(params.action);
     return (
       <div
         style={{
@@ -121,6 +122,23 @@ const Todos = ({ history, location }) => {
               }}
             />
           </Button>
+        </Tooltip>
+        <Tooltip title="Add Todo">
+          <Link to={`/todo/add/${params.action?.leadId}`}>
+            <AddBox
+              className="action-buttons"
+              color="secondary"
+              fontSize="medium"
+              style={{
+                padding: 2,
+                margin: "10px",
+                border: "1px solid #F50057",
+                borderRadius: 8,
+                backgroundColor: "white",
+                color: "#F50057",
+              }}
+            />
+          </Link>
         </Tooltip>
         <Tooltip title="Edit Todo">
           <Link to={`/todo/edit/${params.action._id}`}>
@@ -147,10 +165,10 @@ const Todos = ({ history, location }) => {
                 fontSize="medium"
                 style={{
                   padding: 2,
-                  border: "1px solid #F50057",
+                  border: "1.5px solid #e55353",
                   borderRadius: 8,
                   backgroundColor: "white",
-                  color: "#F50057",
+                  color: "#e55353",
                 }}
               />
             </Button>
@@ -164,10 +182,10 @@ const Todos = ({ history, location }) => {
                 fontSize="medium"
                 style={{
                   padding: 2,
-                  border: "1px solid #F50057",
+                  border: "1.5px solid #2eb85c",
                   borderRadius: 8,
                   backgroundColor: "white",
-                  color: "#F50057",
+                  color: "#2eb85c",
                 }}
               />
             </Button>
@@ -179,12 +197,7 @@ const Todos = ({ history, location }) => {
 
   const columns = [
     { field: "id", title: "S#", width: 200 },
-    {
-      field: "email",
-      title: "Email",
-      sortable: false,
-      width: 630,
-    },
+
     {
       field: "name",
       title: "Client",

@@ -22,9 +22,8 @@ const LeadsEdit = () => {
 
   const { id } = useParams();
   const { users, loading } = useSelector((state) => state.users);
-  const { clients } = useSelector((state) => state.clients);
   const { userInfo } = useSelector((state) => state.auth);
-
+  const [clientId, setClientId] = useState("");
   const { projects } = useSelector((state) => state.projects);
   const { myleads, leads } = useSelector((state) => state.leads);
   const [data, setData] = useState({
@@ -41,6 +40,7 @@ const LeadsEdit = () => {
       } else {
         lead = leads?.find((lead) => lead._id === id);
       }
+      setClientId(lead.client.clientId);
       setData({
         assignedTo: lead?.assignedTo ? lead.assignedTo._id : "",
         client: lead?.client._id,
@@ -146,19 +146,7 @@ const LeadsEdit = () => {
               <Col sm="12">
                 <Label for="clientNameVertical">Client ID</Label>
                 <FormGroup>
-                  <select
-                    value={data.client}
-                    disabled
-                    id="client"
-                    onChange={(e) => handleUserData(e)}
-                  >
-                    {clients &&
-                      clients.map((client) => (
-                        <option
-                          value={client._id}
-                        >{`${client.clientId}`}</option>
-                      ))}
-                  </select>
+                  <input type="text" value={clientId} disabled></input>
                 </FormGroup>
               </Col>
               <Col sm="12">
@@ -192,9 +180,6 @@ const LeadsEdit = () => {
                   >
                     Submit
                   </Button>
-                  {/* <Button className="form_reset_btn" onClick={resetForm}>
-                    Reset
-                  </Button> */}
                 </FormGroup>
               </Col>
             </Row>

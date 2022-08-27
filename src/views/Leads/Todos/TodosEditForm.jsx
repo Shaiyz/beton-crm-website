@@ -121,7 +121,7 @@ const TodosEditForm = () => {
             fontSize: "16px",
           }}
         >
-          <CardTitle tag="h4">Add New Task</CardTitle>
+          <CardTitle tag="h4">Edit Task</CardTitle>
         </CardHeader>
         <div className="alert-container">
           <Alert />
