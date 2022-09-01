@@ -3,9 +3,9 @@ import axios from "axios";
 const backend = axios.create({
   baseURL:
     process.env.NODE_ENV === "production"
-      ? "http://44.203.240.206:5000/"
-      // : "http://44.203.240.206:5000/",
-  : "http://localhost:5000",
+      ? "http://3.91.209.143:5000/"
+      : // : "http://44.203.240.206:5000/",
+        "http://localhost:5000",
 });
 
 backend.interceptors.request.use(
