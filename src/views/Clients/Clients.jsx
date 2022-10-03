@@ -1,14 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SearchTable from "../../components/SearchTable/SearchTable";
 import EditIcon from "@material-ui/icons/Edit";
-import { Tooltip } from "@material-ui/core";
+import { Button, Grid, IconButton, Tooltip } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import { getAllClients } from "../../features/client/client.action";
+import {
+  getAllClients,
+  updateClient,
+} from "../../features/client/client.action";
 import { useDispatch, useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
+import { Delete } from "@material-ui/icons";
+import TransitionModal from "../../components/TransitionModal/TransitionModal";
 
 const Clients = () => {
   const { clients, loading } = useSelector((state) => state.clients);
+  const { authenticated, userInfo } = useSelector((state) => state.auth);
+  const [open, setOpen] = useState(null);
   let dispatch = useDispatch();
 
   useEffect(() => {
@@ -21,7 +28,7 @@ const Clients = () => {
       <div style={{ display: "flex", alignItems: "center" }}>
         <Tooltip title="Edit Client">
           <Link
-            to={`/client/edit/${params.action}`}
+            to={`/client/edit/${params.action._id}`}
             style={{ marginTop: "5px" }}
           >
             <EditIcon
@@ -38,6 +45,23 @@ const Clients = () => {
             />
           </Link>
         </Tooltip>
+        {userInfo.role === "teamLead" && (
+          <IconButton style={{ marginTop: "5px" }}>
+            <Delete
+              className="action-buttons"
+              color="secondary"
+              fontSize="medium"
+              style={{
+                padding: 2,
+                border: "1px solid #F50057",
+                borderRadius: 8,
+                backgroundColor: "white",
+                color: "#F50057",
+              }}
+              onClick={() => setOpen(params.action)}
+            />
+          </IconButton>
+        )}
       </div>
     );
   };
@@ -99,7 +123,7 @@ const Clients = () => {
         updatedAt: client.updatedAt
           ? new Date(client.updatedAt).toLocaleDateString()
           : "-",
-        action: client._id,
+        action: client,
         phone: client.phone,
       });
     });
@@ -115,6 +139,42 @@ const Clients = () => {
         path={"clients"}
         loading={loading}
       />
+      <TransitionModal
+        open={open ? true : false}
+        handleClose={() => setOpen(null)}
+        style={{ width: 200 }}
+      >
+        <Grid item xs={12} sm={12}>
+          <p style={{ fontWeight: "bold" }}>
+            Are you sure you want to delete this client ?
+          </p>
+        </Grid>
+        <Grid item xs={12} sm={12} align="center" style={{ marginTop: 10 }}>
+          <Button
+            style={{ marginRight: 10 }}
+            variant="outlined"
+            color="secondary"
+            size="small"
+            onClick={() => {
+              dispatch(
+                updateClient(
+                  {
+                    ...open,
+                    isDeleted: true,
+                  },
+                  open._id
+                )
+              );
+              setOpen(null);
+            }}
+          >
+            Yes
+          </Button>
+          <Button variant="outlined" size="small" onClick={() => setOpen(null)}>
+            Cancel
+          </Button>
+        </Grid>
+      </TransitionModal>
     </div>
   );
 };

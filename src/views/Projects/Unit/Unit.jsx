@@ -2,16 +2,26 @@ import React, { useEffect } from "react";
 import SearchTable from "../../../components/SearchTable/SearchTable";
 import { useDispatch, useSelector } from "react-redux";
 import EditIcon from "@material-ui/icons/Edit";
-import { makeStyles, Chip, Tooltip } from "@material-ui/core";
+import {
+  makeStyles,
+  Chip,
+  Tooltip,
+  Button,
+  Grid,
+  IconButton,
+} from "@material-ui/core";
 import { Link } from "react-router-dom";
-import { getAllUnits } from "../../../features/units/units.action";
+import { getAllUnits, updateUnit } from "../../../features/units/units.action";
 import { Helmet } from "react-helmet";
+import { Delete } from "@material-ui/icons";
+import TransitionModal from "../../../components/TransitionModal/TransitionModal";
 
-const Unit = ({}) => {
+const Unit = () => {
   let dispatch = useDispatch();
   const styles = useStyles();
   const { units, loading } = useSelector((state) => state.units);
   const { userInfo } = useSelector((state) => state.auth);
+  const [open, setOpen] = React.useState(null);
   useEffect(() => {
     if (!units) {
       dispatch(getAllUnits());
@@ -39,20 +49,37 @@ const Unit = ({}) => {
     return (
       <Tooltip title="Edit Unit">
         {userInfo?.role != "salesRep" ? (
-          <Link to={`/unit/edit/${params.action}`}>
-            <EditIcon
-              className="action-buttons"
-              color="secondary"
-              fontSize="medium"
-              style={{
-                padding: 2,
-                border: "1px solid #F50057",
-                borderRadius: 8,
-                backgroundColor: "white",
-                color: "#F50057",
-              }}
-            />
-          </Link>
+          <>
+            <Link to={`/unit/edit/${params.action}`}>
+              <EditIcon
+                className="action-buttons"
+                color="secondary"
+                fontSize="medium"
+                style={{
+                  padding: 2,
+                  border: "1px solid #F50057",
+                  borderRadius: 8,
+                  backgroundColor: "white",
+                  color: "#F50057",
+                }}
+              />
+            </Link>
+            <IconButton style={{ marginTop: "5px" }}>
+              <Delete
+                className="action-buttons"
+                color="secondary"
+                fontSize="medium"
+                style={{
+                  padding: 2,
+                  border: "1px solid #F50057",
+                  borderRadius: 8,
+                  backgroundColor: "white",
+                  color: "#F50057",
+                }}
+                onClick={() => setOpen(params.action)}
+              />
+            </IconButton>
+          </>
         ) : (
           <EditIcon
             className="action-buttons"
@@ -70,7 +97,6 @@ const Unit = ({}) => {
       </Tooltip>
     );
   };
-
   const columns = [
     { field: "id", title: "S#", width: 200, sortable: false },
     {
@@ -143,6 +169,41 @@ const Unit = ({}) => {
         path={"unit"}
         loading={loading}
       />
+      <TransitionModal
+        open={open ? true : false}
+        handleClose={() => setOpen(null)}
+        style={{ width: 200 }}
+      >
+        <Grid item xs={12} sm={12}>
+          <p style={{ fontWeight: "bold" }}>
+            Are you sure you want to delete unit ?
+          </p>
+        </Grid>
+        <Grid item xs={12} sm={12} align="center" style={{ marginTop: 10 }}>
+          <Button
+            style={{ marginRight: 10 }}
+            variant="outlined"
+            color="secondary"
+            size="small"
+            onClick={() => {
+              dispatch(
+                updateUnit(
+                  {
+                    isDeleted: true,
+                  },
+                  open
+                )
+              );
+              setOpen(null);
+            }}
+          >
+            Yes
+          </Button>
+          <Button variant="outlined" size="small" onClick={() => setOpen(null)}>
+            Cancel
+          </Button>
+        </Grid>
+      </TransitionModal>
     </div>
   );
 };

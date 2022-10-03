@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import Button from "@material-ui/core/Button";
 import Check from "@material-ui/icons/Check";
 import Task from "@material-ui/icons/DoneOutlined";
-
 import EditIcon from "@material-ui/icons/Edit";
 import Message from "@material-ui/icons/Message";
 import { Tooltip } from "@material-ui/core";
@@ -39,14 +38,14 @@ const Todos = ({ history, location }) => {
   useEffect(() => {
     if (location?.hash == "#overdue") {
       getOverDue();
-      setValue(2);
+      setValue(3);
     } else if (location?.hash == "#current") {
       getCurrent();
       setValue(1);
       list = [];
     } else if (location?.hash == "#upcoming") {
       getUpcomming();
-      setValue(3);
+      setValue(2);
     } else if (location?.hash == "#all" || location?.hash == "") {
       setTodosList(todos);
       setValue(0);
@@ -269,8 +268,8 @@ const Todos = ({ history, location }) => {
         header={"Todos"}
         path="todo"
         label1="Current"
-        label2="Overdue"
-        label3="Upcoming"
+        label2="Upcoming"
+        label3="Overdue"
         loading={loading}
         columns={columns}
         rows={rows}
@@ -278,8 +277,8 @@ const Todos = ({ history, location }) => {
         setValue={setValue}
         getAll={getAll}
         getAllActive={getCurrent}
-        getAllInactive={getOverDue}
-        Tab3Func={getUpcomming}
+        getAllInactive={getUpcomming}
+        Tab3Func={getOverDue}
       />
     </div>
   );

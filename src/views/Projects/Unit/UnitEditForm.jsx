@@ -40,7 +40,6 @@ const UnitEdit = () => {
 
   const submit = async (event) => {
     event.preventDefault();
-    console.log(data);
     dispatch(updateUnit(data, id));
   };
 

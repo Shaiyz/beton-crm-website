@@ -58,6 +58,19 @@ export const addLead = (body) => async (dispatch, getState) => {
     }
   }
 };
+export const deleteLead = (id) => async (dispatch, getState) => {
+  try {
+    const res = await backend.delete(`/lead/${id}`);
+    dispatch(setAlertMessage(res.data.message, "success"));
+    dispatch(getAllLeads());
+    dispatch(getMyLeads());
+  } catch (err) {
+    if (err.response) {
+      dispatch(setAlertMessage(err.response.data.message, "error"));
+      dispatch(getLeadListsFailure(err));
+    }
+  }
+};
 
 export const duplicateLead = (body) => async (dispatch, getState) => {
   dispatch(getLoading());

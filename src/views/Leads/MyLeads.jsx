@@ -12,6 +12,7 @@ import { useState } from "react";
 import { Helmet } from "react-helmet";
 import AddBox from "@material-ui/icons/AddBox";
 import TransitionModal from "../../components/TransitionModal/TransitionModal";
+import { setSaved } from "../../features/todos/todos.reducer";
 
 const MyLeads = ({ history, location }) => {
   const { myleads, loading } = useSelector((state) => state.leads);
@@ -23,6 +24,8 @@ const MyLeads = ({ history, location }) => {
   let dispatch = useDispatch();
   const [value, setValue] = React.useState(0);
   useEffect(() => {
+    dispatch(setSaved(false));
+
     if (!myleads) {
       dispatch(getMyLeads());
     }
@@ -268,7 +271,6 @@ const MyLeads = ({ history, location }) => {
         getAllInactive={getClosedWon}
         getAllActive={getClosedLost}
       />
-      <TransitionModal></TransitionModal>{" "}
       <TransitionModal
         open={open ? true : false}
         handleClose={() => setOpen(null)}
