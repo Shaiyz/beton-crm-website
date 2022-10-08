@@ -70,6 +70,10 @@ const LeadsAdd = () => {
       });
     }
   }
+  const AssigningOptions =
+    userInfo.role == "digitalMarketer"
+      ? users.filter((i) => i.role == "teamLead")
+      : users;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -77,7 +81,6 @@ const LeadsAdd = () => {
 
   const submit = async (event) => {
     event.preventDefault();
-
     dispatch(addLead({ createdBy: userInfo._id, ...data }));
   };
 
@@ -275,8 +278,8 @@ const LeadsAdd = () => {
                       onChange={(e) => handleUserData(e)}
                     >
                       <option value="">--- Please Select Option ---</option>
-                      {users &&
-                        users.map((user) => (
+                      {AssigningOptions &&
+                        AssigningOptions.map((user) => (
                           <option
                             value={user._id}
                           >{`${user.first_name}  ${user.last_name}`}</option>

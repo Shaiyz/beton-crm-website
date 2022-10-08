@@ -18,18 +18,19 @@ import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { editTodoTask } from "../../../features/todos/todos.action";
 import { useDispatch } from "react-redux";
 import { Button } from "@material-ui/core";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import Alert from "../../../components/Alert/Alert";
 
 const TodosEditForm = () => {
   const [data, setData] = useState({ message: "" });
   const { tasks, error, loading } = useSelector((state) => state.tasks);
-  const { todos } = useSelector((state) => state.todos);
+  const { todos, saved } = useSelector((state) => state.todos);
   const [subMenu, setSubMenu] = React.useState(null);
   const [task, setTask] = React.useState("");
   const [subTask, setSubTask] = React.useState("");
   const [selectedDate, setSelectedDate] = React.useState(new Date());
   const { id } = useParams();
+  const history = useHistory();
 
   const dispatch = useDispatch();
 
@@ -62,6 +63,12 @@ const TodosEditForm = () => {
     window.scrollTo(0, 0);
     fetchCurrentTodo();
   }, [todos]);
+
+  useEffect(() => {
+    if (saved === true) {
+      history.goBack();
+    }
+  }, [saved]);
 
   const fetchCurrentTodo = () => {
     if (todos) {
@@ -138,7 +145,12 @@ const TodosEditForm = () => {
               <Col sm="12">
                 <Label for="assignToVertical"> Task </Label>
                 <FormGroup>
-                  <select disabled required onChange={handleChange} value={task}>
+                  <select
+                    disabled
+                    required
+                    onChange={handleChange}
+                    value={task}
+                  >
                     <option value=""> --- Please Select Option --- </option>
                     {menu?.map((i, ind) => (
                       <option key={ind} value={i.value}>

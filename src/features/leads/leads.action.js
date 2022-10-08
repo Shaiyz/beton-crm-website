@@ -58,6 +58,25 @@ export const addLead = (body) => async (dispatch, getState) => {
     }
   }
 };
+
+export const addLeads = (body) => async (dispatch) => {
+  dispatch(getLoading());
+  try {
+    const res = await backend.post(`/lead/excel`, body);
+    dispatch(addLeadSuccess(res.data.data));
+    dispatch(setAlertMessage(res.data.message, "success"));
+    dispatch(getAllLeads());
+    dispatch(getMyLeads());
+    dispatch(getAllClients());
+    dispatch(getAllProjects());
+  } catch (err) {
+    if (err.response) {
+      dispatch(setAlertMessage(err.response.data.message, "error"));
+      dispatch(getLeadListsFailure(err));
+    }
+  }
+};
+
 export const deleteLead = (id) => async (dispatch, getState) => {
   try {
     const res = await backend.delete(`/lead/${id}`);

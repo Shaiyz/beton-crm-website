@@ -21,7 +21,7 @@ import ProjectsAdd from "./views/Projects/ProjectAddForm";
 import ProjectsEdit from "./views/Projects/ProjectEditForm";
 import UnitAdd from "./views/Projects/Unit/UnitAddForm";
 import UnitEdit from "./views/Projects/Unit/UnitEditForm";
-import { TasksAddForm, Todos } from "./views/Leads";
+import { LeadAdd, TasksAddForm, Todos } from "./views/Leads";
 import { getAllUsers } from "./features/users/user.action";
 import { useDispatch } from "react-redux";
 import { Profile } from "./views/User/Profile";
@@ -38,6 +38,7 @@ import { getAllUnits } from "./features/units/units.action";
 import { getAllLeads, getMyLeads } from "./features/leads/leads.action";
 import LeadTasks from "./views/Leads/LeadTasks";
 import { Calls } from "./views/Calls";
+import LeadsExcelAdd from "./views/Leads/LeadsExcelAdd";
 
 function Routes() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -120,7 +121,10 @@ function Routes() {
               <Route exact path="/leads" component={Leads} />
               <Route exact path="/myleads" component={MyLeads} />
 
-              <Route exact path="/leads/add" component={LeadsAdd} />
+              <Route exact path="/leads/add" component={LeadAdd} />
+              <Route exact path="/leads/excel" component={LeadsExcelAdd} />
+              <Route exact path="/lead/add" component={LeadsAdd} />
+
               <Route exact path="/leads/edit/:id" component={LeadsEdit} />
               <Route exact path="/lead/todos/:leadId" component={LeadTasks} />
 

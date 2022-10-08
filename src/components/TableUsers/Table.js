@@ -53,15 +53,14 @@ const TableUsers = ({
                       Add New {header}
                     </Button>
                   </Link>
-                  {header ==
-                    "Leads"&&(
-                      <Button
-                        className={styles.btn}
-                        variant="contained"
-                        startIcon={<RefreshIcon size={20} />}
-                        onClick={() => refresh()}
-                      ></Button>
-                    )}
+                  {header == "Leads" && (
+                    <Button
+                      className={styles.btn}
+                      variant="contained"
+                      startIcon={<RefreshIcon size={20} />}
+                      onClick={() => refresh()}
+                    ></Button>
+                  )}
                 </Grid>
               </>
             )}
